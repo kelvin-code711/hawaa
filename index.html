@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hawaa</title>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="css/announcement-bar.css">
+  <link rel="stylesheet" href="./css/header.css">
+  <link rel="stylesheet" href="css/rotating-text.css">
+  <link rel="stylesheet" href="css/bento-aqi.css">
+  <link rel="stylesheet" href="css/product-hero.css">
+  <link rel="stylesheet" href="css/product-card-slider.css">
+  <link rel="stylesheet" href="css/hepa-filter-hero.css">
+  <link rel="stylesheet" href="css/quiz-cta.css">
+  <link rel="stylesheet" href="css/testimonial.css">
+  <link rel="stylesheet" href="css/dual-slider.css">
+  <link rel="stylesheet" href="css/faq-section.css">
+  <link rel="stylesheet" href="css/footer.css">
+
+  <!-- Font Preloads -->
+  <link rel="preload" href="./fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/Outfit-Medium.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/Outfit-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <section class="why-strip" style="--gap:24px; --scroll-time:20s">
+    <span class="why-strip__heading">Why Hawaa?</span>
+    <div class="why-strip__track-wrapper">
+      <div class="why-strip__track" id="why-hawaa-track">
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">99.9% purification</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Real-time AQI tracking</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Smart energy saving</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Whisper-quiet 24 dB</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">App & voice control</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Free filter recycling</span></span>
+        <!-- Duplicates for seamless scroll -->
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">99.9% purification</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Real-time AQI tracking</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Smart energy saving</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Whisper-quiet 24 dB</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">App & voice control</span></span>
+        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Free filter recycling</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Header -->
+  <header class="hawaa-header" id="hawaa-header">
+    <div class="header-container">
+      <a href="/" class="header-logo">
+        <img src="./images/logo.svg" alt="Hawaa" width="120" height="auto">
+      </a>
+
+      <div class="header-actions">
+        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+          <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="nav-overlay" id="nav-overlay"></div>
+
+    <div class="nav-panel">
+      <div class="nav-header">
+        <h2 class="nav-title">Menu</h2>
+        <div class="nav-icons">
+          <button class="nav-icon" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+          
+          <button class="nav-icon" aria-label="Cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </button>
+          
+          <button class="nav-close" id="nav-close" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="nav-content">
+        <div class="nav-section">
+          <h3 class="section-title">EXPLORE</h3>
+          <div class="nav-links-wrapper">
+            <ul class="nav-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/products">Products</a></li>
+              <li><a href="/technology">Technology</a></li>
+              <li><a href="/quiz">Take a Quiz</a></li>
+              <li><a href="/aqi">AQI Checker</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="nav-section">
+          <h3 class="section-title">ABOUT HAWAA</h3>
+          <div class="nav-links-wrapper">
+            <ul class="nav-links">
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="/how-it-works">How It Works</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="blog.html">Blog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rotating Text Section -->
+  <div class="rotating-text-section">
+    <div class="page-width">
+      <div class="rotating-text-container">
+        <h2 class="rotating-heading">
+          <span id="rotating-text-container">
+            <span class="rotating-text active" data-index="0">Allergy Relief</span>
+            <span class="rotating-text" data-index="1">Asthma-Safe Homes</span>
+            <span class="rotating-text" data-index="2">Babies & Kids</span>
+            <span class="rotating-text" data-index="3">Pet-Friendly Spaces</span>
+            <span class="rotating-text" data-index="4">Sleep Without Sneezing</span>
+          </span>
+        </h2>
+
+        <div class="static-text-container">
+          <div class="static-text-main">
+            Because every breath matters
+          </div>
+          <div class="static-text-supporting">
+            Clean air starts here
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bento AQI Section -->
+  <div class="bento-aqi-section">
+    <div class="bento-wrapper">
+      <div class="bento-box box1">
+        <h1>Check the air quality in your city</h1>
+        <p>Enter a city to see the AQI instantly</p>
+        <div class="search-input">
+          <input id="cityInput" type="text" placeholder="Enter city..." />
+          <button onclick="getAqi()">
+            <img src="assets/images/arrow-icon.svg" alt="Go" />
+          </button>
+        </div>
+      </div>
+      <div id="box2" class="bento-box box2">
+        <div>
+          <span id="cityName">Enter a city</span>
+          <strong id="aqiValue">--</strong>
+        </div>
+      </div>
+      <div class="bento-box box3">
+        <div class="rotating-text" id="bentoRotatingText">Breathe better with Hawaa.</div>
+      </div>
+      <div class="bento-box box4">
+        <a href="/quiz" class="quiz-btn">Take a Quiz</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Hero Section -->
+  <section class="product-hero">
+    <!-- Image Container -->
+    <div class="hero-img-container">
+      <!-- Overlay for better text visibility -->
+      <div class="overlay"></div>
+      
+      <!-- Mobile Image -->
+      <div class="hero-img hero-img-mobile">
+        <img src="images/hero-mobile.jpg" alt="Hawaa air purifier product image">
+      </div>
+      
+      <!-- Desktop Image -->
+      <div class="hero-img hero-img-desktop">
+        <img src="images/hero-desktop.jpg" alt="Hawaa air purifier product image">
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+      <div class="content-container">
+        <!-- Logo + Heading -->
+        <div class="logo-heading">
+          <img src="images/logo-icon.svg" alt="Hawaa logo" class="logo">
+          <h2 class="heading">HAWAA</h2>
+        </div>
+        
+        <!-- Subheading + Tagline -->
+        <h3 class="subheading">AIR PURIFIER</h3>
+        <p class="tagline">Breathe better. Live better.</p>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+          <a href="/technology" class="btn btn-outline">
+            Learn more
+          </a>
+          <a href="/products" class="btn btn-primary">
+            Buy now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Card Slider Section -->
+  <section class="apple-slider" id="hawaa-product-slider">
+    <div class="apple-slider__container">
+      <div class="apple-slider__track">
+        <!-- Slide 1 -->
+        <div class="apple-slider__slide" data-index="0">
+          <img src="images/slide1.jpg" alt="Pure Air Anywhere" class="apple-slider__image" width="1800" height="1000">
+          <div class="apple-slider__content">
+            <h2 class="apple-slider__title">PURE AIR ANYWHERE</h2>
+            <span class="apple-slider__subtitle">Air Purifier • Breathe better. Live better.</span>
+            <a href="/products" class="apple-slider__button">Shop now</a>
+          </div>
+          <div class="apple-slider__logo">
+            <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="15" cy="15" r="14" fill="#fff" opacity="0.9"/>
+              <text x="15" y="20" font-family="Outfit, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#189AB4">H</text>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Slide 2 -->
+        <div class="apple-slider__slide" data-index="1">
+          <img src="images/slide2.jpg" alt="Smart Protection" class="apple-slider__image" width="1800" height="1000">
+          <div class="apple-slider__content">
+            <h2 class="apple-slider__title">SMART PROTECTION</h2>
+            <span class="apple-slider__subtitle">HEPA Filter • Removes 99.97% of particles.</span>
+            <a href="/products" class="apple-slider__button">Shop now</a>
+          </div>
+          <div class="apple-slider__logo">
+            <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="15" cy="15" r="14" fill="#fff" opacity="0.9"/>
+              <text x="15" y="20" font-family="Outfit, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#189AB4">H</text>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="apple-slider__slide" data-index="2">
+          <img src="images/slide3.jpg" alt="Silent Operation" class="apple-slider__image" width="1800" height="1000">
+          <div class="apple-slider__content">
+            <h2 class="apple-slider__title">SILENT OPERATION</h2>
+            <span class="apple-slider__subtitle">Quiet Mode • Sleep soundly with 24dB operation.</span>
+            <a href="/products" class="apple-slider__button">Shop now</a>
+          </div>
+          <div class="apple-slider__logo">
+            <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="15" cy="15" r="14" fill="#fff" opacity="0.9"/>
+              <text x="15" y="20" font-family="Outfit, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#189AB4">H</text>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Slide 4 -->
+        <div class="apple-slider__slide" data-index="3">
+          <img src="images/slide4.jpg" alt="App Control" class="apple-slider__image" width="1800" height="1000">
+          <div class="apple-slider__content">
+            <h2 class="apple-slider__title">APP CONTROL</h2>
+            <span class="apple-slider__subtitle">Smart Features • Monitor air quality anywhere.</span>
+            <a href="/products" class="apple-slider__button">Shop now</a>
+          </div>
+          <div class="apple-slider__logo">
+            <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="15" cy="15" r="14" fill="#fff" opacity="0.9"/>
+              <text x="15" y="20" font-family="Outfit, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#189AB4">H</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation Arrows -->
+      <button class="apple-slider__arrow apple-slider__arrow--prev" aria-label="Previous slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <button class="apple-slider__arrow apple-slider__arrow--next" aria-label="Next slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="apple-slider__dots"></div>
+  </section>
+
+  <!-- HEPA Filter Hero Section -->
+  <section class="hepa-filter-hero">
+    <div class="hf-inner-container">
+      <!-- Heading -->
+      <h2 class="hf-title">Premium HEPA replacement filters</h2>
+      <p class="hf-sub">Easy to replace, designed to last.</p>
+
+      <!-- CTA -->
+      <a href="/products" class="hf-cta">Order replacement filters</a>
+      <div class="hf-caption">Compatible with all Hawaa air purifiers</div>
+
+      <!-- Cards - Two cards layout -->
+      <div class="hf-card-grid">
+        <!-- Card 1 -->
+        <div class="hf-card-container">
+          <div class="hf-card" style="background-color:#E8F5F0;">
+            <img src="images/hepa-filter-1.jpg" alt="Medical-Grade H13 HEPA Filter" loading="lazy">
+          </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="hf-card-container">
+          <div class="hf-card" style="background-color:#F0F8FF;">
+            <img src="images/hepa-filter-2.jpg" alt="High Performance Air Filtration" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quizSection" class="quiz-section">
+    <div class="quiz-content">
+      <h2 class="quiz-title">Take our Air Quality Quiz: Find the perfect purifier for your home.</h2>
+      <button class="quiz-button" id="startQuizBtn">
+        Start quiz
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="quiz-visual">
+      <div class="image-container">
+        <div class="image-placeholder">
+          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 10L12 5L17 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 5V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="placeholder-text">Upload an image in section settings</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz Modal Overlay -->
+  <div class="quiz-modal-overlay" id="airQualityQuizModal">
+    <div class="quiz-modal">
+      <button class="quiz-close">×</button>
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="quizProgressBar"></div>
+      </div>
+      <div class="quiz-modal-body">
+        <!-- Question 1 -->
+        <div class="quiz-question active" data-question="1">
+          <h3>How often do you dust or vacuum your home?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="daily">Every day or multiple times a week</div>
+            <div class="quiz-option" data-value="weekly">About once a week (or bi-weekly)</div>
+            <div class="quiz-option" data-value="rarely">Rarely (less than once a month)</div>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary" disabled>Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn1" disabled>Next</button>
+          </div>
+        </div>
+        <!-- Question 2 -->
+        <div class="quiz-question" data-question="2">
+          <h3>Are your floors and furniture covered with carpets, rugs or fabric upholstery?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="yes">Yes – most floors & lots of fabric furniture</div>
+            <div class="quiz-option" data-value="some">Some – a few rugs/upholstery</div>
+            <div class="quiz-option" data-value="no">No – mostly hard floors</div>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn2" disabled>Next</button>
+          </div>
+        </div>
+        <!-- Question 3 -->
+        <div class="quiz-question" data-question="3">
+          <h3>Do you have any pets that shed hair or dander?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="yes">Yes (one or more shedding pets)</div>
+            <div class="quiz-option" data-value="no">No (no pets or only non-shedding)</div>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn3" disabled>Next</button>
+          </div>
+        </div>
+        <!-- Question 4 -->
+        <div class="quiz-question" data-question="4">
+          <h3>How often do you use strong-odored or chemical products?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="frequently">Frequently – daily sprays/cleaners</div>
+            <div class="quiz-option" data-value="occasionally">Occasionally – weekly or for projects</div>
+            <div class="quiz-option" data-value="rarely">Rarely – natural/no-odor products</div>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn4" disabled>Next</button>
+          </div>
+        </div>
+        <!-- Question 5 -->
+        <div class="quiz-question" data-question="5">
+          <h3>How would you rate your home’s ventilation?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="good">Good – open windows/exhaust daily</div>
+            <div class="quiz-option" data-value="fair">Fair – a few times a week</div>
+            <div class="quiz-option" data-value="poor">Poor – windows usually closed</div>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn5" disabled>Next</button>
+          </div>
+        </div>
+        <!-- Question 6 (Email) -->
+        <div class="quiz-question" data-question="6">
+          <h3>Enter your email to see your personalized results:</h3>
+          <div class="quiz-options">
+            <input type="email" id="quizEmailInput" placeholder="you@example.com"/>
+          </div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+            <button class="quiz-btn quiz-btn-primary" id="nextBtn6" disabled>See Results</button>
+          </div>
+        </div>
+        <!-- Results -->
+        <div class="quiz-results" id="quizResults">
+          <h3 id="pollutionResultTitle">Your Air Quality Result</h3>
+          <p id="pollutionResultDescription">Here’s your indoor air pollution assessment:</p>
+          <div class="quiz-recommendation" id="quizRecommendation"></div>
+          <div class="quiz-navigation">
+            <button class="quiz-btn quiz-btn-secondary" id="restartBtn">Retake Quiz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonial Section -->
+  <div class="testimonials-section">
+    <h2 class="testimonials-section-title">Breathe Their Words</h2>
+
+    <!-- LEFT ARROW -->
+    <button class="nav-arrow left" style="display:none" aria-label="Scroll left">
+      ←
+    </button>
+
+    <!-- TESTIMONIALS TRACK -->
+    <div class="testimonials-container" id="testimonialsTrack">
+      <!-- Testimonial Card 1 -->
+      <div class="testimonial-card">
+        <video class="testimonial-video"
+              poster="https://example.com/thumbnail1.jpg"
+              playsinline preload="metadata"
+              controlslist="nodownload nofullscreen noremoteplaybook"
+              autoplay loop muted>
+          <source src="https://example.com/video1.mp4" type="video/mp4">
+        </video>
+
+        <div class="testimonial-content">
+          <img src="https://example.com/profile1.jpg" alt="" class="profile-image">
+          <p class="testimonial-name">Sarah K.</p>
+          <p class="testimonial-title">Allergy Sufferer</p>
+        </div>
+      </div>
+      
+      <!-- Testimonial Card 2 -->
+      <div class="testimonial-card">
+        <video class="testimonial-video"
+              poster="https://example.com/thumbnail2.jpg"
+              playsinline preload="metadata"
+              controlslist="nodownload nofullscreen noremoteplaybook"
+              autoplay loop muted>
+          <source src="https://example.com/video2.mp4" type="video/mp4">
+        </video>
+
+        <div class="testimonial-content">
+          <img src="https://example.com/profile2.jpg" alt="" class="profile-image">
+          <p class="testimonial-name">Michael T.</p>
+          <p class="testimonial-title">Parent of Two</p>
+        </div>
+      </div>
+      
+      <!-- Testimonial Card 3 -->
+      <div class="testimonial-card">
+        <video class="testimonial-video"
+              poster="https://example.com/thumbnail3.jpg"
+              playsinline preload="metadata"
+              controlslist="nodownload nofullscreen noremoteplaybook"
+              autoplay loop muted>
+          <source src="https://example.com/video3.mp4" type="video/mp4">
+        </video>
+
+        <div class="testimonial-content">
+          <img src="https://example.com/profile3.jpg" alt="" class="profile-image">
+          <p class="testimonial-name">Dr. Lisa M.</p>
+          <p class="testimonial-title">Pediatrician</p>
+        </div>
+      </div>
+      
+      <!-- Testimonial Card 4 -->
+      <div class="testimonial-card">
+        <video class="testimonial-video"
+              poster="https://example.com/thumbnail4.jpg"
+              playsinline preload="metadata"
+              controlslist="nodownload nofullscreen noremoteplaybook"
+              autoplay loop muted>
+          <source src="https://example.com/video4.mp4" type="video/mp4">
+        </video>
+
+        <div class="testimonial-content">
+          <img src="https://example.com/profile4.jpg" alt="" class="profile-image">
+          <p class="testimonial-name">James P.</p>
+          <p class="testimonial-title">Pet Owner</p>
+        </div>
+      </div>
+      
+      <!-- Testimonial Card 5 -->
+      <div class="testimonial-card">
+        <div class="no-video-placeholder">
+          <span>No&nbsp;video</span>
+        </div>
+
+        <div class="testimonial-content">
+          <img src="https://example.com/profile5.jpg" alt="" class="profile-image">
+          <p class="testimonial-name">Emma R.</p>
+          <p class="testimonial-title">Asthma Patient</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT ARROW -->
+    <button class="nav-arrow right" style="display:none" aria-label="Scroll right">
+      →
+    </button>
+  </div>
+
+  <!-- Dual Card Slider Section -->
+  <section id="dual-slider">
+    <div class="dual-container">
+      <!-- REVIEW CARD -->
+      <div class="card-container">
+        <div class="rc-slider-wrapper">
+          <div class="rc-card">
+            <div class="rc-slides">
+              <div class="rc-slide">
+                <div class="rc-quote-container">
+                  <p class="rc-quote">
+                    "After struggling with dust allergies for years, this air purifier has been a game-changer. The air feels noticeably cleaner within hours, and my morning sneezing has completely disappeared. The HEPA filter really works!"
+                  </p>
+                </div>
+                <div class="rc-author-container">
+                  <div class="rc-author">Priya S., Mumbai</div>
+                  <div class="rc-product">Hawaa Pure Air Pro</div>
+                </div>
+              </div>
+              <div class="rc-slide">
+                <div class="rc-quote-container">
+                  <p class="rc-quote">
+                    "Living near a busy road, air quality was always a concern. Since getting this purifier, the difference is remarkable. My baby sleeps better, and we can finally open windows without worrying about pollution coming in."
+                  </p>
+                </div>
+                <div class="rc-author-container">
+                  <div class="rc-author">Rajesh K., Delhi</div>
+                  <div class="rc-product">Hawaa Smart Filter System</div>
+                </div>
+              </div>
+              <div class="rc-slide">
+                <div class="rc-quote-container">
+                  <p class="rc-quote">
+                    "As someone with asthma, clean air isn't a luxury—it's essential. This purifier runs so quietly I forget it's on, but my breathing has improved dramatically. The app notifications are incredibly helpful too."
+                  </p>
+                </div>
+                <div class="rc-author-container">
+                  <div class="rc-author">Meera L., Bangalore</div>
+                  <div class="rc-product">Hawaa Medical Grade H13</div>
+                </div>
+              </div>
+              <div class="rc-slide">
+                <div class="rc-quote-container">
+                  <p class="rc-quote">
+                    "During Diwali season, our air purifier worked overtime and kept our home breathable. The real-time AQI monitoring helped us understand when we needed to close windows. Best investment for our family's health."
+                  </p>
+                </div>
+                <div class="rc-author-container">
+                  <div class="rc-author">Amit T., Pune</div>
+                  <div class="rc-product">Hawaa AQI Monitor Pro</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="rc-navigation">
+              <button class="rc-arrow rc-arrow--prev" aria-label="Previous review">
+                ‹
+              </button>
+              <button class="rc-arrow rc-arrow--next" aria-label="Next review">
+                ›
+              </button>
+            </div>
+            
+            <div class="rc-dots" id="reviewDots">
+              <span class="rc-dot rc-dot--active" data-index="0"></span>
+              <span class="rc-dot" data-index="1"></span>
+              <span class="rc-dot" data-index="2"></span>
+              <span class="rc-dot" data-index="3"></span>
+            </div>
+            
+            <div class="rc-controls">
+              <a href="/pages/reviews" class="rc-button">
+                Read reviews
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- BLOG CARD -->
+      <div class="card-container">
+        <div class="bc-slider-wrapper">
+          <div class="bc-card">
+            <div class="bc-slides">
+              <div class="bc-slide">
+                <img src="images/blog-bg1.jpg" alt="Air purifier working" class="bc-bg-image">
+                <div class="bc-overlay"></div>
+                <h2 class="bc-title">Is your air purifier actually working?</h2>
+                <p class="bc-content">Learn how to check if your air purifier is effectively cleaning your home's air and when to replace filters for optimal performance.</p>
+                <div class="bc-button-container">
+                  <a href="#" class="bc-button">Test your air</a>
+                  <a href="#" class="bc-button">Explore more</a>
+                </div>
+              </div>
+              <div class="bc-slide">
+                <img src="images/blog-bg2.jpg" alt="Air purifier placement" class="bc-bg-image">
+                <div class="bc-overlay"></div>
+                <h2 class="bc-title">Air purifier placement guide</h2>
+                <p class="bc-content">Discover the best spots in your home to maximize air purification efficiency and ensure clean air reaches every corner of your living space.</p>
+                <div class="bc-button-container">
+                  <a href="#" class="bc-button">Optimize placement</a>
+                  <a href="#" class="bc-button">Explore more</a>
+                </div>
+              </div>
+              <div class="bc-slide">
+                <img src="images/blog-bg3.jpg" alt="HEPA filters" class="bc-bg-image">
+                <div class="bc-overlay"></div>
+                <h2 class="bc-title">HEPA vs True HEPA filters</h2>
+                <p class="bc-content">Understand the difference between regular HEPA and True HEPA filters, and why filter quality matters for removing allergens and pollutants.</p>
+                <div class="bc-button-container">
+                  <a href="#" class="bc-button">Compare filters</a>
+                  <a href="#" class="bc-button">Explore more</a>
+                </div>
+              </div>
+              <div class="bc-slide">
+                <img src="images/blog-bg4.jpg" alt="Monsoon air quality" class="bc-bg-image">
+                <div class="bc-overlay"></div>
+                <h2 class="bc-title">Air quality during monsoon</h2>
+                <p class="bc-content">Learn how humidity and monsoon weather affect indoor air quality, and why air purifiers are essential during India's rainy season.</p>
+                <div class="bc-button-container">
+                  <a href="#" class="bc-button">Monsoon tips</a>
+                  <a href="#" class="bc-button">Explore more</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bc-navigation">
+              <button class="bc-arrow bc-arrow--prev" aria-label="Previous slide">
+                ‹
+              </button>
+              <button class="bc-arrow bc-arrow--next" aria-label="Next slide">
+                ›
+              </button>
+            </div>
+            
+            <div class="bc-dots" id="blogDots">
+              <span class="bc-dot bc-dot--active" data-index="0"></span>
+              <span class="bc-dot" data-index="1"></span>
+              <span class="bc-dot" data-index="2"></span>
+              <span class="bc-dot" data-index="3"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+<section id="faq-section" class="faq">
+    <div class="faq-inner">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        <details class="faq-item">
+            <summary class="faq-question">
+            What is a HEPA air purifier?
+            <span class="faq-icon"></span>
+            </summary>
+          <div class="faq-answer">
+            <p>A HEPA (High-Efficiency Particulate Air) air purifier is a device designed to remove airborne pollutants and allergens from your indoor environment. Our purifiers use true HEPA filtration that can capture 99.97% of particles as small as 0.3 microns, including dust, pollen, pet dander, and certain bacteria.</p>
+            <p>Through our advanced filtration system, clean air is circulated back into your space, helping you breathe easier and creating a healthier living environment.</p>
+          </div>
+        </details>
+
+        <!-- FAQ Item 2 -->
+        <details class="faq-item">
+          <summary class="faq-question">
+            How often should I replace the filter?
+            <span class="faq-icon"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>We recommend replacing your air purifier filter every 6-8 months for optimal performance. However, filter life can vary depending on your air quality and usage patterns. Our smart indicator light will alert you when it's time for a replacement.</p>
+            <p>Homes with pets, high pollen counts, or in urban areas with pollution may need more frequent replacements. With our convenient auto-ship program, you can receive replacement filters right on schedule without having to remember to order.</p>
+          </div>
+        </details>
+
+        <!-- FAQ Item 3 -->
+        <details class="faq-item">
+          <summary class="faq-question">
+            What room size is your air purifier suitable for?
+            <span class="faq-icon"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Our standard model is designed to efficiently purify rooms up to 500 square feet, making it perfect for most bedrooms, living rooms, and home offices. For larger spaces, our premium model can handle areas up to 800 square feet.</p>
+            <p>When selecting an air purifier, we recommend choosing one that can provide at least 4-5 air changes per hour for your specific room size. Our website features a sizing calculator to help you determine the perfect model for your needs.</p>
+          </div>
+        </details>
+
+        <!-- FAQ Item 4 -->
+        <details class="faq-item">
+          <summary class="faq-question">
+            How quiet is your air purifier?
+            <span class="faq-icon"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Our air purifiers are designed with sleep and comfort in mind. On the lowest setting, our units operate at just 24 decibels - quieter than a whisper. Even at the highest setting, the noise level remains below 50 decibels, which is comparable to gentle rainfall.</p>
+            <p>The sleep mode automatically dims the display lights and reduces fan speed during nighttime hours, ensuring your sleep remains undisturbed while still providing clean air throughout the night.</p>
+          </div>
+        </details>
+
+        <!-- FAQ Item 5 -->
+        <details class="faq-item">
+          <summary class="faq-question">
+            Does your air purifier remove odors?
+            <span class="faq-icon"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Yes, our air purifiers include a specialized activated carbon filter layer that effectively neutralizes household odors including cooking smells, pet odors, smoke, and VOCs (Volatile Organic Compounds) from cleaning products and new furniture.</p>
+            <p>Unlike some purifiers that simply mask odors, our carbon filtration technology actually absorbs and eliminates the molecular compounds causing unwanted smells, leaving your home truly fresh rather than artificially scented.</p>
+          </div>
+        </details>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+<footer class="hawaa-footer">
+  <div class="hawaa-footer-container">
+    <div class="hawaa-footer-content">
+      <!-- App Download Card -->
+      <div class="app-download-card">
+        <div class="app-download-content">
+          <div class="app-title">Download the free Hawaa app</div>
+          <h2 class="app-heading">Total care.</h2>
+          <h2 class="app-subheading">Totally different.</h2>
+          <div class="qr-code-container">
+            <img src="qr-code.png" alt="QR Code" class="qr-code" />
+            <div class="qr-code-text">Download<br/>the app</div>
+          </div>
+          <div class="app-platforms">for iOS and Android</div>
+          <div class="download-buttons">
+            <a href="#" class="download-btn">iOS</a>
+            <a href="#" class="download-btn">Android</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Links Columns -->
+      <div class="footer-links">
+        <!-- Column 1 -->
+        <div class="footer-column">
+          <h3>Learn</h3>
+          <ul>
+            <li><a href="/pages/air-quality">Air Quality Guide</a></li>
+            <li><a href="/pages/filter-technology">Filter Technology</a></li>
+            <li><a href="/pages/health-benefits">Health Benefits</a></li>
+            <li><a href="/pages/smart-features">Smart Features</a></li>
+            <li><a href="/pages/installation">Installation Guide</a></li>
+          </ul>
+        </div>
+        <!-- Column 2 -->
+        <div class="footer-column">
+          <h3>Products</h3>
+          <ul>
+            <li><a href="/collections/air-purifiers">HEPA Air Purifiers</a></li>
+            <li><a href="/collections/replacement-filters">Replacement Filters<br/><span class="subtitle">Compatible with all models</span></a></li>
+            <li><a href="/collections/carbon-filters">Carbon Filters</a></li>
+            <li><a href="/collections/uv-sanitizers">UV-C Sanitizers</a></li>
+            <li><a href="/collections/accessories">Accessories</a></li>
+          </ul>
+        </div>
+        <!-- Column 3 -->
+        <div class="footer-column">
+          <h3>Tools</h3>
+          <ul>
+            <li><a href="/pages/air-quality-calculator">Air Quality Calculator</a></li>
+            <li><a href="/pages/room-size-calculator">Room Size Calculator</a></li>
+            <li><a href="/pages/filter-life-calculator">Filter Life Calculator</a></li>
+            <li><a href="/pages/energy-calculator">Energy Cost Calculator</a></li>
+            <li><a href="/pages/noise-guide">Noise Level Guide</a></li>
+            <li><a href="/pages/aqi">AQI in Your City</a></li>
+          </ul>
+        </div>
+        <!-- Column 4 -->
+        <div class="footer-column">
+          <h3>Hawaa</h3>
+          <ul>
+            <li><a href="/pages/about-us">About Us</a></li>
+            <li><a href="/pages/how-it-works">How It Works</a></li>
+            <li><a href="/pages/our-experts">Air Quality Experts</a></li>
+            <li><a href="/pages/editorial-standards">Editorial Standards</a></li>
+            <li><a href="/pages/faq">FAQs</a></li>
+            <li><a href="/pages/contact">Contact Us</a></li>
+            <li><a href="/blogs/news">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Social + © -->
+      <div class="social-copyright-section">
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">F</a>
+          <a href="#" class="social-link" aria-label="Twitter">T</a>
+          <a href="#" class="social-link" aria-label="Instagram">I</a>
+          <a href="#" class="social-link" aria-label="TikTok">Ti</a>
+        </div>
+        <div class="copyright">
+          © 2025 Hawaa & Hawaa Health, Inc. All rights reserved.
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom legal -->
+    <div class="footer-bottom">
+      <div class="legal-links">
+        <a href="/pages/terms" class="legal-link">Terms & Conditions</a>
+        <a href="/pages/privacy-policy" class="legal-link">Privacy Policy</a>
+        <a href="/sitemap" class="legal-link">Sitemap</a>
+        <a href="/pages/telehealth-consent" class="legal-link">Telehealth Consent & Open Payments</a>
+        <a href="/pages/consumer-health-privacy" class="legal-link">Consumer Health Data Privacy Policy</a>
+        <a href="/pages/privacy-choices" class="legal-link">Your Privacy Choices</a>
+      </div>
+    </div>
+  </div>
+  <div class="hawaa-bg-text">hawaa</div>
+</footer>
+
+  <!-- JavaScript Files -->
+  <script src="js/announcement-bar.js" defer></script>
+  <script src="./js/header.js" defer></script>
+  <script src="js/rotating-text.js" defer></script>
+  <script src="js/bento-aqi.js" defer></script>
+  <script src="js/product-hero.js" defer></script>
+  <script src="js/product-card-slider.js" defer></script>
+  <script src="js/hepa-filter-hero.js" defer></script>
+  <!-- Include this in your HTML file, after defining your modal and quiz elements -->
+<script type="module">
+  // 1️⃣ Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+  // 2️⃣ Firebase config
+  const firebaseConfig = {
+    apiKey:            "AIzaSyB4D531Uj4SGql8pkaXPKZvdHa5XFby2LU",
+    authDomain:        "hawaa-df1cc.firebaseapp.com",
+    projectId:         "hawaa-df1cc",
+    storageBucket:     "hawaa-df1cc.appspot.com",
+    messagingSenderId: "547302517440",
+    appId:             "1:547302517440:web:9ef37f89e74cac785f9b25"
+  };
+
+  // 3️⃣ Init Firebase + Firestore
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // 4️⃣ Quiz logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal       = document.getElementById('airQualityQuizModal');
+    const startBtn    = document.getElementById('startQuizBtn');
+    const closeBtn    = modal.querySelector('.quiz-close');
+    const progressBar = modal.querySelector('.quiz-progress-bar');
+    const qs          = Array.from(modal.querySelectorAll('.quiz-question'));
+    const totalQ      = qs.length;
+    const answers     = {};
+    const scoreMap    = {
+      1: { daily:0, weekly:1, rarely:2 },
+      2: { yes:2, some:1, no:0 },
+      3: { yes:2, no:0 },
+      4: { frequently:2, occasionally:1, rarely:0 },
+      5: { good:0, fair:1, poor:2 }
+    };
+    let current = 1;
+
+    function openQuiz() {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      updateProgress();
+    }
+    function closeQuiz() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(resetQuiz, 300);
+    }
+    function updateProgress() {
+      progressBar.style.width = (current/totalQ * 100) + '%';
+    }
+    function goto(n) {
+      qs[current-1].classList.remove('active');
+      current = n;
+      qs[current-1].classList.add('active');
+      updateProgress();
+    }
+    function next() {
+      goto(Math.min(current+1, totalQ));
+    }
+    function resetQuiz() {
+      current = 1;
+      Object.keys(answers).forEach(k => delete answers[k]);
+      qs.forEach((q,i)=> q.classList.toggle('active', i===0));
+      modal.querySelectorAll('.quiz-option.selected').forEach(o=>o.classList.remove('selected'));
+      modal.querySelectorAll('[id^="nextBtn"]').forEach(b=> b.disabled = true);
+      document.getElementById('quizResults').classList.remove('active');
+      updateProgress();
+    }
+
+    async function showResults() {
+      qs[current-1].classList.remove('active');
+      const score = Object.values(answers).reduce((a,b)=>a+b, 0);
+
+      // save
+      try {
+        await addDoc(collection(db,'hawaaQuiz'), {
+          email:       document.getElementById('quizEmailInput').value,
+          answers,
+          score,
+          submittedAt: serverTimestamp()
+        });
+      } catch(e) {
+        console.error(e);
+      }
+
+      const recs = {
+        low: {
+          title: 'Low Risk: Almost Healthy',
+          desc:  'Your home’s air is close to a healthy baseline. Keep up:',
+          tips: [
+            'Weekly HEPA-vacuum.',
+            'Ventilate daily.',
+            'Use low-VOC products.',
+            'Maintain 30–50% humidity.',
+            'Basic HEPA filter upgrade.'
+          ]
+        },
+        moderate: {
+          title: 'Moderate Risk',
+          desc:  'Air may be ~3× more polluted. Try:',
+          tips: [
+            'Dust & vacuum ≥2× weekly.',
+            'Ventilate 10+ min daily.',
+            'Low-VOC cleaners.',
+            'HEPA+carbon purifiers.',
+            'Groom pets weekly.'
+          ]
+        },
+        high: {
+          title: 'High Risk',
+          desc:  'Air could be 4–5× more polluted. Act now:',
+          tips: [
+            'Deep-clean weekly.',
+            'Run purifier 24/7.',
+            'Remove chemical sources.',
+            'No-shoes policy indoors.',
+            'Ventilate ≥10 min daily.'
+          ]
+        }
+      };
+      const band = score <=1 ? 'low' : score <=3 ? 'moderate' : 'high';
+      const R    = recs[band];
+      document.getElementById('pollutionResultTitle').textContent       = R.title;
+      document.getElementById('pollutionResultDescription').textContent = R.desc;
+      document.getElementById('quizRecommendation').innerHTML           =
+        '<ul>' + R.tips.map(t=>`<li>${t}</li>`).join('') + '</ul>';
+      document.getElementById('quizResults').classList.add('active');
+      progressBar.style.width = '100%';
+    }
+
+    // bind
+    startBtn.addEventListener('click', openQuiz);
+    closeBtn.addEventListener('click', closeQuiz);
+    window.addEventListener('keydown', e => {
+      if (e.key==='Escape' && modal.classList.contains('active')) closeQuiz();
+    });
+    modal.addEventListener('click', e => {
+      if (e.target===modal) closeQuiz();
+      const opt = e.target.closest('.quiz-option');
+      if (!opt) return;
+      const qn = +opt.closest('.quiz-question').dataset.question;
+      opt.parentNode.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      answers[qn] = scoreMap[qn][opt.dataset.value] || 0;
+      document.getElementById(`nextBtn${qn}`).disabled = false;
+    });
+    document.getElementById('nextBtn1').onclick = next;
+    document.getElementById('nextBtn2').onclick = next;
+    document.getElementById('nextBtn3').onclick = next;
+    document.getElementById('nextBtn4').onclick = next;
+    document.getElementById('nextBtn5').onclick = next;
+    document.getElementById('nextBtn6').onclick = showResults;
+    document.getElementById('restartBtn').onclick = resetQuiz;
+
+    // email validation
+    const emailIn = document.getElementById('quizEmailInput');
+    const btn6    = document.getElementById('nextBtn6');
+    emailIn.addEventListener('input', () => {
+      btn6.disabled = !/\S+@\S+\.\S+/.test(emailIn.value);
+    });
+  });
+</script>
+
+  <script src="js/testimonial.js" defer></script>
+  <script src="js/dual-slider.js" defer></script>
+  <script src="js/faq-section.js" defer></script>
+  <script src="js/footer.js" defer></script>
+</html>

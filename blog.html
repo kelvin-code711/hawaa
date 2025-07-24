@@ -1,0 +1,356 @@
+<!-- blog.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hawaa Blog</title>
+
+  <!-- Outfit font faces (assumes your fonts folder holds the .woff2/.woff files) -->
+  <style>
+    @font-face {
+      font-family: 'Outfit';
+      font-style: normal;
+      font-weight: 400;
+      src: url('fonts/Outfit-Regular.woff2') format('woff2'),
+           url('fonts/Outfit-Regular.woff') format('woff');
+    }
+    @font-face {
+      font-family: 'Outfit';
+      font-style: normal;
+      font-weight: 500;
+      src: url('fonts/Outfit-Medium.woff2') format('woff2'),
+           url('fonts/Outfit-Medium.woff') format('woff');
+    }
+    @font-face {
+      font-family: 'Outfit';
+      font-style: normal;
+      font-weight: 600;
+      src: url('fonts/Outfit-SemiBold.woff2') format('woff2'),
+           url('fonts/Outfit-SemiBold.woff') format('woff');
+    }
+    @font-face {
+      font-family: 'Outfit';
+      font-style: normal;
+      font-weight: 700;
+      src: url('fonts/Outfit-Bold.woff2') format('woff2'),
+           url('fonts/Outfit-Bold.woff') format('woff');
+    }
+    @font-face {
+      font-family: 'Outfit';
+      font-style: normal;
+      font-weight: 800;
+      src: url('fonts/Outfit-ExtraBold.woff2') format('woff2'),
+           url('fonts/Outfit-ExtraBold.woff') format('woff');
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.5;
+      color: #132a39;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* === Hero === */
+    .good-health-hero {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 0; /* above everything else */
+}
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      padding-right: 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: 56px;
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
+    .hero-subtitle {
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0 0 32px;
+      max-width: 800px;
+    }
+    .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      background: #f1f3f4;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chip:hover {
+      background: #e8eaed;
+    }
+
+    /* === Blog Section === */
+    .hawaa-blog-section {
+      margin-top: 260px; /* ≈ hero’s total height (48px+56px+12px+24px+32px+48px) */
+    }
+    .hawaa-blog-container {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 128px;
+    }
+
+    .main-article {
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .main-article-image {
+      width: 100%;
+      height: 400px;
+      background: #c8b4a1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .main-article-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .main-article-content {
+      padding: 24px;
+    }
+    .main-article-meta {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+    .main-article-meta .author-info span + span {
+      margin: 0 8px;
+    }
+    .main-article-title {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 0 0 16px;
+    }
+    .main-article-excerpt {
+      font-size: 20px;
+      color: #6b7280;
+      margin: 0 0 24px;
+    }
+    .main-article-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .main-article-tags .tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .sidebar-articles {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar-article {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      padding: 14px 0;
+      height: 190px;
+    }
+    .sidebar-article-image {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: #c8b4a1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-article-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sidebar-article-content {
+      padding: 0 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      flex: 1;
+    }
+    .sidebar-article-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+    .sidebar-article-snippet {
+      font-size: 16px;
+      color: #6b7280;
+      margin: 0 0 auto;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .sidebar-article-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .sidebar-article-tags .tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 991px) {
+      .hawaa-blog-container {
+        grid-template-columns: 1fr;
+        padding: 0 24px;
+      }
+      .main-article-image { height: 280px; }
+      .main-article-title { font-size: 36px; }
+      .main-article-excerpt { font-size: 18px; }
+      .sidebar-article { height: auto; flex-direction: row; }
+      .sidebar-article-image { width: 70px; height: 70px; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: 32px; }
+      .hero-subtitle { font-size: 20px; }
+      .main-article-title { font-size: 28px; }
+      .main-article-excerpt { font-size: 16px; }
+      .sidebar-article-title { font-size: 16px; }
+      .sidebar-article-snippet { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Hero Section ===== -->
+  <section class="good-health-hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Breathe Better</h1>
+      <p class="hero-subtitle">
+        Explore the science of clean air, expert tips on indoor health, and how Hawaa is
+        redefining the way we breathe—one purifier at a time.
+      </p>
+      <div class="category-chips">
+        <a href="#air-quality" class="chip">Air Quality</a>
+        <a href="#clean-living" class="chip">Clean Living</a>
+        <a href="#product-insights" class="chip">Product Insights</a>
+        <a href="#purifier-tech" class="chip">Purifier Tech</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Blog Section ===== -->
+  <section class="hawaa-blog-section">
+    <div class="hawaa-blog-container">
+
+      <!-- Main Featured Article -->
+      <article class="main-article">
+        <div class="main-article-image">
+          <img src="images/main-article.jpg" alt="Main article image">
+        </div>
+        <div class="main-article-content">
+          <div class="main-article-meta">
+            <span class="author-info">
+              <span>Corinne O'Keefe Osborn</span>
+              <span>in</span>
+              <span>Air Health</span>
+            </span>
+          </div>
+          <h2 class="main-article-title">
+            How Long Does an Air Purifier Take to Work?
+          </h2>
+          <p class="main-article-excerpt">
+            Curious when you'll start noticing a difference after turning on your air purifier?
+            Here's how long it really takes for pollutants to drop, allergies to ease, and freshness
+            to return—based on room size, filter type, and usage.
+          </p>
+          <div class="main-article-tags">
+            <span class="tag">Filtration Time</span>
+            <span class="tag">HEPA</span>
+            <span class="tag">Pollutants</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sidebar Articles -->
+      <aside class="sidebar-articles">
+        <article class="sidebar-article">
+          <div class="sidebar-article-image">
+            <img src="images/sidebar1.jpg" alt="Sidebar article 1">
+          </div>
+          <div class="sidebar-article-content">
+            <h3 class="sidebar-article-title">
+              Should You Sleep with an Air Purifier On?
+            </h3>
+            <p class="sidebar-article-snippet">
+              Sleeping with your air purifier on could help reduce nighttime allergies,
+              snoring, and dust exposure—but here's what to watch out for (and which fan mode to use).
+            </p>
+            <div class="sidebar-article-tags">
+              <span class="tag">Sleep Health</span>
+              <span class="tag">Bedroom Air</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="sidebar-article">
+          <div class="sidebar-article-image">
+            <img src="images/sidebar2.jpg" alt="Sidebar article 2">
+          </div>
+          <div class="sidebar-article-content">
+            <h3 class="sidebar-article-title">
+              Study: 4 Indian Cities Where Indoor Air Is Worse Than Outside
+            </h3>
+            <p class="sidebar-article-snippet">
+              It's not just smog outside—many urban homes trap more pollutants than the air
+              outdoors. Here are 4 places in India where indoor AQI spikes during the day,
+              and how to fix it.
+            </p>
+            <div class="sidebar-article-tags">
+              <span class="tag">Indoor AQI</span>
+              <span class="tag">Urban Living</span>
+            </div>
+          </div>
+        </article>
+      </aside>
+
+    </div>
+  </section>
+
+</body>
+</html>

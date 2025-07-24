@@ -1,0 +1,472 @@
+/*────────────────────────────────────────────────────────────────
+  Load Outfit from your local fonts folder
+────────────────────────────────────────────────────────────────*/
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
+       url('../fonts/Outfit-Regular.woff')  format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
+       url('../fonts/Outfit-Bold.woff')  format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*────────────────────────────────────────────────────────────────
+  Root Variables & Base Styles
+────────────────────────────────────────────────────────────────*/
+:root {
+  /* circle & text‐ring */
+  --circle-size:         100vw;
+  --circle-offset-y:     50vh;
+  --text-ring-scale:     1.02;
+  --text-ring-font-size: 80px;     /* ← adjust ring font size here */
+  --rotation:            0deg;
+
+  /* section padding */
+  --padding-top:    64px;
+  --padding-right:  16px;
+  --padding-bottom: 0;
+  --padding-left:   16px;
+
+  /* card spacing */
+  --spacer-bpm:     32px;
+  --card-gap:       32px;
+  --screen-m:       740px;
+
+  /* typography */
+  --font-body:      'Outfit', sans-serif;
+  --text-color:     rgb(51, 51, 51);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+  font-family: var(--font-body);
+  color: var(--text-color);
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/*────────────────────────────────────────────────────────────────
+  Sticky Half‐Circle Section
+────────────────────────────────────────────────────────────────*/
+.full-circle-section {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  transition: opacity 0.1s ease;
+  width: 100%;
+  height: 100vh;
+  background-color: #287392;
+  overflow: hidden;
+  padding:
+    var(--padding-top)
+    var(--padding-right)
+    var(--padding-bottom)
+    var(--padding-left);
+  font-size: var(--text-ring-font-size);
+}
+
+/* unstick when card fully scrolled past */
+.full-circle-section.unstick {
+  position: relative !important;
+  top: auto          !important;
+}
+
+.full-circle-section .circle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background-color: #fff;
+  border-radius: 50%;
+  transform:
+    translate(-50%, calc(50% + var(--circle-offset-y)));
+}
+
+.full-circle-section .text-ring {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  pointer-events: none;
+  overflow: visible;
+  transform-origin: center;
+  transform:
+    translate(-50%, calc(50% + var(--circle-offset-y)))
+    scale(var(--text-ring-scale))
+    rotate(var(--rotation));
+}
+.full-circle-section .text-ring text {
+  font-size: var(--text-ring-font-size);
+  fill: #fff;
+}
+
+.circle-center-image {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 3;
+  width: 1020px; /* Adjust as needed */
+  height: 1020px; /* Adjust as needed */
+  border-radius: 0%;
+  overflow: hidden;
+  border: 0px solid #fff; /* Optional white border */
+  box-shadow: 0px;
+}
+
+.circle-center-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*────────────────────────────────────────────────────────────────
+  Card Section
+────────────────────────────────────────────────────────────────*/
+/* pin the card above everything until it's scrolled past */
+.card-section.stick {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 10;
+  background: transparent;
+}
+
+.card-section {
+  position: relative;
+  z-index: 3;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.blank-card {
+  width: 100vw;
+  padding: var(--spacer-bpm);
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  display: grid;
+  justify-items: center;
+  row-gap: var(--card-gap);
+  grid-template-columns: 1fr;
+}
+
+.blank-card p {
+  font-size: 40px;
+  line-height: 1.2;
+  text-align: left;
+  margin: 0;
+  max-width: 600px;
+  letter-spacing: var(--card-letter-spacing, 0);
+}
+
+/* highlight styles */
+.highlight { padding: 0 4px; border-radius: 4px; color: #fff; }
+.highlight-1 { background-color: #244255; }
+.highlight-2 { background-color: #265e78; }
+.highlight-3 { background-color: #2d8fad; }
+
+/* headline & subtext */
+.blank-card h2,
+.blank-card .card-subtext { grid-column: 1 / -1; }
+.blank-card h2 {
+  font-size: 40px;
+  font-weight: 500;
+  color: #287392;
+  text-align: left;
+  margin: 0 0 16px 0;
+  padding-top: 16px;
+  max-width: 600px;
+}
+.blank-card .card-subtext {
+  font-size: 28px;
+  line-height: 1.2;
+  text-align: left;
+  margin: 0;
+}
+
+/*────────────────────────────────────────────────────────────────
+  Image wrapper: responsive zoom container
+────────────────────────────────────────────────────────────────*/
+.card-image-wrapper {
+  width: 100%;
+  border-radius: 32px;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform;
+}
+.card-image-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/*────────────────────────────────────────────────────────────────
+  Combined Impact + Pilot Units Section
+────────────────────────────────────────────────────────────────*/
+.impact-pilot-section {
+  position: relative;
+  z-index: 1; /* Below card section */
+  transition: opacity 0.3s ease;
+  will-change: opacity, transform;
+  background: rgba(229, 246, 249, 0.7); /* Semi-transparent version of your bg color */
+  padding: 120px 0 60px 0;
+  width: 100%;
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 80px; /* Add space below the last content section */
+}
+
+/* When fixed behind card */
+.impact-pilot-section.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: -1;
+}
+
+/* When it becomes main content */
+.impact-pilot-section:not([style*="position: fixed"]) {
+  background: rgba(229, 246, 249, 1); /* Solid color when main content */
+  backdrop-filter: none;
+}
+
+/* Container for the intro content */
+.impact-pilot-section .container {
+  max-width: 600px;
+  margin: 0 auto 80px auto;
+  padding: 0 40px;
+}
+
+.impact-pilot-section .main-heading {
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.2;
+  color: #287392;
+  margin: 0 0 60px 0;
+  letter-spacing: -1px;
+  text-align: left;
+}
+
+.impact-pilot-section .description-text {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.6;
+  color: rgb(51, 51, 51);
+  margin: 0;
+  text-align: left;
+}
+
+/* Cards container with horizontal scroll */
+.impact-pilot-section .cards-container {
+  display: flex;
+  gap: 24px;
+  padding: 0 40px;
+  /* four cards of 420px + 3 gaps of 24px + 80px side padding */
+  width: calc(420px * 4 + 24px * 3 + 80px);
+  min-width: max-content;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.impact-pilot-section .cards-container::-webkit-scrollbar {
+  height: 8px;
+}
+.impact-pilot-section .cards-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.impact-pilot-section .cards-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.impact-pilot-section .cards-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.impact-pilot-section .stats-card {
+  width: 420px;
+  height: 480px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.impact-pilot-section .stats-number {
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 0.9;
+  color: #287392;
+  margin: 0;
+  text-align: left;
+}
+
+.impact-pilot-section .image-container {
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  flex-shrink: 0;
+}
+
+.impact-pilot-section .stats-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block !important;
+}
+
+.impact-pilot-section .image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e5f6f9, #48abc8);
+  color: rgb(51, 51, 51);
+  font-weight: 400;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.impact-pilot-section .placeholder-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.impact-pilot-section .stats-description {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4;
+  color: #265e78;
+  margin: 0;
+  text-align: left;
+}
+
+.footer-spacer {
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Mobile – up to 768px */
+@media (max-width: 768px) {
+  .impact-pilot-section {
+    padding: 80px 0 40px 0;
+  }
+  .impact-pilot-section .container {
+    padding: 0 24px;
+    margin-bottom: 60px;
+  }
+  .impact-pilot-section .main-heading {
+    font-size: 40px;
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+  }
+  .impact-pilot-section .description-text {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  .impact-pilot-section .cards-container {
+    gap: 24px;
+    padding: 0 20px;
+    width: calc(320px * 4 + 24px * 3 + 40px);
+    scrollbar-width: none;
+  }
+  .impact-pilot-section .cards-container::-webkit-scrollbar {
+    display: none;
+  }
+  .impact-pilot-section .stats-card {
+    width: 320px;
+    height: 400px;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .impact-pilot-section .stats-number {
+    font-size: 56px;
+  }
+  .impact-pilot-section .image-container {
+    width: 120px;
+    height: 120px;
+    margin: 16px 0;
+  }
+  .impact-pilot-section .stats-description {
+    font-size: 16px;
+  }
+  .impact-pilot-section .placeholder-icon {
+    font-size: 28px;
+  }
+}
+
+/* Small Mobile – up to 480px */
+@media (max-width: 480px) {
+  .impact-pilot-section {
+    padding: 60px 0;
+  }
+  .impact-pilot-section .container {
+    padding: 0 20px;
+    margin-bottom: 40px;
+  }
+  .impact-pilot-section .main-heading {
+    font-size: 32px;
+    margin-bottom: 32px;
+  }
+  .impact-pilot-section .description-text {
+    font-size: 16px;
+  }
+  .impact-pilot-section .cards-container {
+    gap: 24px;
+    padding: 0 16px;
+    width: calc(280px * 4 + 24px * 3 + 32px);
+  }
+  .impact-pilot-section .stats-card {
+    width: 280px;
+    height: 360px;
+    padding: 28px 20px;
+  }
+  .impact-pilot-section .stats-number {
+    font-size: 48px;
+  }
+  .impact-pilot-section .image-container {
+    width: 100px;
+    height: 100px;
+    margin: 12px 0;
+  }
+  .impact-pilot-section .stats-description {
+    font-size: 15px;
+  }
+}

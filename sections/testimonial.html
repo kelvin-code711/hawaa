@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonial Video Cards</title>
+    <link rel="stylesheet" href="testimonial.css">
+</head>
+<body>
+    <div class="testimonials-section">
+        <!-- Section Title - customizable spacing from top -->
+        <h2 class="testimonials-section-title">Breathe Their Words</h2>
+
+        <!-- LEFT ARROW -->
+        <button class="nav-arrow left" style="display:none" aria-label="Scroll left">
+            ←
+        </button>
+
+        <!-- TESTIMONIALS TRACK - customizable gap from title -->
+        <div class="testimonials-container" id="testimonialsTrack">
+            <!-- Testimonial Card 1 -->
+            <div class="testimonial-card">
+                <video class="testimonial-video"
+                      poster="https://example.com/thumbnail1.jpg"
+                      playsinline preload="metadata"
+                      controlslist="nodownload nofullscreen noremoteplaybook"
+                      autoplay loop muted>
+                    <source src="https://example.com/video1.mp4" type="video/mp4">
+                </video>
+
+                <div class="testimonial-content">
+                    <img src="https://example.com/profile1.jpg" alt="" class="profile-image">
+                    <p class="testimonial-name">John Doe</p>
+                    <p class="testimonial-title">CEO at Example Inc</p>
+                </div>
+            </div>
+            
+            <!-- Testimonial Card 2 -->
+            <div class="testimonial-card">
+                <video class="testimonial-video"
+                      poster="https://example.com/thumbnail2.jpg"
+                      playsinline preload="metadata"
+                      controlslist="nodownload nofullscreen noremoteplaybook"
+                      autoplay loop muted>
+                    <source src="https://example.com/video2.mp4" type="video/mp4">
+                </video>
+
+                <div class="testimonial-content">
+                    <img src="https://example.com/profile2.jpg" alt="" class="profile-image">
+                    <p class="testimonial-name">Jane Smith</p>
+                    <p class="testimonial-title">Marketing Director</p>
+                </div>
+            </div>
+            
+            <!-- Testimonial Card 3 -->
+            <div class="testimonial-card">
+                <video class="testimonial-video"
+                      poster="https://example.com/thumbnail3.jpg"
+                      playsinline preload="metadata"
+                      controlslist="nodownload nofullscreen noremoteplaybook"
+                      autoplay loop muted>
+                    <source src="https://example.com/video3.mp4" type="video/mp4">
+                </video>
+
+                <div class="testimonial-content">
+                    <img src="https://example.com/profile3.jpg" alt="" class="profile-image">
+                    <p class="testimonial-name">Michael Johnson</p>
+                    <p class="testimonial-title">Product Manager</p>
+                </div>
+            </div>
+            
+            <!-- Testimonial Card 4 -->
+            <div class="testimonial-card">
+                <video class="testimonial-video"
+                      poster="https://example.com/thumbnail4.jpg"
+                      playsinline preload="metadata"
+                      controlslist="nodownload nofullscreen noremoteplaybook"
+                      autoplay loop muted>
+                    <source src="https://example.com/video4.mp4" type="video/mp4">
+                </video>
+
+                <div class="testimonial-content">
+                    <img src="https://example.com/profile4.jpg" alt="" class="profile-image">
+                    <p class="testimonial-name">Sarah Williams</p>
+                    <p class="testimonial-title">UX Designer</p>
+                </div>
+            </div>
+            
+            <!-- Testimonial Card 5 -->
+            <div class="testimonial-card">
+                <div class="no-video-placeholder">
+                    <span>No&nbsp;video</span>
+                </div>
+
+                <div class="testimonial-content">
+                    <img src="https://example.com/profile5.jpg" alt="" class="profile-image">
+                    <p class="testimonial-name">David Brown</p>
+                    <p class="testimonial-title">CTO</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT ARROW -->
+        <button class="nav-arrow right" style="display:none" aria-label="Scroll right">
+            →
+        </button>
+    </div>
+
+    <script src="testimonial.js"></script>
+</body>
+</html>

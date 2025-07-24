@@ -1,0 +1,268 @@
+.hawaa-footer {
+  background-color: #274f63;
+  color: var(--text-inverse);
+  padding: 80px 0 60px;
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.hawaa-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 3;
+}
+
+.hawaa-footer-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+/* App Download */
+.app-download-card {
+  background-color: #244255;
+  border-radius: 16px;
+  padding: 40px 32px;
+}
+.app-title {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.app-heading,
+.app-subheading {
+  font-size: 32px;
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+.app-subheading {
+  margin-bottom: 24px;
+}
+.app-platforms {
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+/* QR & Buttons */
+.qr-code-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.qr-code {
+  width: 80px;
+  height: 80px;
+  background: var(--text-inverse);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--hawaa-navy);
+  padding: 8px;
+  flex-shrink: 0;
+}
+.qr-code-text {
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 19px;
+  transition: all 0.3s ease;
+}
+.download-btn-icon {
+  width: 16px;
+  height: 16px;
+}
+.download-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Links Grid */
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+.footer-column h3 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-column li {
+  margin-bottom: 14px;
+}
+.footer-column a {
+  font-size: 22px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s ease;
+}
+.footer-column a:hover {
+  color: var(--hawaa-blue-green);
+}
+.subtitle {
+  display: block;
+  font-size: 19px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 2px;
+}
+
+/* Social + Copy */
+.social-copyright-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  z-index: 3;
+}
+.social-links {
+  display: flex;
+  gap: 16px;
+}
+.social-link {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--text-inverse);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.social-link:hover {
+  background: var(--hawaa-blue);
+  transform: translateY(-2px);
+}
+.copyright {
+  font-size: 19px;
+  line-height: 1.4;
+  max-width: 600px;
+}
+
+/* Bottom Legal */
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 0 80px;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 3;
+}
+.legal-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.legal-link {
+  font-size: 19px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.8);
+  transition: color 0.3s ease;
+}
+.legal-link:hover {
+  color: var(--hawaa-blue-green);
+}
+
+/* Background text */
+.hawaa-bg-text {
+  position: absolute;
+  bottom: -80px;
+  left: 0;
+  right: 0;
+  font-size: 480px;
+  line-height: 0.7;
+  color: rgba(255,255,255,0.04);
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==== MOBILE ==== */
+@media (max-width: 991px) {
+  .hawaa-footer { padding: 60px 0 0; min-height: 500px; }
+  .hawaa-footer-content { grid-template-columns: 1fr; gap: 40px; }
+  .footer-links { grid-template-columns: repeat(2,1fr); gap: 32px; }
+  .app-download-card { padding: 32px 24px; }
+  .app-heading,
+  .app-subheading { font-size: 45px; }
+  .qr-code { width: 60px; height: 60px; }
+  .hawaa-bg-text { font-size: clamp(100px,25vw,250px); bottom: -35px; }
+  .social-copyright-section { margin: 30px 0 20px; }
+}
+
+@media (max-width: 767px) {
+  .hawaa-footer { padding: 40px 0 0; min-height: 400px; }
+  .footer-links { grid-template-columns: 1fr; gap: 0; }
+  .footer-column { border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .footer-column:last-child { border-bottom: none; }
+  .footer-column h3 {
+    cursor: pointer;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-column h3::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .footer-column.expanded ul {
+    max-height: 300px;
+    opacity: 1;
+    padding: 16px 0;
+  }
+  .footer-column ul {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+                opacity 0.3s ease;
+  }
+  .footer-column li { margin-bottom: 12px; }
+  .footer-bottom { justify-content: flex-start; padding: 12px 0 15px; }
+  .legal-links { flex-direction: column; gap: 12px; }
+  .app-download-card { padding: 24px 20px; }
+  .app-heading,
+  .app-subheading { font-size: 38px; }
+  .hawaa-bg-text { font-size: clamp(60px,15vw,150px); bottom: -20px; }
+}
+
+@media (max-width: 480px) {
+  .hawaa-bg-text { font-size: clamp(50px,12vw,120px); bottom: -15px; }
+  .app-heading,
+  .app-subheading { font-size: 32px; }
+}

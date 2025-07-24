@@ -1,0 +1,193 @@
+/* ───────────  SECTION  ─────────── */
+.hepa-filter-hero {
+  background: #82cade;
+  padding: 64px 0 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  font-family: 'Outfit', sans-serif;
+  border-radius: 24px;
+}
+
+/* Inner container with top/bottom margins */
+.hf-inner-container {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Headings */
+.hf-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 1.05;
+  margin: 0 0 20px;
+  color: #ffffff;
+  padding: 0 40px;
+  letter-spacing: -0.02em;
+}
+
+.hf-sub {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  max-width: 540px;
+  margin: 0 auto 40px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+  padding: 0 40px;
+}
+
+/* CTA Button */
+.hf-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 28px;
+  background: #189AB4;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  min-height: 48px;
+  border: 1px solid #189AB4;
+}
+
+.hf-cta:hover {
+  background: #0d7e96;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.hf-caption {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 60px;
+}
+
+/* Card grid - Two cards layout */
+.hf-card-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.hf-card-container {
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+/* Card base style */
+.hf-card {
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  padding-bottom: 85%;
+  height: 0;
+}
+
+/* Placeholder styling */
+.hf-card .placeholder-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333333;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  font-size: 1.4rem;
+  z-index: 2;
+  width: 80%;
+  padding: 20px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  background: #ffffff;
+  opacity: 0.9;
+}
+
+/* Image styling */
+.hf-card img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+  .hepa-filter-hero {
+    padding: 60px 0 80px;
+  }
+
+  .hf-card-grid {
+    gap: 16px;
+    padding: 0 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hf-card-container {
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  /* Mobile card dimensions */
+  .hf-card {
+    padding-bottom: 110%;
+  }
+
+  .hf-card .placeholder-content {
+    font-size: 1.2rem;
+    padding: 15px;
+  }
+
+  .hf-title,
+  .hf-sub {
+    padding: 0 20px;
+  }
+
+  .hf-title {
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    line-height: 1.15;
+  }
+
+  .hf-cta {
+    padding: 14px 24px;
+    font-size: 1.4rem;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hf-card {
+    padding-bottom: 110%;
+  }
+}

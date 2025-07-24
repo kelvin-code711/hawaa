@@ -1,0 +1,246 @@
+/* Outfit Font Integration - All Weights */
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Thin.woff2') format('woff2'),
+       url('../fonts/Outfit-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-ExtraLight.woff2') format('woff2'),
+       url('../fonts/Outfit-ExtraLight.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Light.woff2') format('woff2'),
+       url('../fonts/Outfit-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
+       url('../fonts/Outfit-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Medium.woff2') format('woff2'),
+       url('../fonts/Outfit-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
+       url('../fonts/Outfit-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
+       url('../fonts/Outfit-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-ExtraBold.woff2') format('woff2'),
+       url('../fonts/Outfit-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Black.woff2') format('woff2'),
+       url('../fonts/Outfit-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base Section Styles */
+.rotating-text-section {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  padding: 16px 0 16px;
+  background: #ffffff;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Layout Container */
+.page-width {
+  width: 100%;
+  max-width: none;
+  padding-left: 24px;
+  padding-right: 0;
+  margin: 0 auto;
+}
+
+.rotating-text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Heading */
+.rotating-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  width: 100%;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+/* Rotating Text */
+#rotating-text-container {
+  display: inline-block;
+  min-height: 1.15em;
+  line-height: 1.15;
+  position: relative;
+  overflow: hidden;
+  font-weight: 400;
+  font-size: 48px;
+  color: #00a275;
+  text-transform: capitalize;
+}
+
+.rotating-text {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+  white-space: nowrap;
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rotating-text.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  position: relative;
+}
+
+/* Static Subtext */
+.static-text-container {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.static-text-main {
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 48px;
+  color: #111;
+  line-height: 1.3;
+}
+
+.static-text-supporting {
+  font-weight: 400;
+  font-size: 18px;
+  color: #555;
+  line-height: 1.4;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+  .page-width {
+    padding-left: 20px; /* or whatever you want on mobile */
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .rotating-text-section {
+    padding: 120px 0 40px;
+  }
+
+  .rotating-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #rotating-text-container,
+  .rotating-text {
+    font-size: 28px;
+    font-weight: 500;
+  }
+
+  .static-text-main {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .static-text-supporting {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  #rotating-text-container {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .static-text-main {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .static-text-supporting {
+    font-size: 15px;
+  }
+}
+
+
+/* Animation Smoothing */
+@keyframes textFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes textFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

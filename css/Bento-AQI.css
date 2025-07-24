@@ -1,0 +1,285 @@
+/* Outfit Font Face Definitions */
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Thin.woff2') format('woff2'),
+       url('../fonts/Outfit-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-ExtraLight.woff2') format('woff2'),
+       url('../fonts/Outfit-ExtraLight.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Light.woff2') format('woff2'),
+       url('../fonts/Outfit-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
+       url('../fonts/Outfit-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Medium.woff2') format('woff2'),
+       url('../fonts/Outfit-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
+       url('../fonts/Outfit-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
+       url('../fonts/Outfit-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-ExtraBold.woff2') format('woff2'),
+       url('../fonts/Outfit-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Black.woff2') format('woff2'),
+       url('../fonts/Outfit-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bento Section Styles */
+.bento-wrapper {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  grid-template-rows: 240px 180px;
+  grid-template-areas:
+    "box1 box2 box2"
+    "box1 box3 box4";
+  gap: 8px;
+  padding: 24px 12px;
+  background: #fafafa;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+}
+
+.bento-box {
+  padding: 20px;
+  border-radius: 18px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.box1 {
+  grid-area: box1;
+  background-color: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 16px;
+  min-height: 120px;
+  width: 100%;
+  height: 100%;
+  color: #111;
+}
+
+.box1 h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: 'Outfit', sans-serif;
+  color: #111111;
+}
+
+.box1 p {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555555;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 12px 48px 12px 16px;
+  border-radius: 9999px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 15px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  color: #111;
+  z-index: 10;
+}
+
+.search-input input::placeholder {
+  color: #555;
+  font-weight: 300;
+}
+
+.search-input button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #111111;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+}
+
+.search-input button:hover {
+  background: #333333;
+}
+
+.search-input button img {
+  height: 18px;
+  width: 18px;
+  filter: none;
+}
+
+.box2 {
+  grid-area: box2;
+  background-color: #d1d1d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  border-radius: 16px;
+  min-height: 120px;
+  width: 100%;
+  height: 100%;
+}
+
+.box2 span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.box2 strong {
+  font-size: 22px;
+  font-weight: 700;
+  display: block;
+}
+
+.box3 {
+  grid-area: box3;
+  background-color: #e6f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 16px;
+  min-height: 120px;
+  width: 100%;
+  height: 100%;
+}
+
+.box3 .rotating-text {
+  font-size: 18px;
+  font-weight: 600;
+  transition: opacity 0.5s ease-in-out;
+  color: #111;
+}
+
+.box4 {
+  grid-area: box4;
+  background-color: #eafbea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  min-height: 120px;
+  width: 100%;
+  height: 100%;
+}
+
+.quiz-btn {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.quiz-btn:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .bento-wrapper {
+    display: block;
+    padding: 16px;
+  }
+  .box1, .box2, .box3, .box4 {
+    width: 100% !important;
+    margin-bottom: 12px;
+    height: auto;
+  }
+  
+  .box1 h1 {
+    font-size: 20px;
+  }
+  
+  .box2 strong {
+    font-size: 20px;
+  }
+  
+  .box3 .rotating-text {
+    font-size: 16px;
+  }
+  
+  .quiz-btn {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
