@@ -6,6 +6,10 @@
     <title>Hawaa - Breathe Pure. Effortlessly.</title>
     <link rel="stylesheet" href="../css/header.css" />
     <link rel="stylesheet" href="../css/product-learn.css">
+
+    <link rel="preload" href="../images/3D-Product-Animation-optimized.mp4" as="video">
+<link rel="preload" href="../css/product-learn.css" as="style">
+<link rel="preload" href="../js/product-learn.js" as="script">
 </head>
 <body>
     <header class="hawaa-header" id="hawaa-header">
@@ -69,10 +73,11 @@
 <section class="hero-section">
   <!-- Video Background -->
   <div class="video-container">
-    <video class="hero-video" autoplay muted loop playsinline>
-      <source src="../images/3D-Product-Animation.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto">
+  <source src="../images/3D-Product-Animation.mp4" type="video/mp4">
+  <source src="../images/3D-Product-Animation.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
     <button class="video-control" id="video-control" aria-label="Pause video">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M6 4v16M18 4v16"></path>
@@ -102,7 +107,7 @@
 
 <section class="features-section" id="features">
         <div class="feature-slide" id="feature1">
-            <img src="../images/feature1.jpg" alt="Air purifier" class="feature-image">
+            <img src="../images/feature1.jpg" alt="Air purifier" class="feature-image" loading="lazy">
             <div class="feature-content">
                 <h2>Pure Air Technology</h2>
                 <p>"Our 3-stage HEPA filtration captures 99.97% of dust, pollen, and allergens."</p>

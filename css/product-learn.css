@@ -779,6 +779,20 @@ body {
   opacity: 0.7;
 }
 
+/* Defer non-critical animations */
+.circle, .blob {
+  opacity: 0;
+  transition: none;
+}
+
+/* Load animations only when needed */
+.circles-section.in-view .circle,
+.circles-section.in-view .blob,
+.features-section.in-view .feature-slide {
+  opacity: 1;
+  transition: all 0.8s ease;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .feature-content {
