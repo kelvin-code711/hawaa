@@ -12,7 +12,8 @@
 <link rel="preload" href="../js/product-learn.js" as="script">
 </head>
 <body>
-    <header class="hawaa-header" id="hawaa-header">
+    <!-- Header -->
+  <header class="hawaa-header" id="hawaa-header">
     <div class="header-container">
       <a href="../index.html" class="header-logo">
         <img src="../images/logo.svg" alt="Hawaa" width="120" height="auto" />
@@ -46,11 +47,9 @@
           <h3 class="section-title">EXPLORE</h3>
           <div class="nav-links-wrapper">
             <ul class="nav-links">
-              <li><a href="../index.html">Home</a></li>
-              <li><a href="/products">Products</a></li>
-              <li><a href="/technology">Technology</a></li>
-              <li><a href="/quiz">Take a Quiz</a></li>
-              <li><a href="/aqi">AQI Checker</a></li>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="../sections/filter-learn.html">Filter Technology</a></li>
+              <li><a href="/technology">Instalation Guide</a></li>
             </ul>
           </div>
         </div>
@@ -59,7 +58,6 @@
           <div class="nav-links-wrapper">
             <ul class="nav-links">
               <li><a href="../about.html">About Us</a></li>
-              <li><a href="/how-it-works">How It Works</a></li>
               <li><a href="/faq">FAQ</a></li>
               <li><a href="../blog.html">Blog</a></li>
             </ul>
@@ -71,139 +69,114 @@
 
     <!-- Hero Section -->
 <section class="hero-section">
-  <!-- Video Background -->
-  <div class="video-container">
-    <video class="hero-video" autoplay muted loop playsinline preload="auto">
-  <source src="../images/3D-Product-Animation.mp4" type="video/mp4">
-  <source src="../images/3D-Product-Animation.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-    <button class="video-control" id="video-control" aria-label="Pause video">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M6 4v16M18 4v16"></path>
-      </svg>
-    </button>
-  </div>
+  <!-- Image Background -->
+  <img class="hero-image" src="../images/hero-learn-more.png" alt="Clean Air Product">
 
   <div class="hero-content">
     <div class="hero-text">
-      <h1 class="hero-title">Hawaa Pure.</h1>
-      <h2 class="hero-subtitle">Breathe. Refresh. Renew.</h2>
-      <p class="hero-description">Experience the next generation of air purification with Hawaa's advanced filtration technology that removes 99.97% of airborne particles.</p>
+      <h1 class="hero-title">Cleaner air</h1>
+      <h2 class="hero-subtitle">Everywhere</h2>
     </div>
 
     <div class="product-container">
-  <div class="product-card">
-    <div class="product-info">
-      <h3 class="product-name">Hawaa Pure 500</h3>
-      <div class="product-pricing">
-        <p class="product-price">₹24,900.00*</p>
+      <div class="product-card">
+        <div class="product-info">
+          <h3 class="product-name">Hawaa Pure 500</h3>
+          <p class="product-price">₹24,900.00*</p>
+        </div>
+        <button class="buy-button">Buy</button>
       </div>
     </div>
-    <button class="buy-button">Buy</button>
   </div>
-</div>
 </section>
 
-<section class="features-section" id="features">
-        <div class="feature-slide" id="feature1">
-            <img src="../images/feature1.jpg" alt="Air purifier" class="feature-image" loading="lazy">
-            <div class="feature-content">
-                <h2>Pure Air Technology</h2>
-                <p>"Our 3-stage HEPA filtration captures 99.97% of dust, pollen, and allergens."</p>
-            </div>
-        </div>
-        
-        <div class="feature-slide" id="feature2">
-            <img src="../images/feature2.jpg" alt="Purifier in bedroom" class="feature-image">
-            <div class="feature-content">
-                <h2>Whisper-Quiet Operation</h2>
-                <p>"Designed for silence. Sleep peacefully with noise levels under 25dB."</p>
-            </div>
-        </div>
-        
-        <div class="feature-slide" id="feature3">
-            <img src="../images/feature3.jpg" alt="Sensor display" class="feature-image">
-            <div class="feature-content">
-                <h2>Smart Sensors</h2>
-                <p>"Real-time air quality monitoring with auto-adjusting fan speeds."</p>
-            </div>
-        </div>
-        
-        <div class="feature-slide" id="feature4">
-            <img src="../images/feature4.jpg" alt="Hawaa App" class="feature-image">
-            <div class="feature-content">
-                <h2>Seamless Connectivity</h2>
-                <p>"Control your air from anywhere with the Hawaa App."</p>
-            </div>
-        </div>
-        
-        <!-- Dot Navigation -->
-        <div class="dotnav-container">
-            <div class="dotnav">
-                <ul class="dotnav-items">
-                    <li class="dotnav-item">
-                        <a href="#feature1" class="dotnav-link" aria-label="Pure Air Technology">
-                            <span class="visuallyhidden">Pure Air Technology</span>
-                        </a>
-                    </li>
-                    <li class="dotnav-item">
-                        <a href="#feature2" class="dotnav-link" aria-label="Whisper-Quiet Operation">
-                            <span class="visuallyhidden">Whisper-Quiet Operation</span>
-                        </a>
-                    </li>
-                    <li class="dotnav-item">
-                        <a href="#feature3" class="dotnav-link" aria-label="Smart Sensors">
-                            <span class="visuallyhidden">Smart Sensors</span>
-                        </a>
-                    </li>
-                    <li class="dotnav-item">
-                        <a href="#feature4" class="dotnav-link" aria-label="Seamless Connectivity">
-                            <span class="visuallyhidden">Seamless Connectivity</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="closer-look-section">
-  <div class="container">
-    <div class="closer-look-heading">
-      <h2 class="closer-look-title">Take a Closer Look</h2>
+<section id="feature-overview" class="feature-overview">
+  <div class="slider-container">
+    <div class="slides">
+      <div class="slide active">
+        <div class="headline">Innovative Airflow Design</div>
+        <img
+          src="../images/feature1.png"
+          sizes="(max-width: 768px) 356px, 1160px"
+          alt="Innovative Airflow Design"
+          loading="lazy"
+        />
+      </div>
+      <div class="slide">
+        <div class="headline">Ultra-Quiet Operation</div>
+        <img
+          src="../images/feature2.png"
+          sizes="(max-width: 768px) 356px, 1160px"
+          alt="Ultra-Quiet Operation"
+          loading="lazy"
+        />
+      </div>
+      <div class="slide">
+        <div class="headline">Smart App Control</div>
+        <img
+          src="../images/feature3.png"
+          sizes="(max-width: 768px) 356px, 1160px"
+          alt="Smart App Control"
+          loading="lazy"
+        />
+      </div>
+      <div class="slide">
+        <div class="headline">Energy Efficient Motor</div>
+        <img
+          src="../images/feature4.png"
+          sizes="(max-width: 768px) 356px, 1160px"
+          alt="Energy Efficient Motor"
+          loading="lazy"
+        />
+      </div>
     </div>
 
-    <div class="slider-container">
-      <div class="slider">
-        <!-- Slide 1: single image -->
-        <div class="slide active" id="slide-1">
-          <img src="../images/closer1.jpg" alt="Closer Look 1" class="slide-img">
-        </div>
+    <div class="dot-nav">
+      <button class="dot active" data-index="0" aria-label="Go to slide 1"></button>
+      <button class="dot" data-index="1" aria-label="Go to slide 2"></button>
+      <button class="dot" data-index="2" aria-label="Go to slide 3"></button>
+      <button class="dot" data-index="3" aria-label="Go to slide 4"></button>
+    </div>
+  </div>
+</section>
 
-        <!-- Slide 2: two images -->
-        <div class="slide" id="slide-2">
-          <div class="two-images">
-            <img src="../images/closer2a.jpg" alt="Closer Look 2a" class="slide-img">
-            <img src="../images/closer2b.jpg" alt="Closer Look 2b" class="slide-img">
-          </div>
-        </div>
 
-        <!-- Slide 3: single image -->
-        <div class="slide" id="slide-3">
-          <img src="../images/closer3.jpg" alt="Closer Look 3" class="slide-img">
-        </div>
 
-        <!-- Slide 4: two images -->
-        <div class="slide" id="slide-4">
-          <div class="two-images">
-            <img src="../images/closer4a.jpg" alt="Closer Look 4a" class="slide-img">
-            <img src="../images/closer4b.jpg" alt="Closer Look 4b" class="slide-img">
-          </div>
+<section class="closer-look-section">
+  <h2 class="closer-look-title">Closer Look</h2>
+  <div class="closer-look-wrapper">
+    <!-- scrollable carousel -->
+    <div class="closer-look-container">
+      <!-- Slide 1: single image -->
+      <div class="slide">
+        <img src="../images/closer1.png" alt="Slide 1">
+      </div>
+
+      <!-- Slide 2: two images -->
+      <div class="slide">
+        <div class="two-items">
+          <img src="../images/closer2a.png" alt="Slide 2A">
+          <img src="../images/closer2b.png" alt="Slide 2B">
         </div>
       </div>
 
-      <div class="slider-nav">
-        <button class="nav-btn prev-btn" aria-label="Previous slide">
+      <!-- Slide 3: single image -->
+      <div class="slide">
+        <img src="../images/closer3.png" alt="Slide 3">
+      </div>
+
+      <!-- Slide 4: two images -->
+      <div class="slide">
+        <div class="two-items">
+          <img src="../images/closer2a.png" alt="Slide 4A">
+          <img src="../images/closer2b.png" alt="Slide 4B">
+        </div>
+      </div>
+    </div>
+
+    <!-- fixed Prev/Next buttons -->
+    <div class="closer-look-controls">
+      <button class="nav-btn prev-btn" aria-label="Previous slide">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -213,40 +186,108 @@
             <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- Circles Section -->
+<section class="circles-section">
+  <!-- 1. Dedicated wrapper for clipping only the animated circles -->
+  <div class="circle-wrapper">
+    <div class="circle-container">
+      <div class="blob"></div>
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+      <div class="circle circle-4"></div>
+    </div>
+  </div>
+
+  <!-- 2. Main content container -->
+  <div class="content-container">
+    <div class="text-content">
+      <h1 class="headline">Breath Pure. Live More.</h1>
+      <p class="subhead">360 filtration that leaves no corner untouched</p>
+    </div>
+
+    <div class="image-container">
+      <img
+        src="../images/feature-image.png"
+        alt="Air purification"
+        class="feature-image"
+      >
+    </div>
+
+    <div class="performance-content">
+      <h2 class="performance-headline">Purification performance</h2>
+      <p class="performance-description">
+        The Hawaa C150’s 3-stage filtration system quietly and efficiently cleans spaces up to 334 sq.ft., refreshing your room five times per hour—removing pollutants, allergens, and odours for air you can truly feel.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Tiles Section -->
+<section id="feature-tiles" class="feature-tiles">
+  <div class="tiles-grid">
+
+    <!-- Card 1 -->
+    <div class="tile-card">
+      <div class="tile-text">
+        <h3>Whisper Quiet. Day & Night.</h3>
+        <p>Quietly clears the air at just 29 dB—softer than a whisper.</p>
+        <p>With its custom-engineered BLDC motor and aerodynamic impeller, Hawaa Champion delivers powerful air cleaning without disrupting sleep or conversations. Sleep better, think clearer, live calmer.</p>
+      </div>
+      <div class="tile-visual">
+        <img src="../images/highlight1.png"
+             alt="Bedroom at night with soft blue glow and gentle airflow" />
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="tile-card">
+      <div class="tile-text">
+        <h3>Smart Controls. At Your Fingertips.</h3>
+        <p>Real-time air quality. Instant response. Full control.</p>
+        <p>Hawaa Champion’s built-in precision laser sensor continuously measures PM2.5, instantly adjusting airflow to keep you breathing easy. Use the Hawaa app to schedule, adjust, and monitor air quality anywhere, anytime. Compatible with Alexa & Google Assistant.</p>
+      </div>
+      <div class="tile-visual">
+        <img src="../images/highlight2.png"
+             alt="Close-up of touch panel displaying AQI values next to smartphone app UI" />
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="tile-card">
+      <div class="tile-text">
+        <h3>Engineered for Indian Homes.</h3>
+        <p>From everyday dust to festive smoke, designed to handle India’s toughest air.</p>
+        <p>With robust filtration and durable ABS construction tailored for India’s air quality challenges, the Hawaa Champion ensures reliable performance even during peak pollution seasons.</p>
+      </div>
+      <div class="tile-visual">
+        <img src="../images/highlight3.png"
+             alt="Indian living room during Diwali showing purifier and dropping AQI reading" />
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="tile-card">
+      <div class="tile-text">
+        <h3>Beautiful. Inside and Out.</h3>
+        <p>Compact footprint. Minimalist design. Maximum performance.</p>
+        <p>The Hawaa Champion fits elegantly into any interior, blending advanced engineering with premium aesthetics. Available in Matte White and Slate Grey finishes.</p>
+      </div>
+      <div class="tile-visual">
+        <img src="../images/highlight4.png"
+             alt="Slow-rotating 3D render of Hawaa Champion showing seamless curves" />
       </div>
     </div>
   </div>
 </section>
 
-<!--Circles Section -->
-<section class="circles-section">
-  <div class="content-container">
-    <div class="text-content">
-      <h1 class="headline">Air purification</h1>
-      <p class="subhead">A completely transformed breathing experience.</p>
-    </div>
-    <div class="image-container">
-      <!-- You can add your image here -->
-      <img src="../images/feature-image.png" alt="Air purification" class="feature-image">
-    </div>
-    <div class="performance-content">
-      <h2 class="performance-headline">Purification performance</h2>
-      <p class="performance-description">
-        Smart Dynamic Airflow with real-time sensor tracking disperses purified air all around you,
-        creating a three-dimensional clean-air environment for your living room, bedroom,
-        office and more.
-      </p>
-    </div>
-  </div>
-  </div>
-  <div class="circle-container">
-    <div class="blob"></div>
-    <div class="circle circle-1"></div>
-    <div class="circle circle-2"></div>
-    <div class="circle circle-3"></div>
-    <div class="circle circle-4"></div>
-  </div>
-</section>
+
+
 
     <script src="../js/product-learn.js"></script>
     <script src="../js/header.js"></script>

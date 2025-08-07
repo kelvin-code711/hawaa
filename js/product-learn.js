@@ -1,9 +1,12 @@
-// product-learn.js - Optimized Version
+// product-learn.js - Complete Version with Circle Animations
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== Core Functionality (Loads Immediately) ==========
+    // ========== Core Initialization ==========
     initVideoControls();
-    initCloserLookSlider();
     setupLazyLoading();
+    initFeatureSlider();
+    initCloserLookSlider();
+    initFeaturesCarousel();
+    initCircleAnimations(); // Added circle animations initialization
 
     // ========== Video Controls ==========
     function initVideoControls() {
@@ -11,10 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroVideo = document.querySelector('.hero-video');
         
         if (videoControl && heroVideo) {
-            // Show play button if video is paused (for mobile autoplay restrictions)
-            if (heroVideo.paused) {
-                videoControl.style.display = 'flex';
-            }
+            if (heroVideo.paused) videoControl.style.display = 'flex';
             
             videoControl.addEventListener('click', function() {
                 if (heroVideo.paused) {
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Hide control after video starts playing
             heroVideo.addEventListener('playing', () => {
                 videoControl.style.opacity = '0';
                 setTimeout(() => videoControl.style.display = 'none', 300);
@@ -36,66 +35,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== Lazy Loading Setup ==========
     function setupLazyLoading() {
-        // Circles Section (Heavy animations)
-        const circleSection = document.querySelector('.circles-section');
-        if (circleSection) {
-            new IntersectionObserver(handleCircleIntersection, { threshold: 0.1 }).observe(circleSection);
-        }
+        const sectionsToObserve = [
+            '.circles-section',
+            '.closer-look-section',
+            '.features-carousel-container'
+        ];
         
-        // Features Section (Carousel)
-        const featuresSection = document.getElementById('features');
-        if (featuresSection) {
-            new IntersectionObserver(handleFeaturesIntersection, { threshold: 0.1 }).observe(featuresSection);
-        }
-    }
-
-    // ========== Circles Section (Loaded when in view) ==========
-    function handleCircleIntersection(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                initCircleAnimations();
-                this.unobserve(entry.target);
+        sectionsToObserve.forEach(selector => {
+            const section = document.querySelector(selector);
+            if (section) {
+                new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        entry.target.classList.toggle('in-view', entry.isIntersecting);
+                    });
+                }, { threshold: 0.1 }).observe(section);
             }
         });
     }
 
+    // ========== Circle Animations ==========
     function initCircleAnimations() {
         const circleSection = document.querySelector('.circles-section');
+        if (!circleSection) return;
+
         const circleContainer = document.querySelector('.circle-container');
         const circles = document.querySelectorAll('.circle');
-        
-        // Configuration
-        const ZOOM = { FOURTH: { rest: 1.0, scrollMax: 1.1, wheelMax: 1.2 } };
-        const ZOOM_START_POINT = 0.1;
-        const ZOOM_MAX_POINT = 0.3;
-        const ANIMATION_DURATION = '1.8s';
-        const OPACITY_STEPS = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
-        const OPACITY_START_POINT = 0.1;
-        const OPACITY_END_POINT = 0.4;
+        const blob = document.querySelector('.blob');
 
-        // Initialize circles
+        // Initial setup
         circles.forEach((circle, index) => {
-            circle.style.opacity = (index < 3) ? 0 : 1;
-            circle.style.transition = `transform ${ANIMATION_DURATION} cubic-bezier(0.2, 0.8, 0.4, 1), opacity 1s ease`;
-            circle.style.transform = `scale(${ZOOM.FOURTH.rest}) translateY(${-20 * index}px)`;
-            circle.style.willChange = 'transform, opacity';
+            circle.style.opacity = (index < 3) ? '0' : '1';
+            circle.style.transition = 'transform 1.8s cubic-bezier(0.2, 0.8, 0.4, 1), opacity 1s ease';
+            circle.style.transform = `translateY(${-20 * index}px)`;
         });
 
-        // Intersection Observer
-        const circleObserver = new IntersectionObserver((entries) => {
+        // Intersection Observer for circle section
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                circleSection.classList.toggle('in-view', entry.isIntersecting);
                 if (entry.isIntersecting) {
+                    // Animate circles when section comes into view
                     circles.forEach((circle, index) => {
-                        circle.style.opacity = (index < 3) ? 0 : 1;
+                        setTimeout(() => {
+                            circle.style.opacity = (1 - (index * 0.2)).toString();
+                            circle.style.transform = `translateY(${-20 * index}px) scale(1)`;
+                        }, index * 150);
                     });
+
+                    // Animate blob
+                    if (blob) {
+                        blob.style.opacity = '1';
+                        blob.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
                 }
             });
         }, { threshold: 0.1 });
-        
-        circleObserver.observe(circleSection);
-        
-        // Scroll handling
+
+        observer.observe(circleSection);
+
+        // Scroll-based animations
         let lastScrollPosition = window.scrollY;
         let containerOffset = -400;
         let momentum = 0;
@@ -106,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
             containerOffset -= momentum;
             containerOffset = Math.min(Math.max(containerOffset, -600), -200);
             
-            circleContainer.style.transition = 'transform 0.7s cubic-bezier(0.22, 1, 0.36, 1.1)';
             circleContainer.style.transform = `translateY(${containerOffset}px)`;
             
             if (Math.abs(momentum) > 0.5) {
@@ -117,8 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         window.addEventListener('scroll', () => {
-            if (!circleSection.classList.contains('in-view')) return;
-            
             const currentScroll = window.scrollY;
             const scrollDirection = currentScroll > lastScrollPosition ? 1 : -1;
             const scrollDelta = Math.abs(currentScroll - lastScrollPosition);
@@ -129,327 +123,253 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!animationFrameId) {
                 animationFrameId = requestAnimationFrame(updateContainerPosition);
             }
-            
-            const sectionOffset = circleSection.offsetTop;
-            const sectionHeight = circleSection.offsetHeight;
-            let scrollProgress = (currentScroll - sectionOffset + window.innerHeight) / sectionHeight;
-            scrollProgress = Math.min(Math.max(scrollProgress, 0), 1);
-            
-            let zoomProgression = 0;
-            if (scrollProgress > ZOOM_START_POINT) {
-                zoomProgression = (scrollProgress - ZOOM_START_POINT) / (ZOOM_MAX_POINT - ZOOM_START_POINT);
-                zoomProgression = Math.min(zoomProgression, 1);
-            }
-            
-            let opacityProgression = 0;
-            if (scrollProgress > OPACITY_START_POINT) {
-                opacityProgression = (scrollProgress - OPACITY_START_POINT) / (OPACITY_END_POINT - OPACITY_START_POINT);
-                opacityProgression = Math.min(Math.max(opacityProgression, 0), 1);
-            }
-            
-            const opacityStep = Math.floor(opacityProgression * (OPACITY_STEPS.length - 1));
-            const currentOpacity = OPACITY_STEPS[opacityStep];
-            
-            circles.forEach((circle, index) => {
-                const currentScale = ZOOM.FOURTH.rest + 
-                                   (zoomProgression * (ZOOM.FOURTH.scrollMax - ZOOM.FOURTH.rest));
-                
-                if (index < 3) {
-                    circle.style.opacity = currentOpacity;
-                }
-                
-                circle.style.transform = `
-                    scale(${currentScale})
-                    translateY(${-20 * index}px)
-                `;
-            });
         });
-        
-        // Wheel zoom
-        window.addEventListener('wheel', (e) => {
-            if (!circleSection.classList.contains('in-view')) return;
-            
-            circles.forEach((circle, index) => {
-                const currentScale = parseFloat(circle.style.transform.match(/scale\(([^)]+)\)/)[1]) || 1;
-                const newScale = e.deltaY > 0 
-                    ? Math.min(currentScale + 0.03, ZOOM.FOURTH.wheelMax)
-                    : Math.max(currentScale - 0.05, ZOOM.FOURTH.rest);
-                
-                circle.style.transform = `
-                    scale(${newScale})
-                    translateY(${-20 * index}px)
-                `;
-            });
-        });
+
+        // Float animation for blob
+        if (blob) {
+            const floatAnimation = () => {
+                const now = Date.now();
+                const scale = 1 + Math.sin(now / 2000) * 0.1;
+                const yOffset = Math.sin(now / 1800) * 20;
+                blob.style.transform = `translate(-50%, calc(-50% + ${yOffset}px)) scale(${scale})`;
+                requestAnimationFrame(floatAnimation);
+            };
+            floatAnimation();
+        }
     }
 
-    // ========== Features Carousel (Loaded when in view) ==========
-    function handleFeaturesIntersection(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                initFeaturesCarousel();
-                this.unobserve(entry.target);
-            }
-        });
-    }
+    // ========== Feature Slider ==========
+    function initFeatureSlider() {
+        const section = document.getElementById('feature-overview');
+        if (!section) return;
 
-    function initFeaturesCarousel() {
-        const featuresSection = document.getElementById('features');
-        const dotnavLinks = document.querySelectorAll('.dotnav-link');
-        const featureSlides = document.querySelectorAll('.feature-slide');
-        const prevArrow = document.querySelector('.arrow-prev');
-        const nextArrow = document.querySelector('.arrow-next');
-        
-        let featuresAutoScrollInterval;
-        let isAutoScrolling = false;
-        const featuresScrollDelay = 5000;
-        let isDragging = false;
-        let startX = 0;
-        let scrollLeft = 0;
-        
-        // Auto-scroll
-        function startFeaturesAutoScroll() {
-            if (featuresAutoScrollInterval) clearInterval(featuresAutoScrollInterval);
-            isAutoScrolling = true;
-            
-            featuresAutoScrollInterval = setInterval(() => {
-                if (isDragging) return;
-                
-                const slideWidth = featuresSection.clientWidth;
-                const currentScroll = featuresSection.scrollLeft;
-                const currentSlide = Math.round(currentScroll / slideWidth);
-                
-                if (currentSlide === featureSlides.length - 1) {
-                    scrollToFeatureSlide(0);
-                } else {
-                    scrollToFeatureSlide(currentSlide + 1);
-                }
-            }, featuresScrollDelay);
-        }
-        
-        function pauseFeaturesAutoScroll() {
-            isAutoScrolling = false;
-            clearInterval(featuresAutoScrollInterval);
-            setTimeout(startFeaturesAutoScroll, featuresScrollDelay * 2);
-        }
-        
-        function scrollToFeatureSlide(index) {
-            const slideWidth = featuresSection.clientWidth;
-            featuresSection.scrollTo({
-                left: index * slideWidth,
-                behavior: 'smooth'
+        const container = section.querySelector('.slides');
+        const slides = Array.from(container.children);
+        const dots = Array.from(section.querySelectorAll('.dot'));
+        const dotNav = section.querySelector('.dot-nav');
+        let autoTimer, scrollDebounce;
+
+        container.style.scrollbarWidth = 'none';
+        container.style.msOverflowStyle = 'none';
+
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                const inView = e.isIntersecting;
+                section.classList.toggle('in-view', inView);
+                updateNavPosition();
+                if (inView) startAuto();
+                else stopAuto();
             });
+        }, { threshold: 0.5 });
+        io.observe(section);
+
+        function scrollTo(idx) {
+            const slide = slides[idx];
+            const gap = parseInt(getComputedStyle(container).columnGap);
+            const w = slide.getBoundingClientRect().width;
+            const left = slide.offsetLeft - (container.clientWidth - w) / 2;
+            container.scrollTo({ left, behavior: 'smooth' });
+            setActive(idx);
         }
-        
-        function updateActiveDot() {
-            const scrollPosition = featuresSection.scrollLeft;
-            const slideWidth = featuresSection.clientWidth;
-            const currentSlide = Math.round(scrollPosition / slideWidth);
-            
-            dotnavLinks.forEach((link, index) => {
-                const isActive = index === currentSlide;
-                link.classList.toggle('active', isActive);
-                link.style.width = isActive ? '24px' : '12px';
-                link.style.height = isActive ? '4px' : '12px';
-                link.style.borderRadius = isActive ? '2px' : '50%';
-                link.style.backgroundColor = isActive ? '#ffffff' : '#a1a1a2';
-            });
-        }
-        
-        // Navigation
-        function goToPrevFeatureSlide() {
-            const slideWidth = featuresSection.clientWidth;
-            const currentScroll = featuresSection.scrollLeft;
-            const prevSlide = Math.max(0, Math.floor(currentScroll / slideWidth) - 1);
-            scrollToFeatureSlide(prevSlide);
-            pauseFeaturesAutoScroll();
-        }
-        
-        function goToNextFeatureSlide() {
-            const slideWidth = featuresSection.clientWidth;
-            const currentScroll = featuresSection.scrollLeft;
-            const nextSlide = Math.min(featureSlides.length - 1, Math.ceil(currentScroll / slideWidth) + 1);
-            scrollToFeatureSlide(nextSlide);
-            pauseFeaturesAutoScroll();
-        }
-        
-        // Event Listeners
-        featuresSection.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.pageX - featuresSection.offsetLeft;
-            scrollLeft = featuresSection.scrollLeft;
-            pauseFeaturesAutoScroll();
-        });
-        
-        featuresSection.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - featuresSection.offsetLeft;
-            const walk = (x - startX) * 2;
-            featuresSection.scrollLeft = scrollLeft - walk;
-        });
-        
-        featuresSection.addEventListener('mouseup', () => {
-            isDragging = false;
-            const slideWidth = featuresSection.clientWidth;
-            const currentSlide = Math.round(featuresSection.scrollLeft / slideWidth);
-            scrollToFeatureSlide(currentSlide);
-        });
-        
-        featuresSection.addEventListener('mouseleave', () => {
-            isDragging = false;
-        });
-        
-        // Touch events
-        featuresSection.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            startX = e.touches[0].pageX - featuresSection.offsetLeft;
-            scrollLeft = featuresSection.scrollLeft;
-            pauseFeaturesAutoScroll();
-        }, { passive: true });
-        
-        featuresSection.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            const x = e.touches[0].pageX - featuresSection.offsetLeft;
-            const walk = (x - startX) * 2;
-            featuresSection.scrollLeft = scrollLeft - walk;
-        }, { passive: true });
-        
-        featuresSection.addEventListener('touchend', () => {
-            isDragging = false;
-            const slideWidth = featuresSection.clientWidth;
-            const currentSlide = Math.round(featuresSection.scrollLeft / slideWidth);
-            scrollToFeatureSlide(currentSlide);
-        }, { passive: true });
-        
-        dotnavLinks.forEach((link, index) => {
-            link.addEventListener('click', function(e) {
+
+        dots.forEach(d => {
+            d.addEventListener('click', e => {
                 e.preventDefault();
-                scrollToFeatureSlide(index);
-                pauseFeaturesAutoScroll();
+                scrollTo(+d.dataset.index);
+                restartAuto();
             });
         });
+
+        container.addEventListener('scroll', () => {
+            clearTimeout(scrollDebounce);
+            scrollDebounce = setTimeout(() => {
+                const gap = parseInt(getComputedStyle(container).columnGap);
+                const w = slides[0].getBoundingClientRect().width + gap;
+                const idx = Math.round(container.scrollLeft / w);
+                setActive(idx);
+                restartAuto();
+            }, 50);
+        });
+
+        function startAuto() {
+            if (autoTimer) return;
+            autoTimer = setInterval(() => {
+                const curr = slides.findIndex(s => s.classList.contains('active'));
+                scrollTo((curr + 1) % slides.length);
+            }, 5000);
+        }
         
-        if (prevArrow) prevArrow.addEventListener('click', goToPrevFeatureSlide);
-        if (nextArrow) nextArrow.addEventListener('click', goToNextFeatureSlide);
+        function stopAuto() {
+            clearInterval(autoTimer);
+            autoTimer = null;
+        }
         
-        featuresSection.addEventListener('scroll', () => {
-            updateActiveDot();
-            if (!isAutoScrolling) pauseFeaturesAutoScroll();
-        }, { passive: true });
-        
-        // Initialize
-        updateActiveDot();
-        startFeaturesAutoScroll();
+        function restartAuto() {
+            stopAuto();
+            startAuto();
+        }
+
+        function setActive(idx) {
+            slides.forEach((s,i) => s.classList.toggle('active', i === idx));
+            dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+            updateNavPosition();
+        }
+
+        function updateNavPosition() {
+            if (!section.classList.contains('in-view')) return;
+            const rect = section.getBoundingClientRect();
+            dotNav.style.position = rect.bottom > window.innerHeight + 48 ? 'fixed' : 'absolute';
+            dotNav.style.bottom = rect.bottom > window.innerHeight + 48 ? '16px' : '48px';
+        }
+
+        window.addEventListener('scroll', updateNavPosition);
+        window.addEventListener('resize', updateNavPosition);
+
+        setActive(0);
     }
 
-    // ========== Closer Look Slider (Loaded immediately) ==========
+    // ========== Closer Look Slider ==========
     function initCloserLookSlider() {
-        const closerLookSlider = document.querySelector('.closer-look-section .slider');
-        const closerLookSlides = document.querySelectorAll('.closer-look-section .slide');
-        const closerLookPrevBtn = document.querySelector('.closer-look-section .prev-btn');
-        const closerLookNextBtn = document.querySelector('.closer-look-section .next-btn');
-        
-        if (!closerLookSlider || closerLookSlides.length === 0) return;
-        
-        let currentCloserLookSlide = 0;
-        const closerLookSlideCount = closerLookSlides.length;
-        let closerLookSlideWidth = closerLookSlides[0].offsetWidth + 12;
-        let closerLookAutoScrollInterval;
-        const closerLookScrollDelay = 5000;
-        
-        function updateCloserLookSlider() {
-            closerLookSlider.style.transform = `translateX(-${currentCloserLookSlide * closerLookSlideWidth}px)`;
-            
-            closerLookSlides.forEach((slide, index) => {
-                slide.classList.toggle('active', index === currentCloserLookSlide);
-            });
-            
-            if (closerLookPrevBtn) {
-                closerLookPrevBtn.disabled = currentCloserLookSlide === 0;
-            }
-            if (closerLookNextBtn) {
-                closerLookNextBtn.disabled = currentCloserLookSlide === closerLookSlideCount - 1;
-            }
-        }
-        
-        function nextCloserLookSlide() {
-            if (currentCloserLookSlide < closerLookSlideCount - 1) {
-                currentCloserLookSlide++;
-                updateCloserLookSlider();
-                resetCloserLookAutoScroll();
-            }
-        }
-        
-        function prevCloserLookSlide() {
-            if (currentCloserLookSlide > 0) {
-                currentCloserLookSlide--;
-                updateCloserLookSlider();
-                resetCloserLookAutoScroll();
-            }
-        }
-        
-        function startCloserLookAutoScroll() {
-            clearInterval(closerLookAutoScrollInterval);
-            closerLookAutoScrollInterval = setInterval(() => {
-                if (currentCloserLookSlide === closerLookSlideCount - 1) {
-                    clearInterval(closerLookAutoScrollInterval);
-                    return;
+        const container = document.querySelector('.closer-look-container');
+        if (!container) return;
+
+        container.style.scrollbarWidth = 'none';
+        container.style.msOverflowStyle = 'none';
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setupCloserLookSlider(container);
+                    observer.unobserve(entry.target);
                 }
-                nextCloserLookSlide();
-            }, closerLookScrollDelay);
-        }
-        
-        function resetCloserLookAutoScroll() {
-            clearInterval(closerLookAutoScrollInterval);
-            startCloserLookAutoScroll();
-        }
-        
-        function handleResize() {
-            closerLookSlideWidth = closerLookSlides[0].offsetWidth + 12;
-            updateCloserLookSlider();
-        }
-        
-        if (closerLookNextBtn) {
-            closerLookNextBtn.addEventListener('click', nextCloserLookSlide);
-        }
-        
-        if (closerLookPrevBtn) {
-            closerLookPrevBtn.addEventListener('click', prevCloserLookSlide);
-        }
-        
-        window.addEventListener('resize', handleResize);
-        
-        const closerLookSection = document.querySelector('.closer-look-section');
-        if (closerLookSection) {
-            closerLookSection.addEventListener('mouseenter', () => {
-                clearInterval(closerLookAutoScrollInterval);
             });
-            
-            closerLookSection.addEventListener('mouseleave', () => {
-                startCloserLookAutoScroll();
-            });
-        }
+        }, { threshold: 0.1 });
         
-        // Initialize
-        updateCloserLookSlider();
-        startCloserLookAutoScroll();
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            const closerLookInView = closerLookSlider && 
-                closerLookSlider.getBoundingClientRect().top < window.innerHeight && 
-                closerLookSlider.getBoundingClientRect().bottom > 0;
-            
-            if (closerLookInView) {
-                if (e.key === 'ArrowRight' && (!closerLookNextBtn || !closerLookNextBtn.disabled)) {
-                    e.preventDefault();
-                    nextCloserLookSlide();
-                } else if (e.key === 'ArrowLeft' && (!closerLookPrevBtn || !closerLookPrevBtn.disabled)) {
-                    e.preventDefault();
-                    prevCloserLookSlide();
-                }
+        observer.observe(container);
+
+        function setupCloserLookSlider(container) {
+            const slides = Array.from(container.children);
+            const prevBtn = document.querySelector('.closer-look-controls .prev-btn');
+            const nextBtn = document.querySelector('.closer-look-controls .next-btn');
+            let current = 0;
+            let autoScrollInterval;
+
+            container.style.overflowX = 'hidden';
+            container.style.scrollBehavior = 'smooth';
+
+            function scrollToSlide(index) {
+                const slide = slides[index];
+                const scrollPosition = slide.offsetLeft - (container.offsetWidth - slide.offsetWidth) / 2;
+                container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+                current = index;
+                updateSlideStates();
             }
-        });
+
+            function updateSlideStates() {
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === current);
+                });
+                if (prevBtn) prevBtn.disabled = current === 0;
+                if (nextBtn) nextBtn.disabled = current === slides.length - 1;
+            }
+
+            function startAutoScroll() {
+                stopAutoScroll();
+                autoScrollInterval = setInterval(() => {
+                    scrollToSlide((current + 1) % slides.length);
+                }, 8000);
+            }
+
+            function stopAutoScroll() {
+                clearInterval(autoScrollInterval);
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                scrollToSlide(Math.max(0, current - 1));
+                stopAutoScroll();
+                startAutoScroll();
+            });
+
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                scrollToSlide(Math.min(slides.length - 1, current + 1));
+                stopAutoScroll();
+                startAutoScroll();
+            });
+
+            container.addEventListener('mouseenter', stopAutoScroll);
+            container.addEventListener('mouseleave', startAutoScroll);
+
+            document.addEventListener('keydown', function(e) {
+                const closerLookInView = container.getBoundingClientRect().top < window.innerHeight && 
+                                       container.getBoundingClientRect().bottom > 0;
+                
+                if (closerLookInView) {
+                    if (e.key === 'ArrowRight' && nextBtn && !nextBtn.disabled) {
+                        e.preventDefault();
+                        nextBtn.click();
+                    } else if (e.key === 'ArrowLeft' && prevBtn && !prevBtn.disabled) {
+                        e.preventDefault();
+                        prevBtn.click();
+                    }
+                }
+            });
+
+            scrollToSlide(0);
+            startAutoScroll();
+        }
+    }
+
+    // ========== Features Carousel ==========
+    function initFeaturesCarousel() {
+        const carouselContainer = document.querySelector('.features-carousel-container');
+        if (!carouselContainer) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setupFeaturesCarousel(carouselContainer);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        observer.observe(carouselContainer);
+
+        function setupFeaturesCarousel(container) {
+            const carousel = container.querySelector('.carousel');
+            const items = Array.from(container.querySelectorAll('.carousel-item'));
+            const prevBtn = container.querySelector('.carousel-controls .prev-btn');
+            const nextBtn = container.querySelector('.carousel-controls .next-btn');
+            
+            let currentIndex = 0;
+            const itemWidth = items[0].offsetWidth + 20;
+            const visibleItems = Math.min(3, Math.floor(container.offsetWidth / itemWidth));
+            const maxIndex = Math.max(0, items.length - visibleItems);
+            
+            function updateCarousel() {
+                carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
+                if (prevBtn) prevBtn.disabled = currentIndex === 0;
+                if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                currentIndex = Math.max(0, currentIndex - 1);
+                updateCarousel();
+            });
+
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                currentIndex = Math.min(maxIndex, currentIndex + 1);
+                updateCarousel();
+            });
+
+            window.addEventListener('resize', () => {
+                const newVisibleItems = Math.min(3, Math.floor(container.offsetWidth / itemWidth));
+                const newMaxIndex = Math.max(0, items.length - newVisibleItems);
+                if (currentIndex > newMaxIndex) currentIndex = newMaxIndex;
+                updateCarousel();
+            });
+
+            updateCarousel();
+        }
     }
 });

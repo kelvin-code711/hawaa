@@ -1,0 +1,870 @@
+.stage-section {
+    padding: 2rem 0;
+  }
+
+  .stage-text {
+    order: -1;
+    padding: 0 20px 24px 20px;
+    text-align: left;
+  }/* filter-learn.css */
+
+/* ===== Font Faces – Outfit (local) ===== */
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Thin.woff2') format('woff2'),
+       url('../fonts/Outfit-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
+       url('../fonts/Outfit-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Medium.woff2') format('woff2'),
+       url('../fonts/Outfit-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
+       url('../fonts/Outfit-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
+       url('../fonts/Outfit-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  height: auto !important;
+  touch-action: auto !important;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: #ffffff !important;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  height: auto !important;
+  touch-action: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove menu-open scroll lock for filter-learn page */
+body.menu-open {
+  overflow-y: auto !important;
+  height: auto !important;
+  touch-action: auto !important;
+}
+
+/* Page width utility */
+.page-width {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styles */
+.hawaa-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  height: 58px;
+  padding: 0;
+  width: 100%;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+/* Fixed header state */
+.hawaa-header.header-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+  height: 58px;
+  padding: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure header is always visible */
+.hawaa-header {
+  transform: translateY(0) !important;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+/* Fixed header container */
+.hawaa-header.header-fixed .header-container {
+  padding: 0 36px 0 20px;
+}
+
+.header-logo img {
+  height: 120px;
+  width: auto;
+}
+
+/* Logo stays the same size when header is fixed */
+.hawaa-header.header-fixed .header-logo img {
+  height: 120px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+}
+
+/* Fixed header hamburger */
+.hawaa-header.header-fixed .hamburger-icon {
+  width: 24px;
+  height: 18px;
+}
+
+.hamburger-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #1a1a1a;
+  transition: all 0.3s ease;
+}
+
+/* ===== Mobile Navigation ===== */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-nav.active {
+  right: 0;
+}
+
+.nav-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mobile-nav.active .nav-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.nav-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-icon,
+.nav-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #1a1a1a;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-icon:hover,
+.nav-close:hover {
+  background-color: #f5f5f5;
+}
+
+.nav-icon svg,
+.nav-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-content {
+  padding: 20px;
+}
+
+.nav-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li {
+  margin-bottom: 8px;
+}
+
+.nav-links a {
+  display: block;
+  padding: 12px 0;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #007acc;
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: #e5f6f9;
+  border-radius: 24px 0 0 24px;
+  overflow: hidden;
+  min-height: 100vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: 64px;
+}
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: stretch; /* Change back to 'stretch' */
+  height: 100vh;
+  min-height: 600px;
+  max-width: none;
+  width: 100%;
+  padding-right: 0px;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 60px;
+  max-width: none;
+  background-color: #e5f6f9;
+  height: 100vh; /* Force it to take full viewport height */
+  min-height: 600px; /* Match the container's min-height */
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.hero-copy {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #4a4a4a;
+}
+
+/* Image block */
+.hero-media {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 64px;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* ===== Scrolling Filter Text Section ===== */
+.filter-text-section {
+  margin: 128px 0;
+  padding: 60px 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.filter-text-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.scrolling-images {
+  display: flex;
+  width: max-content; /* IMPORTANT: allows full image width */
+  animation: seamlessScroll 40s linear infinite;
+  align-items: center;
+}
+
+.filter-text-image {
+  flex-shrink: 0;
+  display: block;
+  height: auto;
+  width: auto;              /* Use actual image width */
+  max-height: 100%;         /* Prevent overflow but keep full height */
+}
+
+@keyframes seamlessScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%); /* Move by exactly one image width */
+  }
+}
+
+/* ===== Stage Sections ===== */
+
+/* Global grid gutter */
+:root {
+  --gridColumn: 1rem;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gridColumn: calc(100vw / 24);
+  }
+}
+
+/* Stage sections */
+.stage-section {
+  padding: 0;
+  background: #fff;
+  border-radius: 32px;
+  margin: 0 0 24px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.stage-content {
+  position: relative;
+  display: flex;
+  justify-content: flex-end; /* text on right by default */
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.stage-section.stage-reverse .stage-content {
+  justify-content: flex-start;
+}
+
+.stage-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.stage-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.stage-text {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  padding: 4rem;
+  color: #132a39;
+  border-radius: 24px;
+  margin: 2rem;
+}
+
+
+.stage-text h2 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+  color: #132a39;
+  font-weight: 600;
+}
+
+.stage-text .subtitle {
+  font-size: 1.125rem;
+  color: #555;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
+}
+
+.stage-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.stage-steps li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: #12a27a;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content strong {
+  display: block;
+  font-weight: 600;
+  color: #132a39;
+  margin-bottom: 0.25rem;
+}
+
+.step-content p {
+  margin: 0;
+  color: #555;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.stage-text blockquote {
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #333;
+  font-size: 1rem;
+  border-left: 3px solid #12a27a;
+  padding-left: 1rem;
+}
+
+.stage-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #000;
+  color: #fff;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.stage-button:hover {
+  background: #333;
+}
+
+/* ===== Responsive Design ===== */
+
+/* Tablet (769px - 1024px) */
+@media (max-width: 1024px) {
+  .hero-text {
+    padding: 80px 40px 60px 40px;
+  }
+  
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .stage-content {
+    padding: 0 2rem;
+    gap: 2rem;
+  }
+
+  .stage-text h2 {
+    font-size: 1.75rem;
+  }
+  
+  /* Adjust scrolling image margin for tablet */
+  .filter-text-section {
+    margin: 96px 0;
+    padding: 48px 0; /* More breathing space for tablet */
+  }
+  
+  .filter-text-image {
+    max-height: 200px; /* Limit height on tablet */
+    object-fit: contain; /* Scale down while maintaining aspect ratio */
+  }
+  
+  .scrolling-images {
+    animation-duration: 25s; /* Slightly faster for tablet */
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .hawaa-header {
+    height: 58px;
+    padding: 0;
+  }
+  
+  .hawaa-header.header-fixed {
+    height: 58px;
+  }
+  
+  .hawaa-header.header-fixed .header-container {
+    padding: 0 36px 0 20px;
+  }
+  
+  .header-logo img {
+    height: 120px;
+  }
+  
+  .hawaa-header.header-fixed .header-logo img {
+    height: 120px;
+  }
+  
+  .hero-section {
+    border-radius: 16px;
+    min-height: auto;
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 0;
+    height: auto;
+    min-height: auto;
+  }
+  
+  .hero-text {
+    order: -1;
+    padding: 80px 24px 40px 24px;
+    text-align: center;
+    height: auto; /* Override the 100vh */
+    min-height: auto; /* Override the 600px */
+    margin-bottom: 24px; /* Add 24px gap between containers */
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+  
+  .hero-copy {
+    font-size: 1rem;
+  }
+  
+  .hero-media {
+    order: 0;
+    height: 430px; /* Change from 300px to 430px */
+    padding: 0 20px 24px 20px; /* Add padding: top right bottom left */
+  }
+  
+  .hero-media img {
+    height: 100%; /* Change from fixed 300px to 100% to fill container minus padding */
+    width: 100%;
+    border-radius: 20px; /* Change from "0 0 16px 16px" to 20px on all sides */
+    object-fit: cover; /* Make sure this is still present */
+  }
+  
+  .nav-panel {
+    width: 280px;
+  }
+  
+  .page-width {
+    padding: 0 16px;
+  }
+
+  /* Adjust scrolling image margin for mobile */
+  .filter-text-section {
+    margin: 64px 0;
+    padding: 40px 0; /* Generous breathing space for mobile */
+  }
+  
+  .filter-text-image {
+    height: 204px !important; /* Set to 204px */
+    width: auto; /* This will scale proportionally */
+    object-fit: contain;
+  }
+  
+  .scrolling-images {
+    animation-duration: 20s; /* Faster for mobile */
+  }
+
+  /* Stage sections mobile */
+  .stage-section {
+    border-radius: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+  }
+
+  .stage-content {
+    display: grid;             /* restore grid */
+    grid-template-columns: 1fr; /* single column */
+    gap: 0;
+    padding: 0;
+  }
+
+  .stage-image {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: 430px;
+    width: 100% !important;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    z-index: auto;
+    display: block !important;
+  }
+
+  .stage-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .stage-text {
+    position: static;
+    z-index: auto;
+  }
+
+  .stage-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .stage-text .subtitle {
+    font-size: 1rem;
+  }
+
+  .stage-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  /* 2) Force both children to fill 100% of that container */
+  .stage-image,
+  .stage-text {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* 3) Make sure the image comes first (if you want image on top),
+     otherwise remove these two lines to preserve source order */
+  .stage-image {
+    order: 2 !important;
+  }
+  .stage-text {
+    order: 1 !important;
+  }
+
+  /* 4) Your existing sizing for the image */
+  .stage-image {
+    height: 430px !important;
+  }
+  .stage-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Small mobile (≤480px) */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 16px;
+  }
+  
+  .hawaa-header.header-fixed .header-container {
+    padding: 0 36px 0 16px;
+  }
+  
+  .header-logo img {
+    height: 120px;
+  }
+  
+  .hawaa-header.header-fixed .header-logo img {
+    height: 120px;
+  }
+  
+  .hero-text {
+    padding: 80px 20px 32px 20px;
+    height: auto; /* Override the 100vh */
+    min-height: auto; /* Override the 600px */
+    margin-bottom: 24px; /* Add 24px gap between containers */
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-copy {
+    font-size: 0.9rem;
+  }
+  
+  .hero-media img {
+    height: 100%; /* Change from 250px to 100% */
+    /* border-radius and other properties will inherit from the 768px rule */
+  }
+  
+  .nav-panel {
+    width: 100%;
+  }
+
+  /* Further adjust scrolling image for small mobile */
+  .filter-text-section {
+    margin: 48px 0;
+    padding: 32px 0; /* Good breathing space for small mobile */
+  }
+  
+  .filter-text-image {
+    height: 204px !important; /* Set to 204px */
+    width: auto;
+    object-fit: contain;
+  }
+  
+  .scrolling-images {
+    animation-duration: 15s; /* Fastest for small mobile */
+  }
+
+  .stage-text {
+    padding: 0 16px 20px 16px;
+  }
+
+  .stage-text h2 {
+    font-size: 1.4rem;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+  }
+}

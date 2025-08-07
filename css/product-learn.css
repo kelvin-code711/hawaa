@@ -111,50 +111,19 @@ body {
   position: relative;
   width: 100%;
   height: 100vh;
+  min-height: 600px;
   overflow: hidden;
 }
 
-.video-container {
+.hero-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
-}
-
-.hero-video {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   filter: brightness(0.7);
-}
-
-.video-control {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-
-.video-control svg {
-  width: 20px;
-  height: 20px;
-  stroke: #fff;
-}
-
-.video-control:hover {
-  background: rgba(255, 255, 255, 0.3);
+  z-index: -1;
 }
 
 .hero-content {
@@ -187,15 +156,6 @@ body {
   font-size: clamp(1.125rem, 2vw, 1.5rem);
   margin-bottom: 24px;
   opacity: 0.9;
-  color: #fff;
-}
-
-.hero-description {
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 0;
-  opacity: 0.8;
   color: #fff;
 }
 
@@ -236,13 +196,6 @@ body {
   color: #fff;
 }
 
-.product-variant {
-  font-weight: 400;
-  font-size: 0.875rem;
-  opacity: 0.8;
-  margin: 0;
-}
-
 .buy-button {
   background: #fff;
   color: #000;
@@ -260,253 +213,192 @@ body {
   background: rgba(255, 255, 255, 0.9);
 }
 
-/* Features Section - Horizontal Scroll */
-.features-section {
-  /* instead of height:100vh; padding:24px 0; */
-  min-height: 100vh !important;             /* still fills the screen at minimum */
-  height: auto !important;                  /* lets it grow/shrink with content */
-  padding: 0 !important;
-  margin: 0;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-  gap: 12px;
-}
-
-.features-section::-webkit-scrollbar {
-  display: none;
-}
-
-.features-section {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.feature-slide {
-  width: calc(100vw - 40px);
-   height: 100vh     !important;
-  min-height: 500px;
-  flex: 0 0 auto;
+/* Feature Overview Section */
+#feature-overview {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  scroll-snap-align: center;
-  margin: 0px;
-  border-radius: 24px;
   overflow: hidden;
-  /* Removed box-shadow */
+  padding: 40px 0;
 }
 
-.feature-image {
-  position: absolute;
+/* Slider Grid */
+#feature-overview .slides {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1160px;
+  column-gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 200px;
+  scroll-behavior: smooth;
+}
+
+/* Individual Slide */
+#feature-overview .slide {
+  position: relative;
+  scroll-snap-align: center;
+  width: 100%;
+  height: 625px;
+  background: #ddd;
+  border-radius: 24px;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  opacity: 1 !important;
+}
+
+#feature-overview .slide img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 1;
-  border-radius: 24px;
-  /* Removed any shadow effects */
 }
 
-.feature-content {
-  position: relative;
-  z-index: 2;
-  max-width: 90%;
-  text-align: left;
-  padding: 30px;
-  margin: 20px;
-  color: #000;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 16px;
-  /* Removed backdrop-filter */
-}
-
-.feature-content h2 {
-  font-weight: 600;
-  font-size: clamp(1.8rem, 4vw, 3.5rem);
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-
-.feature-content p {
-  font-weight: 400;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  line-height: 1.4;
-  padding: 10px 16px;
-  border-radius: 8px;
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-/* Clean Dot Navigation */
-.dotnav-container {
-  position: fixed;
-  bottom: 48px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  z-index: 10;
+/* Headline */
+#feature-overview .headline {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 12px;
+  color: #132a39;
+  font-size: 1.5rem;
+  transform: translateX(-100%);
   opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 2;
+}
+#feature-overview .slide.active .headline {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-.dotnav {
-  background-color: rgba(29, 29, 31, 0.6);
-  border-radius: 24px;
-  padding: 8px 16px;
-}
-
-.dotnav-items {
+/* Dot Nav (sticky within the section) */
+#feature-overview .dot-nav {
+  position: sticky;
+  bottom: 16px;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 12px;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(29,29,31,0.6);
+  border-radius: 20px;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
 }
-
-.dotnav-link {
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #a1a1a2;
-  transition: all 0.3s ease;
-}
-
-.dotnav-link.active {
-  width: 20px;
-  height: 10px;
-  border-radius: 5px;
-  background-color: #ffffff;
-}
-
-.features-section.in-view .dotnav-container {
+#feature-overview.in-view .dot-nav {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Closer Look Section */
+/* Dots */
+#feature-overview .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(29,29,31,0.6);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+#feature-overview .dot:hover {
+  background-color: rgba(0,0,0,0.54);
+}
+#feature-overview .dot.active {
+  background-color: #29292a;
+}
+
 .closer-look-section {
-  background-color: #fff;
-  width: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding-top: 24px;              /* you can re-add padding inside via .container if you need it */
+  padding: 40px 0;
 }
-
-.closer-look-section .container {
-  max-width: 100%;
-  margin: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-bottom: 24px;
-  box-sizing: border-box;
-}
-
-.closer-look-heading {
-  text-align: left;
-  padding-left: 24px;
-  margin-bottom: 40px;
-  color: #000; /* Dark color for contrast on white background */
-}
-
 .closer-look-title {
+  font-size: 2rem;
   font-weight: 600;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.2;
+  padding-left: calc((100vw - 1160px) / 2);
   margin-bottom: 16px;
 }
 
-.closer-look-section .slider-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.closer-look-section .slider-container {
+/* wrapper to hold scrolling & controls */
+.closer-look-wrapper {
   position: relative;
   overflow: visible;
-  margin: 0 24px;
-  box-sizing: border-box;
 }
 
-.closer-look-section .slider {
-  display: flex;
-  transition: transform 0.5s ease;
-  padding: 0 calc(50vw - 50% - 12px);
-  scroll-padding: 0 calc(50vw - 50%);
+/* scrollable grid + snap */
+.closer-look-container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1160px;
+  gap: 20px;
+  padding: 0 calc((100vw - 1160px) / 2);
+  box-sizing: content-box;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-.closer-look-section .slide {
-  flex: 0 0 calc(100% - 48px);
-  margin: 0 0px;
-  position: relative;
-  border-radius: 32px;
+/* each slide centers on snap */
+.slide {
+  width: 1160px;
+  height: 680px;
+  border-radius: 24px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  opacity: 0.7;
-  transform: scale(0.95);
+  scroll-snap-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-.closer-look-section .slide.active {
-  opacity: 1;
-  transform: scale(1);
-  margin: 0px;
-}
-
-.closer-look-section .slide-img {
+.slide img {
   width: 100%;
-  height: 540px;
+  height: 100%;
   object-fit: cover;
-  display: block;
-  border-radius: 32px;
 }
 
-.closer-look-section .two-images {
-  display: flex;
+/* two-image layout */
+.two-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
   width: 100%;
-  gap: 12px;
+  height: 100%;
+}
+.two-items img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
 }
 
-.closer-look-section .two-images .slide-img {
-  width: calc(50% - 6px);
-  height: 540px;
-}
-
-.closer-look-section .slider-nav {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
+/* fixed Prev/Next */
+.closer-look-controls {
+  bottom: 10px;
   margin-top: 24px;
-  padding-right: 30px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: right;
+  z-index: 10;
 }
 
-.closer-look-section .nav-btn {
-  width: 48px;
-  height: 48px;
+.closer-look-controls button {
+  background: #fff;
+  border: 1px solid #ddd;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.1);
-  border: none;
-  cursor: pointer;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.closer-look-section .nav-btn:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.closer-look-section .nav-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: rgba(0, 0, 0, 0.05);
+.closer-look-controls svg {
+  display: block;
 }
 
 /* Circles Section */
@@ -514,14 +406,13 @@ body {
   display: flex;
   position: relative;
   width: 100%;
-  height: 2000px;
-  min-height: 800px;
-  max-height: 2000px;
+  min-height: auto;
   overflow: hidden;
   background: #132a39;
   background-image: 
     radial-gradient(ellipse at 20% 20%, rgba(130, 202, 222, 0.1) 0%, transparent 70%),
     radial-gradient(ellipse at 80% 80%, rgba(181, 225, 236, 0.1) 0%, transparent 70%);
+    padding-bottom: 80px; /* Added padding to ensure space for content */
 }
 
 .circles-section::before,
@@ -536,8 +427,8 @@ body {
 }
 
 .circles-section::before {
-  width: 600px;
-  height: 600px;
+  width: 300px;
+  height: 300px;
   background: rgba(130, 202, 222, 0.3);
   top: 20%;
   left: 10%;
@@ -545,8 +436,8 @@ body {
 }
 
 .circles-section::after {
-  width: 800px;
-  height: 800px;
+  width: 400px;
+  height: 400px;
   background: rgba(181, 225, 236, 0.2);
   bottom: 15%;
   right: 10%;
@@ -586,9 +477,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  z-index: 3;
-  padding-top: 120px;
-  padding-bottom: 80px;
+  z-index: 10;
+  padding: 80px 20px 40px; /* Adjusted padding for better mobile spacing */
 }
 
 .text-content {
@@ -618,7 +508,7 @@ body {
   width: 100%;
   max-width: 1000px;
   padding: 0px;
-  margin: 0 auto 40px;
+  margin: 0 auto 20px;
   position: relative;
   overflow: hidden;
 }
@@ -626,10 +516,12 @@ body {
 .feature-image {
   width: 100%;
   height: auto;
-  max-height: 1000px;
+  max-height: 1200px;
   object-fit: contain;
   border-radius: 0px;
   position: relative;
+  z-index: 10;
+  opacity: 1;
 }
 
 .feature-image::after {
@@ -659,6 +551,7 @@ body {
   transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
   z-index: 1;
+  pointer-events: none; /* Allows interaction with content above */
 }
 
 .circle {
@@ -759,7 +652,7 @@ body {
   margin: 40px auto 0;
   padding: 0 20px;
   text-align: center;
-  z-index: 3;
+  z-index: 20;
 }
 
 .performance-headline {
@@ -772,7 +665,7 @@ body {
 
 .performance-description {
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
   margin: 0 auto;
@@ -793,13 +686,111 @@ body {
   transition: all 0.8s ease;
 }
 
+/* —————————————————————————— */
+/*  Feature Tiles (Centered, No Scroll) */
+/* —————————————————————————— */
+
+.feature-tiles {
+  padding: 5.125rem 0; /* 0 padding on sides, only top/bottom */
+  background: #fff;
+  font-family: Outfit, Helvetica, Arial, sans-serif;
+  color: rgba(0, 0, 0, 0.88);
+  max-width: 1312px; /* (654px * 2) + 4px gap */
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.feature-tiles .tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 654px);
+  gap: 4px;
+  margin: 0 4px; /* 4px margin on both sides */
+}
+
+/* Tile Structure */
+.feature-tiles .tile-card {
+  height: 678px;
+  background: #e5f6f9;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem; /* Increased base padding */
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Text Content - Top Aligned with adjustable spacing */
+.feature-tiles .tile-text {
+  width: 100%;
+  padding: 1rem 0; /* Adjustable vertical padding */
+  margin: 0 0 2rem 0; /* Adjustable margin bottom */
+}
+
+.feature-tiles .tile-text h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0; /* Adjustable margin bottom */
+  color: #132a39;
+  padding: 0 1rem; /* Adjustable horizontal padding */
+}
+
+.feature-tiles .tile-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #132a39;
+  margin: 0 0 1.5rem 0; /* Adjustable margin bottom */
+  padding: 0 1.5rem; /* Adjustable horizontal padding */
+}
+
+/* Visual Container - Bottom Center */
+.feature-tiles .tile-visual {
+  width: 100%;
+  position: absolute;
+  bottom: 2rem; /* Adjustable distance from bottom */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 360px; /* Fixed height as requested */
+  padding: 0 2rem; /* Adjustable horizontal padding */
+  box-sizing: border-box;
+}
+
+/* Image Styles - Adjustable size */
+.feature-tiles .tile-visual img {
+  height: 360px; /* Fixed height as requested */
+  width: auto; /* Width will adjust proportionally */
+  max-width: 100%; /* Ensures image doesn't overflow container */
+  object-fit: contain;
+  display: block;
+}
+
+/* Staggered Effect */
+.feature-tiles .tiles-grid > .tile-card:nth-child(2n) {
+  transform: translateY(4.875rem);
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
-  .feature-content {
-    max-width: 60%;
-    padding: 40px;
+  .circles-section {
+    padding-bottom: 120px;
   }
-  
+  .content-container {
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+  .image-container {
+    max-width: 80%;
+    margin-bottom: 32px;
+  }
+  .performance-content {
+    max-width: 90%;
+    margin: 32px auto 0;
+    padding: 0 16px;
+  }
   .closer-look-section .slide {
     flex: 0 0 calc(50% - 6px);
   }
@@ -811,101 +802,188 @@ body {
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    height: 90vh;
+    min-height: 500px;
+  }
   .hero-content {
     flex-direction: column;
     align-items: flex-start;
-    gap: 30px;
-    padding: 0 20px;
+    gap: 40px;
     bottom: 40px;
+    padding: 0 24px;
   }
-  
+  .hero-text {
+    max-width: 100%;
+  }
   .product-container {
     width: 100%;
+    border-radius: 50px;
   }
-  
   .product-card {
-    gap: 16px;
+    gap: 24px;
   }
   
-  .feature-slide {
-    width: calc(100vw - 30px);
-    height: calc(100vh - 100px);
-    margin: 15px 0;
-    border-radius: 20px;
-    /* No background container */
+  #feature-overview .slides {
+    grid-auto-columns: 356px;
+    padding: 0 40px 0 20px;
   }
-
-  .feature-image {
-    border-radius: 20px;
-    /* No shadow or background */
-  }
-
-  .feature-content {
-    max-width: 85%;
-    padding: 25px;
-    margin: 15px;
-    border-radius: 14px;
-    /* Removed any mobile-specific background */
-  }
-
-  .feature-content h2 {
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-  }
-
-  .feature-content p {
-    font-size: clamp(0.9rem, 3vw, 1.2rem);
-  }
-
-  .dotnav-container {
-    bottom: 30px;
-  }
-
-  .dotnav {
-    padding: 6px 14px;
-    border-radius: 20px;
-  }
-
-  .dotnav-link {
-    width: 8px;
-    height: 8px;
-  }
-
-  .dotnav-link.active {
-    width: 16px;
-    height: 8px;
+  #feature-overview .slide {
+    height: 480px;
   }
   
-  .closer-look-section .slide {
-    flex: 0 0 calc(100% - 32px);
-    margin: 0 8px;
+  .closer-look-title {
+    padding-left: 20px;
+  }
+  .closer-look-container {
+    grid-auto-columns: 356px;
+    padding: 0 calc((100vw - 356px) / 2);
+  }
+  .slide {
+    height: 480px;
+    width: auto;
+  }
+  .two-items {
+    grid-template-columns: 1fr;
+  }
+  .two-items img {
+    width: 356px;
+    height: 240px;
+    margin: 0 auto;
   }
   
-  .closer-look-section .slide.active {
-    margin: 0 16px;
+  .circles-section {
+    height: auto !important;
+    overflow: hidden !important;
+    padding-bottom: 60px;
   }
-  
-  .closer-look-section .slide-img,
-  .closer-look-section .two-images .slide-img {
-    height: 300px;
+
+  .circle-container {
+    top: 400px;
+    height: 400px;
+  }
+  .circle-1, .circle-2, .circle-3, .circle-4 {
+    min-width: 1000px;
+    min-height: 1000px;
+    max-width: 800px;
+    max-height: 800px;
   }
   
   .content-container {
-    padding-top: 80px;
+    padding-bottom: 40px;
   }
   
-  .circle-1, .circle-2, .circle-3, .circle-4 {
-    min-width: 900px;
-    min-height: 900px;
+  .content-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 16px 40px;
   }
+  .text-content {
+    margin-bottom: 24px;
+    padding: 0;
+  }
+  .headline {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+  }
+  .subhead {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+  .image-container {
+    width: 100%;
+    max-width: auto;
+    margin-bottom: 24px;
+  }
+  .feature-image {
+    width: 100%;
+    height: auto;
+  }
+  .performance-content {
+    margin: 24px auto;
+    padding: 0 20px;
+    width: 100%;
+  }
+  .performance-headline {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+  .performance-description {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  
+  .feature-tiles .tiles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;              /* 4px between rows */
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 16px; /* give it some horizontal breathing room */
+  }
+
+  /* 1. Remove the desktop stagger */
+  .feature-tiles .tiles-grid > .tile-card:nth-child(2n) {
+    transform: none !important;
+  }
+
+  .feature-tiles .tile-card {
+    width: 100%;
+    max-width: 418px; /* if you still want to cap its max size */
+    height: 524px;         /* fixed height */
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;         /* tighten up */
+    box-sizing: border-box;
+    position: relative;    /* needed for flex + margin-auto push */
+    overflow: hidden;
+  }
+
+  .feature-tiles .tile-text {
+    margin: 0 0 1rem 0;
+    padding: 0.5rem 1rem;
+  }
+
+  /* 2. Make the visual static and push it down */
+  .feature-tiles .tile-visual {
+    position: static;
+    margin-top: auto;      /* pushes to bottom of the flex column */
+    height: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    padding: 0 1rem;
+  }
+
+  .feature-tiles .tile-visual img {
+    max-height: 200px;     /* keeps image from blowing out the card */
+    width: auto;
+    object-fit: contain;
+  }
+
+  
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 2rem;
+  .hero-section {
+    height: 85vh;
+    min-height: 400px;
   }
-  
-  .hero-subtitle {
-    font-size: 1.125rem;
+  .hero-content {
+    bottom: 30px;
+    padding: 0 16px;
+    gap: 32px;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+  }
+  .product-container {
+    padding: 10px 16px;
+    border-radius: 40px;
+  }
+  .buy-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
   
   .feature-slide {
@@ -946,16 +1024,41 @@ body {
     height: 200px;
   }
   
+  .content-container {
+    padding: 40px 12px 32px;
+  }
+  .headline {
+    font-size: 1rem;
+  }
+  .subhead {
+    font-size: 1.5rem;
+  }
+  .circles-section {
+    padding-bottom: 40px;
+  }
+  
+  .content-container {
+    padding: 40px 12px 32px;
+  }
+  /* Further reduce circle sizes for small devices */
+  .circle-1, .circle-2, .circle-3, .circle-4 {
+    min-width: 600px;
+    min-height: 600px;
+    max-width: 600px;
+    max-height: 600px;
+  }
+  .performance-content {
+    margin: 20px auto;
+    padding: 0 16px;
+  }
   .performance-headline {
     font-size: 1.5rem;
+    margin-bottom: 12px;
   }
   
   .performance-description {
-    font-size: 1.125rem;
-  }
-  
-  .circle-1, .circle-2, .circle-3, .circle-4 {
-    min-width: 700px;
-    min-height: 700px;
+    font-size: 1rem;
+    line-height: 1.4;
+    max-width: 100%;
   }
 }
