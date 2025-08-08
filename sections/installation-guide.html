@@ -9,13 +9,13 @@
 <body>
   <!-- Header outside hero section for true fixed positioning -->
   <header class="site-header">
-    <div class="logo">
-      <img src="../images/logo.svg" alt="Hawaa Logo">
-    </div>
-    <button class="menu-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-  </header>
+  <a href="../index.html" class="logo">  <!-- Add this anchor tag -->
+    <img src="../images/logo.svg" alt="Hawaa Logo">
+  </a>  <!-- Close the anchor tag -->
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
 
   <!-- Dropdown nav outside hero section -->
   <nav class="hero-nav" aria-hidden="true">
@@ -109,8 +109,51 @@
           </div>
         </div>
       </section>
+
+      <section id="plug-position" class="plug-position-section">
+        <div class="section-content">
+          <div class="two-column-layout">
+            <!-- Left Content Column -->
+            <div class="content-column">
+              <h2 class="section-title">
+                Clean air flows better<br>
+                when <span class="highlight-twist">placement</span><br>
+                is right.
+              </h2>
+              
+              <div class="placement-content">
+                <div class="placement-item active" data-image="0">
+                  <div class="placement-text">Keep 30 cm away from walls on all sides</div>
+                </div>
+                <div class="placement-item" data-image="1">
+                  <div class="placement-text">Avoid placing under shelves, curtains, or directly beside furniture</div>
+                </div>
+                <div class="placement-item" data-image="2">
+                  <div class="placement-text">Visual: Room illustration showing correct + incorrect placement</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Images Column -->
+            <div class="images-column">
+              <div class="image-scroller">
+                <div class="placement-image active" data-index="0">
+                  <img src="../images/placement-1.png" alt="Keep 30cm away from walls" loading="lazy">
+                </div>
+                
+                <div class="placement-image" data-index="1">
+                  <img src="../images/placement-2.png" alt="Avoid placing under furniture" loading="lazy">
+                </div>
+                
+                <div class="placement-image" data-index="2">
+                  <img src="../images/placement-3.png" alt="Room illustration showing correct placement" loading="lazy">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
-      <section id="plug-position" class="dummy-section">Plug & Position – Setup & Placement</section>
       <section id="app-pairing" class="dummy-section">App Pairing – Connect & Setup</section>
       <section id="filter-maintenance" class="dummy-section">Filter Maintenance – Care & Cleaning</section>
       <section id="replacing-filter" class="dummy-section">Replacing Filter – Change & Replace</section>

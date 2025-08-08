@@ -6,6 +6,15 @@
 }
 body {
   font-family: 'Outfit', Arial, sans-serif;
+  /* Fix for mobile scrolling issues */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix iOS Safari viewport issues */
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ── Load Outfit Font ── */
@@ -29,6 +38,9 @@ body {
 /* ── Scroll Container ── */
 .scroll-container {
   height: 500vh;
+  /* Ensure scrolling works on mobile */
+  min-height: 500vh;
+  position: relative;
 }
 
 /* ── Hero Section ── */
@@ -38,6 +50,9 @@ body {
   left: 0;
   width: 100%;
   height: 100vh;
+  /* Fix for mobile viewport units */
+  height: 100dvh; /* Dynamic viewport height for modern browsers */
+  min-height: 100vh; /* Fallback */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,7 +62,15 @@ body {
   border-radius: 0;
   transition:
     border-radius 0.1s ease-out,
-    transform 0.1s ease-out;
+    transform 0.1s ease-out,
+    width 0.1s ease-out,
+    height 0.1s ease-out,
+    top 0.1s ease-out,
+    left 0.1s ease-out;
+  /* Improve mobile performance */
+  will-change: transform, width, height, top, left;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .gradient-section::before {
   content: '';
@@ -73,6 +96,10 @@ body {
   text-align: center;
   transform: translateY(0);
   transition: transform 0.1s ease-out;
+  /* Improve mobile performance */
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* ── Fixed Header with Progress Bar ── */
@@ -133,7 +160,7 @@ body {
 }
 .menu-toggle span {
   display: block;
-  width: 100%;
+  width: 24px;
   height: 2px;
   background: #132a39;
   border-radius: 1px;
@@ -165,6 +192,10 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   overflow: hidden;
   z-index: 999 !important;
+  /* Fix for mobile */
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .hero-nav.open {
   transform: translateX(-50%) scaleY(1) !important;
@@ -188,6 +219,9 @@ body {
   position: relative;
   transition: none;
   border-left: 4px solid transparent;
+  /* Improve touch targets */
+  min-height: 64px;
+  justify-content: center;
 }
 .hero-nav a::before {
   content: '';
@@ -284,12 +318,15 @@ body {
 /* ── Filter Installation Section ── */
 .filter-installation-section {
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height */
+  min-height: 100vh; /* Fallback */
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   color: #2d3436;
   padding: 80px 40px 40px;
+  margin-top: 100px;
 }
 
 .section-content {
@@ -300,7 +337,7 @@ body {
 
 .section-title {
   font-size: 4rem;
-  font-weight: 300;
+  font-weight: 400;
   margin-bottom: 3rem;
   color: #2d3436;
   line-height: 1.2;
@@ -321,6 +358,9 @@ body {
   background: #000;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   aspect-ratio: 16/9;
+  /* Improve mobile performance */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .video-container video {
@@ -432,6 +472,126 @@ body {
   color: white;
 }
 
+/* ── Plug & Position Section ── */
+.plug-position-section {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e8f4fd 0%, #d1e7f0 100%);
+  color: #2d3436;
+  padding: 80px 40px 40px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Two Column Layout */
+.two-column-layout {
+  max-width: 1400px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* Left Content Column */
+.content-column {
+  padding-right: 40px;
+}
+
+.content-column .section-title {
+  font-size: 3.5rem;
+  font-weight: 300;
+  margin-bottom: 3rem;
+  color: #2d3436;
+  line-height: 1.2;
+}
+
+.content-column .highlight-twist {
+  color: #2d8fad;
+  font-weight: 600;
+}
+
+/* Placement Content */
+.placement-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.placement-item {
+  padding: 1.5rem 2rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  border-left: 4px solid transparent;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.4s ease;
+  backdrop-filter: blur(10px);
+  display: none;
+}
+
+.placement-item.active {
+  opacity: 1;
+  transform: translateX(0);
+  display: block;
+}
+
+.placement-text {
+  font-size: 1.2rem;
+  color: #2d3436;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Right Images Column */
+.images-column {
+  position: relative;
+  height: 600px;
+  padding-left: 40px;
+}
+
+.image-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.placement-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placement-image.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.placement-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
 /* ── Background Sections ── */
 .background {
   position: fixed;
@@ -439,11 +599,19 @@ body {
   left: 0;
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height */
+  min-height: 100vh; /* Fallback */
   z-index: 1;
+  /* Improve mobile performance */
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .dummy-section {
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height */
+  min-height: 100vh; /* Fallback */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -473,19 +641,64 @@ body {
 }
 
 /* ── Responsive Design ── */
+
+/* Responsive Design for Plug & Position */
+@media (max-width: 1200px) {
+  .two-column-layout {
+    gap: 60px;
+  }
+  
+  .content-column .section-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 968px) {
+  .two-column-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .content-column {
+    padding-right: 0;
+  }
+
+  .images-column {
+    padding-left: 0;
+    height: 400px;
+  }
+
+  .content-column .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .placement-item {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .placement-text {
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .site-header {
     width: calc(100vw - 32px);
+    width: calc(100dvw - 32px); /* Dynamic viewport width */
     max-width: 640px;
   }
   
   .hero-nav {
     width: calc(100vw - 32px);
+    width: calc(100dvw - 32px); /* Dynamic viewport width */
     max-width: 640px;
   }
   
   .gradient-section .content h1 {
     font-size: 3.5rem;
+    padding: 0 20px; /* Add padding to prevent text cutoff */
   }
   
   .section-title {
@@ -496,33 +709,107 @@ body {
   .video-container {
     max-width: 90%;
     border-radius: 32px;
+    margin: 0 auto;
   }
   
   .filter-installation-section {
+    height: 75vh; /* Adjust this value for mobile */
+    height: 75dvh; /* Dynamic viewport height for mobile */
+    min-height: 75vh; /* Fallback for mobile */
     padding: 100px 20px 40px;
   }
-}
 
-@media (max-width: 480px) {
-  .gradient-section .content h1 {
-    font-size: 2.5rem;
+  .plug-position-section {
+    padding: 100px 20px 40px;
+  }
+
+  .two-column-layout {
+    gap: 30px;
+  }
+
+  .content-column .section-title {
+    font-size: 2rem;
+    padding: 0 16px;
+  }
+
+  .images-column {
+    height: 320px;
+  }
+
+  .placement-item {
+    padding: 1rem 1.2rem;
+    margin: 0 16px;
+  }
+
+  .placement-text {
+    font-size: 1rem;
+  }
+
+  .device-icon {
+    width: 60px;
+    height: 45px;
+  }
+
+  .device-icon::after {
+    width: 8px;
+    height: 8px;
   }
   
-  .site-header {
-    padding-right: 16px;
+  /* Improve mobile scrolling */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
   }
   
+  /* Fix mobile navigation spacing */
   .hero-nav a {
-    padding: 14px 20px;
+    padding: 16px 20px;
+    min-height: 72px; /* Larger touch targets */
   }
   
   .hero-nav .step-label,
   .hero-nav .step-title {
-    margin-left: 60px;
+    margin-left: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding-right: 16px;
+    width: calc(100vw - 16px);
+    width: calc(100dvw - 16px); /* Dynamic viewport width */
+  }
+  
+  .hero-nav {
+    width: calc(100vw - 16px);
+    width: calc(100dvw - 16px); /* Dynamic viewport width */
+  }
+  
+  .gradient-section .content h1 {
+    font-size: 2.5rem;
+    padding: 0 16px;
+  }
+  
+  .hero-nav a {
+    padding: 14px 16px;
+    min-height: 68px;
+  }
+  
+  .hero-nav .step-label,
+  .hero-nav .step-title {
+    margin-left: 68px;
+  }
+  
+  .hero-nav .step-label {
+    font-size: 0.7rem;
+  }
+  
+  .hero-nav .step-title {
+    font-size: 1rem;
   }
   
   .section-title {
     font-size: 2rem;
+    padding: 0 16px;
   }
   
   .play-pause-btn {
@@ -545,5 +832,105 @@ body {
   .mute-btn svg {
     width: 16px;
     height: 16px;
+  }
+  
+  .filter-installation-section {
+    height: 50vh; /* Even shorter for small screens */
+    height: 50dvh;
+    min-height: 50vh;
+    padding: 80px 16px 20px;
+  }
+  
+  .video-container {
+    border-radius: 20px;
+  }
+
+  .plug-position-section {
+    padding: 80px 16px 20px;
+  }
+
+  .content-column .section-title {
+    font-size: 1.8rem;
+    padding: 0 8px;
+  }
+
+  .images-column {
+    height: 280px;
+  }
+
+  .placement-item {
+    margin: 0 8px;
+    padding: 0.9rem 1rem;
+  }
+
+  .placement-text {
+    font-size: 0.95rem;
+  }
+
+  .image-scroller {
+    border-radius: 16px;
+  }
+}
+
+/* ── Mobile-specific fixes for iOS Safari ── */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific fixes */
+  .gradient-section,
+  .background,
+  .dummy-section,
+  .filter-installation-section,
+  .plug-position-section {
+    height: 100vh;
+    /* Fallback to regular vh for older iOS versions */
+  }
+  
+  /* Modern iOS Safari with dvh support */
+  @supports (height: 100dvh) {
+    .gradient-section,
+    .background, 
+    .dummy-section,
+    .filter-installation-section,
+    .plug-position-section {
+      height: 100dvh;
+    }
+  }
+}
+
+/* ── Performance optimizations for mobile ── */
+@media (max-width: 768px) {
+  /* Reduce motion for performance */
+  .gradient-section,
+  .gradient-section .content h1,
+  .background {
+    transition: none;
+  }
+  
+  /* Simplified gradients for mobile */
+  .gradient-section::before {
+    background: linear-gradient(135deg, #287392 0%, #132a39 100%);
+    filter: none; /* Remove blur for performance */
+  }
+  
+  /* Simpler video controls hover states */
+  .video-controls {
+    opacity: 1; /* Always show on mobile */
+  }
+  
+  .video-container:hover .video-controls {
+    opacity: 1;
+  }
+
+  /* Performance optimizations for Plug & Position */
+  .placement-image {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .placement-item {
+    transition: all 0.3s ease;
+  }
+
+  .airflow-lines {
+    animation: none;
+    opacity: 0.5;
   }
 }
