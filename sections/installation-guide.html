@@ -3,71 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gradient Hero Parallax</title>
+  <title>Hawaa Champion - Installation Guide</title>
   <link rel="stylesheet" href="../css/installation-guide.css">
 </head>
 <body>
   <!-- Header outside hero section for true fixed positioning -->
   <header class="site-header">
-  <a href="../index.html" class="logo">  <!-- Add this anchor tag -->
-    <img src="../images/logo.svg" alt="Hawaa Logo">
-  </a>  <!-- Close the anchor tag -->
-  <button class="menu-toggle" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
-</header>
+    <a href="../index.html" class="logo">
+      <img src="../images/logo.svg" alt="Hawaa Logo">
+    </a>
+    <button class="menu-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
 
   <!-- Dropdown nav outside hero section -->
   <nav class="hero-nav" aria-hidden="true">
-    <ul>
-      <li>
-        <a href="#filter-installation">
-          <span class="step-label">Step 1</span>
-          <span class="step-title">Filter Installation (First Time Use)</span>
-        </a>
-      </li>
-      <li>
-        <a href="#plug-position">
-          <span class="step-label">Step 2</span>
-          <span class="step-title">Plug & Position</span>
-        </a>
-      </li>
-      <li>
-        <a href="#app-pairing">
-          <span class="step-label">Step 3</span>
-          <span class="step-title">App Pairing & Setup</span>
-        </a>
-      </li>
-      <li>
-        <a href="#filter-maintenance">
-          <span class="step-label">Step 4</span>
-          <span class="step-title">Filter Maintenance</span>
-        </a>
-      </li>
-      <li>
-        <a href="#replacing-filter">
-          <span class="step-label">Step 5</span>
-          <span class="step-title">Replacing the Filter</span>
-        </a>
-      </li>
-      <li>
-        <a href="#troubleshooting">
-          <span class="step-label">Step 6</span>
-          <span class="step-title">Troubleshooting & Support</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <ul>
+    <li>
+      <a href="#s1">
+        <span class="step-label">Step 1</span>
+        <span class="step-title">Filter Installation</span>
+      </a>
+    </li>
+    <li>
+      <a href="#s2">
+        <span class="step-label">Step 2</span>
+        <span class="step-title">Plug & Position</span>
+      </a>
+    </li>
+    <li>
+      <a href="#s3">
+        <span class="step-label">Step 3</span>
+        <span class="step-title">App Pairing</span>
+      </a>
+    </li>
+    <li>
+      <a href="#s4">
+        <span class="step-label">Step 4</span>
+        <span class="step-title">Filter Maintenance</span>
+      </a>
+    </li>
+    <li>
+      <a href="#s5">
+        <span class="step-label">Step 5</span>
+        <span class="step-title">Replace Filter</span>
+      </a>
+    </li>
+    <li>
+      <a href="#s6">
+        <span class="step-label">Support</span>
+        <span class="step-title">Troubleshooting</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
-  <div class="scroll-container">
-    <section class="gradient-section">
-      <div class="content">
+  <!-- Fullscreen hero wrapped so it sticks until fully scrolled -->
+  <div class="hero-wrap">
+    <section id="hero" class="hero gradient-section">
+      <div class="hero-inner content">
         <h1>Unboxing<br>Your<br>Hawaa<br>Champion</h1>
+        <p>Scroll to begin your journey ↓</p>
       </div>
     </section>
-    
+  </div>
+
+  <!-- Normal, separate sections in order -->
+  <main id="content" class="scroll-container">
+    <div class="background-spacer" aria-hidden="true"></div>
     <div class="background">
-      <section id="filter-installation" class="filter-installation-section">
+      
+      <!-- Section 1: Filter Installation -->
+      <section id="s1" class="stage filter-installation-section">
         <div class="section-content">
           <h2 class="section-title">
             Slide. <span class="highlight-twist">Twist</span>. Lock.
@@ -110,7 +118,8 @@
         </div>
       </section>
 
-      <section id="plug-position" class="plug-position-section">
+      <!-- Section 2: Plug & Position -->
+      <section id="s2" class="stage plug-position-section">
         <div class="section-content">
           <div class="two-column-layout">
             <!-- Left Content Column -->
@@ -153,13 +162,145 @@
           </div>
         </div>
       </section>
-      
-      <section id="app-pairing" class="dummy-section">App Pairing – Connect & Setup</section>
-      <section id="filter-maintenance" class="dummy-section">Filter Maintenance – Care & Cleaning</section>
-      <section id="replacing-filter" class="dummy-section">Replacing Filter – Change & Replace</section>
-      <section id="troubleshooting" class="dummy-section">Troubleshooting – Support & Help</section>
+
+      <!-- Section 3: App Pairing & Setup -->
+      <section id="s3" class="stage app-pairing-section">
+        <!-- Section Title -->
+        <div class="app-section-header">
+          <h2 class="section-title">
+            App Pairing & <span class="highlight-twist">Setup</span>
+          </h2>
+          <p class="section-subtitle">Smart in seconds.</p>
+        </div>
+
+        <!-- Full Width Video Background -->
+        <div class="app-video-container">
+          <video id="app-pairing-video" preload="metadata" muted loop>
+            <source src="../images/app-video.mp4" type="video/mp4">
+            <source src="../videos/app-pairing.webm" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Download Guide Button -->
+        <div class="download-guide">
+          <button class="download-btn">
+            <svg class="download-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10,9 9,9 8,9"/>
+            </svg>
+            Download Setup Guide
+          </button>
+        </div>
+      </section>
+
+     <!-- Section 5: Filter Maintenance -->
+<section id="s5" class="stage filter-maintenance-section">
+  <div class="section-content">
+    <div class="two-column-layout">
+      <!-- Left Image Column -->
+      <div class="images-column">
+        <div class="maintenance-image-container">
+          <img src="../images/maintenance-filter.png" alt="Filter maintenance guide" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Right Content Column -->
+      <div class="content-column">
+        <h2 class="section-title">
+          Stay fresh, <span class="highlight-twist">effortlessly.</span>
+        </h2>
+        
+        <div class="maintenance-content">
+          <div class="maintenance-list">
+            <div class="maintenance-item">
+              <div class="maintenance-bullet">•</div>
+              <div class="maintenance-text">
+                <strong>Pre-filter:</strong> Wash monthly under running water, let it dry completely before reinstalling
+              </div>
+            </div>
+            
+            <div class="maintenance-item">
+              <div class="maintenance-bullet">•</div>
+              <div class="maintenance-text">
+                <strong>HEPA & Carbon:</strong> Do not wash; replace every 9–12 months
+              </div>
+            </div>
+            
+            <div class="maintenance-item">
+              <div class="maintenance-bullet">•</div>
+              <div class="maintenance-text">
+                <strong>Filter replacement indicator</strong> will notify via app and control panel
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</section>
+
+      <!-- Section 5: Replacing the Filter -->
+<section id="s4" class="stage replacing-filter-section">
+  <div class="replacing-header">
+    <h2 class="section-title">Replacing the<span class="highlight-twist"> Filter</span></h2>
+    <p class="section-subtitle">Fresh filters for continuous pure air.</p>
+  </div>
+  
+  <div class="replacing-container">
+    <div class="replacing-image-container">
+      <div class="replacing-image active" data-index="0">
+        <img src="../images/replacement-1.png" alt="Filter replacement step 1" loading="lazy">
+      </div>
+      
+      <div class="replacing-image" data-index="1">
+        <img src="../images/replacement-2.png" alt="Filter replacement step 2" loading="lazy">
+      </div>
+      
+      <div class="replacing-image" data-index="2">
+        <img src="../images/replacement-3.png" alt="Filter replacement step 3" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+      <section id="s6" class="stage troubleshooting-section">
+    <div class="section-content">
+      <h2 class="section-title">
+        Got <span class="highlight-twist">questions</span>?<br>
+        We're just a tap away.
+      </h2>
+
+      <div class="support-links">
+        <a href="#faq" class="support-link">
+          <span class="support-link-text">FAQ</span>
+          <svg class="support-link-arrow" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          </svg>
+        </a>
+
+        <a href="#warranty" class="support-link">
+          <span class="support-link-text">Warranty</span>
+          <svg class="support-link-arrow" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          </svg>
+        </a>
+
+        <a href="#contact" class="support-link">
+          <span class="support-link-text">Contact Support</span>
+          <svg class="support-link-arrow" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+    </div>
+  </main>
 
   <script src="../js/installation-guide.js"></script>
 </body>
