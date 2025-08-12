@@ -55,12 +55,22 @@
     border-bottom: 1px solid #e5e5e5;
     background: transparent;
     margin: 0px;
-    overflow: visible;
+    overflow: hidden;
     width: 100%;
+    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 #faq-section .faq-item:last-child {
     border-bottom: none;
+}
+
+/* Hide default details marker */
+#faq-section .faq-item summary {
+    list-style: none;
+}
+
+#faq-section .faq-item summary::-webkit-details-marker {
+    display: none;
 }
 
 #faq-section .faq-question {
@@ -79,7 +89,7 @@
     border: none;
     width: 100%;
     text-align: left;
-    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     line-height: 1.3;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -90,16 +100,12 @@
     color: #333333;
 }
 
-#faq-section .faq-question:hover .faq__icon {
+#faq-section .faq-question:hover .faq-icon {
     background-color: #333333;
     transform: scale(1.05);
 }
 
-#faq-section .faq-question::-webkit-details-marker {
-    display: none;
-}
-
-/* Plus/Minus Icon */
+/* Plus/Minus Icon - Filled background with smooth transitions */
 #faq-section .faq-icon {
     width: 32px;
     height: 32px;
@@ -107,7 +113,7 @@
     background-color: #222222;
     position: relative;
     flex-shrink: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     cursor: pointer;
     margin-top: 2px;
 }
@@ -117,7 +123,8 @@
     content: '';
     position: absolute;
     background: #ffffff;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    border-radius: 1px;
 }
 
 /* Horizontal line (always visible) */
@@ -136,11 +143,21 @@
     transform: translate(-50%, -50%);
     width: 2px;
     height: 12px;
+    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
+/* When open, hide vertical line smoothly and add rotation */
 #faq-section .faq-item[open] .faq-icon::after {
     transform: translate(-50%, -50%) scaleY(0);
     opacity: 0;
+}
+
+#faq-section .faq-item[open] .faq-icon::before {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+#faq-section .faq-item[open] .faq-icon {
+    background-color: #333333;
 }
 
 #faq-section .faq-answer {
@@ -150,15 +167,17 @@
     overflow: hidden;
     opacity: 0;
     max-height: 0px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
     word-wrap: break-word;
     overflow-wrap: break-word;
+    transform: translateY(-15px);
 }
 
 #faq-section .faq-item[open] .faq-answer {
     opacity: 1;
-    max-height: 2000px;
-    animation: slideDown 0.4s ease-out;
+    max-height: 1200px;
+    transform: translateY(0);
+    animation: slideDownSmooth 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 #faq-section .faq-answer p {
@@ -169,25 +188,69 @@
     color: #333333;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+#faq-section .faq-item[open] .faq-answer p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#faq-section .faq-item[open] .faq-answer p:nth-child(1) {
+    transition-delay: 0.2s;
+}
+
+#faq-section .faq-item[open] .faq-answer p:nth-child(2) {
+    transition-delay: 0.3s;
+}
+
+#faq-section .faq-item[open] .faq-answer p:nth-child(3) {
+    transition-delay: 0.4s;
 }
 
 #faq-section .faq-answer p:last-child {
     margin-bottom: 0px;
 }
 
-@keyframes slideDown {
+/* Smooth slide down animation */
+@keyframes slideDownSmooth {
     0% {
         opacity: 0;
         max-height: 0px;
-        transform: translateY(-10px);
+        transform: translateY(-15px);
     }
-    50% {
-        opacity: 0.5;
+    30% {
+        opacity: 0.3;
+    }
+    60% {
+        opacity: 0.7;
     }
     100% {
         opacity: 1;
-        max-height: 2000px;
+        max-height: 1200px;
         transform: translateY(0px);
+    }
+}
+
+/* Smooth slide up animation */
+@keyframes slideUpSmooth {
+    0% {
+        opacity: 1;
+        max-height: 1200px;
+        transform: translateY(0px);
+    }
+    40% {
+        opacity: 0.6;
+    }
+    70% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 0;
+        max-height: 0px;
+        transform: translateY(-15px);
     }
 }
 
@@ -266,11 +329,11 @@
 
     #faq-section .faq-icon::before {
         width: 8px;
-        height: 1px;
+        height: 1.5px;
     }
 
     #faq-section .faq-icon::after {
-        width: 1px;
+        width: 1.5px;
         height: 8px;
     }
 }
