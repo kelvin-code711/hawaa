@@ -776,11 +776,10 @@ body {
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .circles-section {
-    padding-bottom: 120px;
+    padding-bottom: 100px;
   }
   .content-container {
-    padding-top: 100px;
-    padding-bottom: 60px;
+    padding: 60px 20px 50px;
   }
   .image-container {
     max-width: 80%;
@@ -795,9 +794,33 @@ body {
     flex: 0 0 calc(50% - 6px);
   }
   
-  .circle-1, .circle-2, .circle-3, .circle-4 {
+  /* Slightly reduce circle sizes for tablets */
+  .circle-1 {
+    min-width: 1400px;
+    min-height: 1400px;
+    max-width: 1400px;
+    max-height: 1400px;
+  }
+  
+  .circle-2 {
     min-width: 1200px;
     min-height: 1200px;
+    max-width: 1200px;
+    max-height: 1200px;
+  }
+  
+  .circle-3 {
+    min-width: 1000px;
+    min-height: 1000px;
+    max-width: 1000px;
+    max-height: 1000px;
+  }
+  
+  .circle-4 {
+    min-width: 800px;
+    min-height: 800px;
+    max-width: 800px;
+    max-height: 800px;
   }
 }
 
@@ -853,64 +876,78 @@ body {
   }
   
   .circles-section {
-    height: auto !important;
-    overflow: hidden !important;
-    padding-bottom: 60px;
+    padding-bottom: 80px;
+    min-height: 100vh;
   }
-
+  
+  .content-container {
+    padding: 50px 16px 40px;
+    justify-content: center;
+  }
+  
+  .text-content {
+    margin-bottom: 40px;
+  }
+  
+  .image-container {
+    max-width: 90%;
+    margin-bottom: 32px;
+  }
+  
+  .performance-content {
+    max-width: 100%;
+    margin: 32px auto 0;
+    padding: 0 16px;
+  }
+  
   .circle-container {
-    top: 400px;
-    height: 400px;
+    top: -60px;
+    height: 80vh;
   }
-  .circle-1, .circle-2, .circle-3, .circle-4 {
+  
+  /* Mobile circle sizes - maintain visual impact */
+  .circle-1 {
     min-width: 1000px;
     min-height: 1000px;
-    max-width: 800px;
-    max-height: 800px;
+    max-width: 1000px;
+    max-height: 1000px;
+    box-shadow: 
+      inset 0 0 80px rgba(18, 85, 85, 0.8),
+      inset 0 0 40px rgba(130, 202, 222, 0.4),
+      0 0 60px rgba(130, 202, 222, 0.2);
   }
   
-  .content-container {
-    padding-bottom: 40px;
+  .circle-2 {
+    min-width: 850px;
+    min-height: 850px;
+    max-width: 850px;
+    max-height: 850px;
+    box-shadow: 
+      inset 0 0 60px rgba(39, 79, 99, 0.7),
+      inset 0 0 30px rgba(181, 225, 236, 0.3),
+      0 0 40px rgba(181, 225, 236, 0.15);
   }
   
-  .content-container {
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 16px 40px;
+  .circle-3 {
+    min-width: 700px;
+    min-height: 700px;
+    max-width: 700px;
+    max-height: 700px;
+    box-shadow: 
+      inset 0 0 40px rgba(39, 79, 99, 0.6),
+      inset 0 0 20px rgba(130, 202, 222, 0.2),
+      0 0 30px rgba(130, 202, 222, 0.1);
   }
-  .text-content {
-    margin-bottom: 24px;
-    padding: 0;
-  }
-  .headline {
-    font-size: 1.25rem;
-    margin-bottom: 12px;
-  }
-  .subhead {
-    font-size: 2rem;
-    line-height: 1.2;
-  }
-  .image-container {
-    width: 100%;
-    max-width: auto;
-    margin-bottom: 24px;
-  }
-  .feature-image {
-    width: 100%;
-    height: auto;
-  }
-  .performance-content {
-    margin: 24px auto;
-    padding: 0 20px;
-    width: 100%;
-  }
-  .performance-headline {
-    font-size: 1.8rem;
-    margin-bottom: 16px;
-  }
-  .performance-description {
-    font-size: 1.1rem;
-    line-height: 1.5;
+  
+  .circle-4 {
+    min-width: 550px;
+    min-height: 550px;
+    max-width: 550px;
+    max-height: 550px;
+    box-shadow: 
+      inset 0 0 30px rgba(18, 85, 85, 0.5),
+      inset 0 0 15px rgba(181, 225, 236, 0.1),
+      0 0 20px rgba(181, 225, 236, 0.05);
   }
   
   .feature-tiles .tiles-grid {
@@ -1034,31 +1071,110 @@ body {
     font-size: 1.5rem;
   }
   .circles-section {
-    padding-bottom: 40px;
+    padding-bottom: 60px;
+    min-height: 90vh;
   }
   
   .content-container {
     padding: 40px 12px 32px;
   }
-  /* Further reduce circle sizes for small devices */
-  .circle-1, .circle-2, .circle-3, .circle-4 {
-    min-width: 600px;
-    min-height: 600px;
-    max-width: 600px;
-    max-height: 600px;
+  
+  .text-content {
+    margin-bottom: 32px;
   }
+  
+  .headline {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+  
+  .subhead {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  }
+  
+  .circle-container {
+    top: -40px;
+    height: 120vh;
+  }
+  
+  /* Smallest mobile circle sizes */
+  .circle-1 {
+    min-width: 700px;
+    min-height: 700px;
+    max-width: 700px;
+    max-height: 700px;
+    box-shadow: 
+      inset 0 0 60px rgba(18, 85, 85, 0.8),
+      inset 0 0 30px rgba(130, 202, 222, 0.4),
+      0 0 40px rgba(130, 202, 222, 0.2);
+  }
+  
+  .circle-2 {
+    min-width: 580px;
+    min-height: 580px;
+    max-width: 580px;
+    max-height: 580px;
+    box-shadow: 
+      inset 0 0 40px rgba(39, 79, 99, 0.7),
+      inset 0 0 20px rgba(181, 225, 236, 0.3),
+      0 0 30px rgba(181, 225, 236, 0.15);
+  }
+  
+  .circle-3 {
+    min-width: 460px;
+    min-height: 460px;
+    max-width: 460px;
+    max-height: 460px;
+    box-shadow: 
+      inset 0 0 30px rgba(39, 79, 99, 0.6),
+      inset 0 0 15px rgba(130, 202, 222, 0.2),
+      0 0 20px rgba(130, 202, 222, 0.1);
+  }
+  
+  .circle-4 {
+    min-width: 340px;
+    min-height: 340px;
+    max-width: 340px;
+    max-height: 340px;
+    box-shadow: 
+      inset 0 0 20px rgba(18, 85, 85, 0.5),
+      inset 0 0 10px rgba(181, 225, 236, 0.1),
+      0 0 15px rgba(181, 225, 236, 0.05);
+  }
+  
   .performance-content {
-    margin: 20px auto;
+    margin: 24px auto 0;
     padding: 0 16px;
   }
+  
   .performance-headline {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
+    font-size: 1.6rem;
+    margin-bottom: 16px;
   }
   
   .performance-description {
     font-size: 1rem;
-    line-height: 1.4;
-    max-width: 100%;
+    line-height: 1.5;
   }
+}
+
+/* Animation states remain the same */
+.circles-section.in-view .circle-1 {
+  transform: scale(1) translateY(0);
+  opacity: 0.9;
+}
+
+.circles-section.in-view .circle-2 {
+  transform: scale(1) translateY(-20px);
+  opacity: 0.8;
+}
+
+.circles-section.in-view .circle-3 {
+  transform: scale(1) translateY(-40px);
+  opacity: 0.7;
+}
+
+.circles-section.in-view .circle-4 {
+  transform: scale(1) translateY(-60px);
+  opacity: 0.6;
 }

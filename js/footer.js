@@ -1,72 +1,66 @@
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Only run mobile accordion if viewport ≤ 767px
-  if (window.innerWidth <= 767) initMobileFooter();
+  const columns = Array.from(document.querySelectorAll('.footer-column[data-accordion]'));
+  const triggers = Array.from(document.querySelectorAll('.accordion-trigger'));
+  const panels = Array.from(document.querySelectorAll('.accordion-panel'));
+  const mobileMQ = window.matchMedia('(max-width: 640px)');
 
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth <= 767) initMobileFooter();
-    }, 150);
-  });
-});
+  function enableAccordions() {
+    columns.forEach(col => col.classList.remove('open'));
+    triggers.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    panels.forEach(panel => panel.style.maxHeight = '0px');
+  }
+  function disableAccordions() {
+    columns.forEach(col => col.classList.add('open'));
+    triggers.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
+    panels.forEach(panel => panel.style.maxHeight = 'none');
+  }
+  function syncMode() {
+    mobileMQ.matches ? enableAccordions() : disableAccordions();
+  }
 
-function initMobileFooter() {
-  // You can replace these with your own icon URLs
-  const expandIcon = 'icons/expand.svg';
-  const collapseIcon = 'icons/collapse.svg';
+  // Toggle on click (mobile only)
+  triggers.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!mobileMQ.matches) return;
+      const col = btn.closest('.footer-column');
+      const panel = col.querySelector('.accordion-panel');
+      const isOpen = col.classList.contains('open');
 
-  // Inject mobile-only CSS for the expand/collapse icons
-  let styleEl = document.getElementById('mobile-footer-icons');
-  if (styleEl) styleEl.remove();
-  styleEl = document.createElement('style');
-  styleEl.id = 'mobile-footer-icons';
-  styleEl.textContent = `
-    @media (max-width: 767px) {
-      .footer-column h3::after {
-        background-image: url("${expandIcon}") !important;
-      }
-      .footer-column.expanded h3::after {
-        background-image: url("${collapseIcon}") !important;
-      }
-    }
-  `;
-  document.head.appendChild(styleEl);
-
-  // Set up each column as a toggle
-  document.querySelectorAll('.footer-column').forEach(col => {
-    const heading = col.querySelector('h3');
-    const list    = col.querySelector('ul');
-    if (!heading || !list) return;
-
-    // remove old listeners
-    const newHeading = heading.cloneNode(true);
-    heading.parentNode.replaceChild(newHeading, heading);
-
-    newHeading.setAttribute('role', 'button');
-    newHeading.setAttribute('tabindex', '0');
-    newHeading.setAttribute('aria-expanded', 'false');
-    list.setAttribute('aria-hidden', 'true');
-    list.style.maxHeight = '0px';
-
-    newHeading.addEventListener('click', e => {
-      e.preventDefault();
-      col.classList.toggle('expanded');
-      const expanded = col.classList.contains('expanded');
-      newHeading.setAttribute('aria-expanded', expanded);
-      list.setAttribute('aria-hidden', !expanded);
-      if (expanded) {
-        list.style.maxHeight = list.scrollHeight + 'px';
+      if (isOpen) {
+        col.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        requestAnimationFrame(() => { panel.style.maxHeight = '0px'; });
       } else {
-        list.style.maxHeight = '0px';
-      }
-    });
-
-    newHeading.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        newHeading.click();
+        // close siblings (single-open)
+        columns.forEach(c => {
+          if (c !== col) {
+            c.classList.remove('open');
+            const p = c.querySelector('.accordion-panel');
+            const t = c.querySelector('.accordion-trigger');
+            if (p) p.style.maxHeight = '0px';
+            if (t) t.setAttribute('aria-expanded', 'false');
+          }
+        });
+        col.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
       }
     });
   });
-}
+
+  // Re-compute open panel heights on resize (mobile)
+  window.addEventListener('resize', () => {
+    if (!mobileMQ.matches) return;
+    document.querySelectorAll('.footer-column.open .accordion-panel').forEach(p => {
+      p.style.maxHeight = p.scrollHeight + 'px';
+    });
+  });
+
+  // Watch breakpoint
+  if (mobileMQ.addEventListener) mobileMQ.addEventListener('change', syncMode);
+  else mobileMQ.addListener(syncMode);
+
+  syncMode();
+});
