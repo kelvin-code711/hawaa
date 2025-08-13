@@ -80,46 +80,61 @@ function initAppleSlider(sectionId) {
   let isDragging = false;
   let isTransitioning = false;
   
+  // Performance optimization variables
+  let lastUpdateTime = 0;
+  const updateThrottle = 16; // 60fps
+  
   /**
    * Updates active classes based on current index
    */
   function updateActiveClasses() {
     const realIndex = currentIndex % slideCount;
     
-    // Update slides
-    slides.forEach(function(slide) {
-      slide.classList.remove('active');
-    });
-    
-    slides.forEach(function(slide, idx) {
-      const slideIndex = parseInt(slide.dataset.index);
-      if (slideIndex === realIndex) {
-        slide.classList.add('active');
-      }
-    });
-    
-    // Update dots
-    dots.forEach(function(dot, idx) {
-      if (idx === realIndex) {
-        dot.classList.add('active');
-      } else {
-        dot.classList.remove('active');
-      }
+    // Batch DOM updates for better performance
+    requestAnimationFrame(() => {
+      // Update slides
+      slides.forEach(function(slide) {
+        slide.classList.remove('active');
+      });
+      
+      slides.forEach(function(slide, idx) {
+        const slideIndex = parseInt(slide.dataset.index);
+        if (slideIndex === realIndex) {
+          slide.classList.add('active');
+        }
+      });
+      
+      // Update dots
+      dots.forEach(function(dot, idx) {
+        if (idx === realIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
     });
   }
   
   /**
-   * FIXED CENTERING CALCULATION WITH RESPONSIVE SUPPORT
+   * ENHANCED CENTERING CALCULATION WITH SMOOTHER PERFORMANCE
    */
   function updateSlidePositions(animate) {
     if (animate === undefined) animate = true;
+    
+    // Throttle updates for better performance
+    const now = performance.now();
+    if (animate && (now - lastUpdateTime) < updateThrottle) {
+      return;
+    }
+    lastUpdateTime = now;
+    
     if (isTransitioning && animate) return;
     
     const containerWidth = container.offsetWidth;
     const slideWidth = slides[0] ? slides[0].offsetWidth : 0;
     if (!slideWidth) return;
     
-    // PERFECT CENTERING CALCULATION
+    // SMOOTHER CENTERING CALCULATION
     const containerCenter = containerWidth / 2;
     const slideCenter = slideWidth / 2;
     
@@ -133,7 +148,7 @@ function initAppleSlider(sectionId) {
     const totalOffset = currentIndex * slideWithGap;
     const centeringOffset = containerCenter - slideCenter - totalOffset;
     
-    // Apply transform with smooth transition
+    // Apply transform with HARDWARE ACCELERATION for smoother animation
     if (animate) {
       isTransitioning = true;
       track.style.transition = `transform ${transitionSpeed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
@@ -145,20 +160,21 @@ function initAppleSlider(sectionId) {
       track.style.transition = 'none';
     }
     
-    track.style.transform = `translateX(${centeringOffset}px)`;
+    // Use translate3d for hardware acceleration and smoother performance
+    track.style.transform = `translate3d(${centeringOffset}px, 0, 0)`;
     
-    // Reset transition for next time
+    // Reset transition for next time with requestAnimationFrame for smoothness
     if (!animate) {
-      setTimeout(function() {
+      requestAnimationFrame(() => {
         track.style.transition = `transform ${transitionSpeed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-      }, 50);
+      });
     }
     
     updateActiveClasses();
   }
   
   /**
-   * Handle infinite loop jumps
+   * Handle infinite loop jumps with smoother transitions
    */
   function handleLoopJump() {
     setTimeout(function() {
@@ -178,7 +194,7 @@ function initAppleSlider(sectionId) {
   }
   
   /**
-   * Go to a specific slide
+   * Go to a specific slide with smoother animation
    */
   function goToSlide(index, animate) {
     if (animate === undefined) animate = true;
@@ -268,7 +284,7 @@ function initAppleSlider(sectionId) {
     });
   });
   
-  // Touch handling for mobile
+  // Enhanced touch handling for smoother mobile experience
   let touchStartX = 0;
   let touchStartY = 0;
   let touchMoved = false;
@@ -328,34 +344,39 @@ function initAppleSlider(sectionId) {
     }
   });
   
-  // Handle window resize
+  // Enhanced resize handling with debouncing for smoother performance
   function handleResize() {
-    setTimeout(function() {
+    requestAnimationFrame(() => {
       updateSlidePositions(false);
-    }, 100);
+    });
   }
   
   let resizeTimer;
   window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(handleResize, 150);
+    resizeTimer = setTimeout(handleResize, 100);
   });
   
   window.addEventListener('orientationchange', function() {
     setTimeout(handleResize, 300);
   });
   
-  // Initialize the slider
-  setTimeout(function() {
-    updateSlidePositions(false);
-    updateActiveClasses();
-    
-    // Make the first dot active
-    if (dots.length > 0) {
-      dots[0].classList.add('active');
-    }
-    
-    // Start autoplay
-    startAutoplay();
-  }, 100);
+  // Initialize the slider with smoother startup
+  function initialize() {
+    requestAnimationFrame(() => {
+      updateSlidePositions(false);
+      updateActiveClasses();
+      
+      // Make the first dot active
+      if (dots.length > 0) {
+        dots[0].classList.add('active');
+      }
+      
+      // Start autoplay
+      startAutoplay();
+    });
+  }
+  
+  // Use requestAnimationFrame for smoother initialization
+  setTimeout(initialize, 100);
 }

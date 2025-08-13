@@ -35,24 +35,26 @@
   font-display: swap;
 }
 
-/* Rest of your CSS remains the same */
+/* ===========================================
+   GLOBAL RESET
+   =========================================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ===========================================
+   HEADER - BASE STYLES (ALL DEVICES)
+   =========================================== */
 .hawaa-header {
   position: sticky;
   top: 0;
-  padding-left: 0px;
-  padding-right: 0;
   background: #ffffff;
   box-shadow: none;
   transition: box-shadow 0.3s ease;
   z-index: 1000;
-  height: 72px;
-  transition: all 0.3s ease;
+  height: 58px; /* FIXED HEIGHT FOR ALL DEVICES */
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   width: 100%;
@@ -70,53 +72,103 @@
   margin: 0 auto;
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
-  padding-left: 0px;
-  padding-right: 0px;
-  height: 100%;
+  padding: 0 16px; /* 16PX MARGIN ON SIDES FOR ALL DEVICES */
+  height: 58px; /* EXPLICIT HEIGHT MATCHING HEADER */
 }
 
 .hawaa-header.scrolled {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-.header-logo img {
-  height: 140px;
-  width: auto;
+/* ===========================================
+   LOGO - ALL DEVICES
+   =========================================== */
+.header-logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
+.header-logo img {
+  height: 32px; /* 32PX LOGO SIZE FOR ALL DEVICES */
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ===========================================
+   HEADER ACTIONS - ALL DEVICES
+   =========================================== */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 16px;
+  height: 100%;
 }
 
+/* ===========================================
+   HAMBURGER BUTTON - ALL DEVICES
+   =========================================== */
 .hamburger-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 12px; /* CREATES 48x48PX TOTAL AREA */
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 48px; /* FIXED BUTTON SIZE FOR ALL DEVICES */
+  height: 48px; /* FIXED BUTTON SIZE FOR ALL DEVICES */
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0; /* PREVENT SHRINKING */
 }
 
+.hamburger-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.hamburger-btn:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ===========================================
+   HAMBURGER ICON - ALL DEVICES
+   =========================================== */
 .hamburger-icon {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
-  height: 18px;
+  width: 24px; /* FIXED ICON SIZE FOR ALL DEVICES */
+  height: 24px; /* FIXED ICON SIZE FOR ALL DEVICES */
+  position: relative;
 }
 
 .hamburger-icon span {
   display: block;
   height: 2px;
-  width: 100%;
+  width: 100%; /* 24px */
   background: #1a1a1a;
   transition: all 0.3s ease;
+  border-radius: 1px;
+  transform-origin: center;
 }
 
-/* Mobile Navigation */
+.hamburger-icon span:nth-child(1) {
+  margin-bottom: 5px;
+}
+
+.hamburger-icon span:nth-child(2) {
+  margin-bottom: 5px;
+}
+
+.hamburger-icon span:nth-child(3) {
+  /* Last child, no margin */
+}
+
+/* ===========================================
+   MOBILE NAVIGATION - BASE STYLES
+   =========================================== */
 .mobile-nav {
   position: fixed;
   top: 0;
@@ -124,8 +176,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  z-index: 1001; /* must be higher than .hawaa-header’s 1000 */
+  z-index: 1001;
   visibility: hidden;
   opacity: 0;
   transition: all 0.3s ease;
@@ -163,6 +214,9 @@
   transform: translateX(0);
 }
 
+/* ===========================================
+   NAVIGATION HEADER
+   =========================================== */
 .nav-header {
   display: flex;
   justify-content: space-between;
@@ -201,6 +255,9 @@
   stroke-width: 2;
 }
 
+/* ===========================================
+   NAVIGATION CONTENT
+   =========================================== */
 .nav-content {
   flex: 1;
   overflow-y: auto;
@@ -263,18 +320,135 @@
   opacity: 1;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
+/* ===========================================
+   MENU OPEN STATE - ALL DEVICES
+   =========================================== */
+body.menu-open {
+  overflow: hidden;
+}
+
+.menu-open .hamburger-icon span:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+
+.menu-open .hamburger-icon span:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.menu-open .hamburger-icon span:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+/* ===========================================
+   DESKTOP DEVICES (1200px and above)
+   =========================================== */
+@media (min-width: 1200px) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
   .header-container {
-    padding: 0 16px;
+    padding: 0 32px; /* LARGER SIDE MARGINS FOR DESKTOP */
+    height: 58px;
   }
   
   .header-logo img {
-    height: 28px;
+    height: 32px; /* MAINTAIN 32PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
   }
   
   .nav-panel {
-    max-width: 85%;
+    max-width: 480px;
+  }
+  
+  .nav-title {
+    font-size: 36px;
+  }
+  
+  .nav-links a {
+    font-size: 22px;
+  }
+}
+
+/* ===========================================
+   LARGE TABLETS & SMALL DESKTOP (992px - 1199px)
+   =========================================== */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
+  .header-container {
+    padding: 0 24px;
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
+  }
+  
+  .nav-panel {
+    max-width: 460px;
+  }
+  
+  .nav-title {
+    font-size: 34px;
+  }
+  
+  .nav-links a {
+    font-size: 21px;
+  }
+}
+
+/* ===========================================
+   TABLETS (768px - 991px)
+   =========================================== */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
+  .header-container {
+    padding: 0 20px;
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
+  }
+  
+  .nav-panel {
+    max-width: 400px;
   }
   
   .nav-header {
@@ -284,15 +458,42 @@
   .nav-section {
     padding: 0 16px;
   }
+  
+  .nav-links a {
+    font-size: 19px;
+  }
 }
 
-@media (max-width: 480px) {
+/* ===========================================
+   LARGE MOBILE (480px - 767px)
+   =========================================== */
+@media (min-width: 480px) and (max-width: 767px) {
   .hawaa-header {
-    height: 60px;
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
+  .header-container {
+    padding: 0 16px; /* MAINTAIN 16PX MARGINS */
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 48px; /* MAINTAIN 48PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
   }
   
   .nav-panel {
-    max-width: 90%;
+    max-width: 85%;
+    border-radius: 24px 0 0 24px;
   }
   
   .nav-title {
@@ -304,19 +505,195 @@
   }
 }
 
-/* Menu Open State */
-body.menu-open {
-  overflow: hidden;
+/* ===========================================
+   SMALL MOBILE (320px - 479px)
+   =========================================== */
+@media (min-width: 320px) and (max-width: 479px) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
+  .header-container {
+    padding: 0 16px; /* MAINTAIN 16PX MARGINS */
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
+  }
+  
+  .nav-panel {
+    max-width: 90%;
+    border-radius: 20px 0 0 20px;
+  }
+  
+  .nav-header {
+    padding: 16px;
+    min-height: 65px;
+  }
+  
+  .nav-title {
+    font-size: 22px;
+  }
+  
+  .nav-section {
+    padding: 14px;
+  }
+  
+  .nav-links a {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+  
+  .section-title {
+    font-size: 12px;
+  }
 }
 
-.menu-open .hamburger-icon span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+/* ===========================================
+   EXTRA SMALL MOBILE (below 320px)
+   =========================================== */
+@media (max-width: 319px) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT */
+  }
+  
+  .header-container {
+    padding: 0 12px; /* SLIGHTLY REDUCED FOR VERY SMALL SCREENS */
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON */
+    height: 24px;
+  }
+  
+  .nav-panel {
+    max-width: 95%;
+    border-radius: 16px 0 0 16px;
+  }
+  
+  .nav-header {
+    padding: 14px;
+    min-height: 60px;
+  }
+  
+  .nav-title {
+    font-size: 20px;
+  }
+  
+  .nav-section {
+    padding: 12px;
+  }
+  
+  .nav-links a {
+    font-size: 15px;
+    padding: 8px 0;
+  }
+  
+  .section-title {
+    font-size: 11px;
+  }
 }
 
-.menu-open .hamburger-icon span:nth-child(2) {
-  opacity: 0;
+/* ===========================================
+   HIGH DPI DISPLAYS (RETINA)
+   =========================================== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO ON RETINA */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON ON RETINA */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON ON RETINA */
+    height: 24px;
+  }
+  
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT ON RETINA */
+  }
 }
 
-.menu-open .hamburger-icon span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+/* ===========================================
+   LANDSCAPE ORIENTATION ON MOBILE
+   =========================================== */
+@media (max-width: 767px) and (orientation: landscape) {
+  .hawaa-header {
+    height: 58px; /* MAINTAIN 58PX HEIGHT IN LANDSCAPE */
+  }
+  
+  .header-container {
+    height: 58px;
+  }
+  
+  .header-logo img {
+    height: 32px; /* MAINTAIN 32PX LOGO IN LANDSCAPE */
+  }
+  
+  .hamburger-btn {
+    width: 48px; /* MAINTAIN 48x48PX BUTTON IN LANDSCAPE */
+    height: 48px;
+  }
+  
+  .hamburger-icon {
+    width: 24px; /* MAINTAIN 24x24PX ICON IN LANDSCAPE */
+    height: 24px;
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY & FOCUS STATES
+   =========================================== */
+.hamburger-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.nav-links a:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nav-icon:focus, .nav-close:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ===========================================
+   REDUCED MOTION PREFERENCES
+   =========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .hawaa-header,
+  .hamburger-icon span,
+  .mobile-nav,
+  .nav-panel,
+  .hamburger-btn,
+  .nav-links a {
+    transition: none;
+  }
 }

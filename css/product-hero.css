@@ -5,12 +5,11 @@
     position: relative;
     overflow: hidden;
     text-align: center;
-    min-height: 100vh;
+    height: 500px;
     background-image: url("../images/hero-desktop.png");
     background-size: cover;
     background-position: center 50% 80%; /* horizontal %, vertical % */
     background-repeat: no-repeat;
-    min-height: 100vh; /* or try 130vh or 150vh */
     padding-top: 16px;
     padding-bottom: 120px;
 }
@@ -22,36 +21,13 @@
     display: none; /* hide for desktop */
 }
 
-@media (max-width: 767px) {
-    .product-hero .hero-img-container {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-
-    .product-hero .hero-img-mobile img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    .product-hero {
-        background-image: none; /* remove desktop background on mobile */
-    }
-}
-
 /********************
  * Content Container
  ********************/
 .product-hero .content-wrapper {
     position: relative;
     z-index: 5;
-    min-height: 100vh;
+    height: 500px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -151,17 +127,55 @@
 }
 
 /********************
+ * Mobile Styles (767px and below)
+ ********************/
+@media (max-width: 767px) {
+    .product-hero {
+        background-image: none !important; /* Force remove desktop background */
+        background-size: auto;
+        background-position: initial;
+        height: 500px;
+    }
+
+    .product-hero .hero-img-container {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 500px;
+        z-index: 1;
+    }
+
+    /* Show only the mobile image (hero-mobile.png) on mobile */
+    .product-hero .hero-img-mobile {
+        display: none !important; /* Hide this because it contains hero-desktop.png */
+    }
+    
+    .product-hero .hero-img-desktop {
+        display: block !important; /* Show this because it contains hero-mobile.png */
+    }
+    
+    .product-hero .hero-img-desktop img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+/********************
  * Desktop Styles (768px+)
  ********************/
 @media (min-width: 768px) {
     .product-hero {
-        min-height: auto;
+        height: 500px;
         display: flex;
         flex-direction: column;
     }
 
     .product-hero .content-wrapper {
-        min-height: auto;
+        height: 500px;
         order: 1;
     }
 
@@ -193,7 +207,14 @@
         font-size: 17px;
     }
 
-    .product-hero .hero-img-desktop {
-        display: none;
+    /* On desktop, hide both image containers and use CSS background */
+    .product-hero .hero-img-desktop,
+    .product-hero .hero-img-mobile {
+        display: none !important;
+    }
+    
+    /* Ensure mobile image container is hidden on desktop */
+    .product-hero .hero-img-container {
+        display: none !important;
     }
 }

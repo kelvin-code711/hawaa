@@ -173,8 +173,13 @@
 
 /* Responsive Styles */
 @media (max-width: 767px) {
+  .rotating-text-section {
+    margin: 0px 0px 24px;
+    padding: 0px 16px;
+  }
+
   .page-width {
-    padding-left: 20px; /* or whatever you want on mobile */
+    padding-left: 0px;
     padding-right: 0;
   }
 }
@@ -206,6 +211,11 @@
 }
 
 @media (max-width: 480px) {
+  .rotating-text-section {
+    margin: 0px 0px 24px;
+    padding: 0px 16px;
+  }
+
   #rotating-text-container {
     font-size: 24px;
     font-weight: 500;

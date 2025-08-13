@@ -1,6 +1,6 @@
 /*************************************
  * APPLE TV+ STYLE SLIDER - HAWAA THEME INTEGRATED *
- * PERFECT CIRCULAR NAVIGATION ARROWS *
+ * ENHANCED FOR SMOOTHER PERFORMANCE *
  *************************************/
 
 /* Base Variables - DESKTOP DEFAULTS */
@@ -26,9 +26,13 @@
   background-color: var(--bg-page);
   overflow: hidden;
   font-family: var(--font-body-family);
+  
+  /* Enhanced for smoother performance */
+  will-change: transform;
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
-/* Container & Track - PERFECT CENTERING */
+/* Container & Track - ENHANCED FOR SMOOTH PERFORMANCE */
 .apple-slider__container {
   position: relative;
   margin: 0 auto;
@@ -50,9 +54,10 @@
   will-change: transform;
   justify-content: flex-start;
   transform-style: preserve-3d;
+  backface-visibility: hidden; /* Smoother transitions */
 }
 
-/* Slide Styling - RESPONSIVE SETTINGS SUPPORT */
+/* Slide Styling - ENHANCED FOR SMOOTH ANIMATIONS */
 .apple-slider__slide {
   flex: 0 0 var(--slide-width);
   position: relative;
@@ -68,9 +73,13 @@
   transform-origin: center;
   user-select: none;
   box-shadow: var(--shadow-lg);
-  backface-visibility: hidden;
+  backface-visibility: hidden; /* Smoother performance */
   margin-right: var(--card-gap);
   background: #05445E;
+  
+  /* Enhanced for smoother GPU rendering */
+  will-change: transform, opacity;
+  transform: translateZ(0) scale(var(--inactive-scale)); /* Force GPU acceleration */
 }
 
 .apple-slider__slide:last-child {
@@ -78,7 +87,7 @@
 }
 
 .apple-slider__slide.active {
-  transform: scale(1);
+  transform: translateZ(0) scale(1); /* Maintain GPU acceleration */
   z-index: 5;
   box-shadow: 0 15px 50px rgba(5, 68, 94, 0.3);
 }
@@ -93,7 +102,7 @@
   transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Slide Content */
+/* Slide Content - OPTIMIZED FOR SMOOTH RENDERING */
 .apple-slider__image,
 .apple-slider__placeholder {
   width: 100%;
@@ -101,6 +110,7 @@
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease-out;
+  backface-visibility: hidden; /* Smoother image transitions */
 }
 
 .apple-slider__slide:hover .apple-slider__image {
@@ -113,12 +123,14 @@
 
 .apple-slider__content {
   position: absolute;
-  top: 50%;
-  left: 4rem;
-  transform: translateY(-50%);
-  max-width: 50%;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
   z-index: 3;
   text-align: left;
+  background: linear-gradient(to top, rgba(5, 68, 94, 0.9), rgba(5, 68, 94, 0.7) 60%, transparent);
+  padding: 2rem;
+  border-radius: 0 0 var(--slide-radius) var(--slide-radius);
 }
 
 .apple-slider__title {
@@ -169,14 +181,14 @@
 
 .apple-slider__logo {
   position: absolute;
-  bottom: 2rem;
-  left: 4rem;
+  top: 2rem;
+  left: 2rem;
   height: 2.8rem;
   z-index: 3;
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
 }
 
-/* Navigation Controls - PERFECT CIRCULAR SHAPE GUARANTEED */
+/* Navigation Controls - SAME DESIGN, OPTIMIZED FOR PERFORMANCE */
 .apple-slider__arrow {
   position: absolute;
   top: 50%;
@@ -211,7 +223,7 @@
   flex-grow: 0;
   aspect-ratio: 1/1;
 
-  /* Interaction styles */
+  /* Enhanced interaction styles for smoother feel */
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
@@ -220,6 +232,10 @@
   -webkit-backdrop-filter: blur(10px);
   user-select: none;
   outline: none;
+  
+  /* Optimized for smooth interactions */
+  will-change: transform, background-color;
+  backface-visibility: hidden;
 }
 
 .apple-slider__arrow:hover {
@@ -345,14 +361,18 @@
   }
 
   .apple-slider__content {
-    left: 0;
     bottom: 0;
-    top: auto;
-    transform: none;
+    left: 0;
+    right: 0;
     padding: 2rem 1.5rem;
-    max-width: 100%;
-    width: 100%;
-    background: linear-gradient(to top, rgba(5, 68, 94, 0.95), rgba(5, 68, 94, 0.7) 60%, rgba(5, 68, 94, 0.3) 90%, transparent);
+    background: linear-gradient(
+      to top, 
+      rgba(5, 68, 94, 0.95), 
+      rgba(5, 68, 94, 0.8) 50%, 
+      rgba(5, 68, 94, 0.4) 80%, 
+      transparent
+    );
+    border-radius: 0 0 var(--slide-radius) var(--slide-radius);
   }
 
   .apple-slider__title {
@@ -375,11 +395,9 @@
   }
 
   .apple-slider__logo {
-    left: 50%;
-    transform: translateX(-50%);
-    height: 2rem;
-    bottom: auto;
     top: 1.5rem;
+    left: 1.5rem;
+    height: 2rem;
   }
 }
 
@@ -427,8 +445,9 @@
   }
 
   .apple-slider__logo {
-    height: 1.8rem;
     top: 1.2rem;
+    left: 1.2rem;
+    height: 1.8rem;
   }
 }
 
@@ -436,5 +455,20 @@
 @media (max-width: 360px) {
   .apple-slider__arrow {
     display: none !important;
+  }
+}
+
+/* PERFORMANCE OPTIMIZATIONS FOR SMOOTHER ANIMATIONS */
+.apple-slider * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .apple-slider__slide,
+  .apple-slider__track,
+  .apple-slider__arrow {
+    transition-duration: 0.2s;
   }
 }
