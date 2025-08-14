@@ -20,7 +20,7 @@
 .hf-title {
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
-  font-size: 48px;
+  font-size: 40px; /* Desktop: 40px */
   line-height: 1.05;
   margin: 0 0 20px;
   color: #ffffff;
@@ -31,9 +31,9 @@
 .hf-sub {
   font-family: 'Outfit', sans-serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 16px; /* Desktop: 16px */
   max-width: 540px;
-  margin: 0 auto 40px;
+  margin: 0 auto 20px;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.4;
   padding: 0 40px;
@@ -51,7 +51,7 @@
   font-weight: 600;
   border-radius: 50px;
   text-decoration: none;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   transition: all 0.3s ease;
   font-size: 1.5rem;
   min-height: 48px;
@@ -70,7 +70,7 @@
   font-weight: 300;
   font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 60px;
+  margin-top: 32px;
 }
 
 /* Card grid - Two cards layout */
@@ -141,14 +141,89 @@
   display: block;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 767px) {
+/* Remove hover effects from cards */
+.hf-card {
+  transition: none;
+}
+
+.hf-card:hover {
+  transform: none;
+}
+
+/* Tablet responsiveness */
+@media (max-width: 1024px) {
   .hepa-filter-hero {
-    padding: 60px 0 80px;
+    padding: 56px 0 64px;
+  }
+  
+  .hf-card-grid {
+    gap: 18px;
+    padding: 0 32px;
+  }
+  
+  .hf-title,
+  .hf-sub {
+    padding: 0 32px;
+  }
+}
+
+/* Mobile responsiveness - Tablet to Mobile transition */
+@media (max-width: 768px) {
+  .hepa-filter-hero {
+    padding: 48px 0 56px;
+    border-radius: 24px; /* Maintain 24px radius */
+  }
+
+  .hf-title {
+    font-size: 36px; /* Transition size */
+    padding: 0 24px;
+  }
+
+  .hf-sub {
+    font-size: 15px; /* Transition size */
+    padding: 0 24px;
   }
 
   .hf-card-grid {
     gap: 16px;
+    padding: 0 24px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hf-card-container {
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  .hf-card {
+    padding-bottom: 90%;
+  }
+}
+
+/* Mobile responsiveness - Primary mobile breakpoint */
+@media (max-width: 767px) {
+  .hepa-filter-hero {
+    padding: 40px 0 36px; /* Bottom padding: 36px */
+    border-radius: 24px; /* Maintain 24px radius */
+  }
+
+  .hf-title {
+    font-size: 32px; /* Mobile: 32px as specified */
+    line-height: 1.1;
+    margin: 0 0 16px;
+    padding: 0 20px;
+  }
+
+  .hf-sub {
+    font-size: 14px; /* Mobile: 14px as specified */
+    line-height: 1.5;
+    margin: 0 auto 32px;
+    padding: 0 20px;
+  }
+
+  .hf-card-grid {
+    gap: 8px; /* Spacing between images: 8px */
     padding: 0 20px;
     flex-direction: column;
     align-items: center;
@@ -159,9 +234,10 @@
     margin-bottom: 0;
   }
 
-  /* Mobile card dimensions */
   .hf-card {
-    padding-bottom: 110%;
+    padding-bottom: 0; /* Remove percentage-based height */
+    height: 400px; /* Fixed height: 400px */
+    width: 100%;
   }
 
   .hf-card .placeholder-content {
@@ -169,25 +245,67 @@
     padding: 15px;
   }
 
-  .hf-title,
-  .hf-sub {
-    padding: 0 20px;
-  }
-
-  .hf-title {
-    font-size: clamp(2.4rem, 8vw, 4rem);
-    line-height: 1.15;
-  }
-
   .hf-cta {
-    padding: 14px 24px;
-    font-size: 1.4rem;
+    padding: 12px 24px;
+    font-size: 1.3rem;
     min-height: 44px;
+  }
+
+  .hf-caption {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
   }
 }
 
+/* Small mobile devices */
 @media (max-width: 480px) {
+  .hepa-filter-hero {
+    padding: 32px 0 36px; /* Bottom padding: 36px */
+    border-radius: 24px; /* Maintain 24px radius */
+  }
+
+  .hf-title {
+    font-size: 32px; /* Keep 32px even on smallest screens */
+    padding: 0 16px;
+    margin: 0 0 12px;
+  }
+
+  .hf-sub {
+    font-size: 14px; /* Keep 14px even on smallest screens */
+    padding: 0 16px;
+    margin: 0 auto 28px;
+  }
+
+  .hf-card-grid {
+    gap: 8px; /* Spacing between images: 8px */
+    padding: 0 16px;
+  }
+
   .hf-card {
-    padding-bottom: 110%;
+    padding-bottom: 0; /* Remove percentage-based height */
+    height: 400px; /* Fixed height: 400px */
+  }
+
+  .hf-cta {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    min-height: 40px;
+  }
+
+  .hf-caption {
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .hf-title,
+  .hf-sub {
+    padding: 0 12px;
+  }
+  
+  .hf-card-grid {
+    padding: 0 12px;
   }
 }

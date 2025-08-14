@@ -72,10 +72,9 @@
   transform: scale(var(--inactive-scale));
   transform-origin: center;
   user-select: none;
-  box-shadow: var(--shadow-lg);
   backface-visibility: hidden; /* Smoother performance */
   margin-right: var(--card-gap);
-  background: #05445E;
+  background: #fff;
   
   /* Enhanced for smoother GPU rendering */
   will-change: transform, opacity;
@@ -89,7 +88,6 @@
 .apple-slider__slide.active {
   transform: translateZ(0) scale(1); /* Maintain GPU acceleration */
   z-index: 5;
-  box-shadow: 0 15px 50px rgba(5, 68, 94, 0.3);
 }
 
 .apple-slider__slide:not(.active)::after {
@@ -128,7 +126,6 @@
   right: 2rem;
   z-index: 3;
   text-align: left;
-  background: linear-gradient(to top, rgba(5, 68, 94, 0.9), rgba(5, 68, 94, 0.7) 60%, transparent);
   padding: 2rem;
   border-radius: 0 0 var(--slide-radius) var(--slide-radius);
 }
@@ -154,38 +151,6 @@
   color: white;
   opacity: 0.9;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.apple-slider__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.2rem 2.4rem;
-  border-radius: 999px;
-  font-family: var(--font-body-semibold);
-  font-size: 1.4rem;
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  border: none;
-  background: #189AB4;
-  color: white;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.apple-slider__button:hover {
-  background: #147a8c;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.apple-slider__logo {
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  height: 2.8rem;
-  z-index: 3;
-  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
 }
 
 /* Navigation Controls - SAME DESIGN, OPTIMIZED FOR PERFORMANCE */

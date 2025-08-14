@@ -90,7 +90,7 @@
 }
 
 .header-logo img {
-  height: 32px; /* 32PX LOGO SIZE FOR ALL DEVICES */
+  height: 24px; /* DEFAULT 24PX FOR MOBILE */
   width: auto;
   display: block;
   object-fit: contain;
@@ -345,25 +345,25 @@ body.menu-open {
    =========================================== */
 @media (min-width: 1200px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
-    padding: 0 32px; /* LARGER SIDE MARGINS FOR DESKTOP */
+    padding: 0 32px;
     height: 58px;
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO */
+    height: 28px; /* 28PX LOGO SIZE FOR DESKTOP */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -385,7 +385,7 @@ body.menu-open {
    =========================================== */
 @media (min-width: 992px) and (max-width: 1199px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
@@ -394,16 +394,16 @@ body.menu-open {
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO */
+    height: 28px; /* 28PX LOGO SIZE FOR DESKTOP */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -425,7 +425,7 @@ body.menu-open {
    =========================================== */
 @media (min-width: 768px) and (max-width: 991px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
@@ -434,16 +434,16 @@ body.menu-open {
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO */
+    height: 24px; /* MAINTAIN 24PX FOR TABLETS */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -469,25 +469,25 @@ body.menu-open {
    =========================================== */
 @media (min-width: 480px) and (max-width: 767px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
-    padding: 0 16px; /* MAINTAIN 16PX MARGINS */
+    padding: 0 16px;
     height: 58px;
   }
   
   .header-logo img {
-    height: 48px; /* MAINTAIN 48PX LOGO */
+    height: 24px; /* 24PX LOGO SIZE FOR MOBILE */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -510,25 +510,25 @@ body.menu-open {
    =========================================== */
 @media (min-width: 320px) and (max-width: 479px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
-    padding: 0 16px; /* MAINTAIN 16PX MARGINS */
+    padding: 0 16px;
     height: 58px;
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO */
+    height: 24px; /* 24PX LOGO SIZE FOR MOBILE */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -565,25 +565,25 @@ body.menu-open {
    =========================================== */
 @media (max-width: 319px) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT */
+    height: 58px;
   }
   
   .header-container {
-    padding: 0 12px; /* SLIGHTLY REDUCED FOR VERY SMALL SCREENS */
+    padding: 0 12px;
     height: 58px;
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO */
+    height: 24px; /* 24PX LOGO SIZE FOR MOBILE */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON */
+    width: 24px;
     height: 24px;
   }
   
@@ -620,21 +620,21 @@ body.menu-open {
    =========================================== */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO ON RETINA */
+    height: 28px; /* 28PX LOGO SIZE FOR DESKTOP ON RETINA */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON ON RETINA */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON ON RETINA */
+    width: 24px;
     height: 24px;
   }
   
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT ON RETINA */
+    height: 58px;
   }
 }
 
@@ -643,7 +643,7 @@ body.menu-open {
    =========================================== */
 @media (max-width: 767px) and (orientation: landscape) {
   .hawaa-header {
-    height: 58px; /* MAINTAIN 58PX HEIGHT IN LANDSCAPE */
+    height: 58px;
   }
   
   .header-container {
@@ -651,16 +651,16 @@ body.menu-open {
   }
   
   .header-logo img {
-    height: 32px; /* MAINTAIN 32PX LOGO IN LANDSCAPE */
+    height: 24px; /* 24PX LOGO SIZE FOR MOBILE */
   }
   
   .hamburger-btn {
-    width: 48px; /* MAINTAIN 48x48PX BUTTON IN LANDSCAPE */
+    width: 48px;
     height: 48px;
   }
   
   .hamburger-icon {
-    width: 24px; /* MAINTAIN 24x24PX ICON IN LANDSCAPE */
+    width: 24px;
     height: 24px;
   }
 }

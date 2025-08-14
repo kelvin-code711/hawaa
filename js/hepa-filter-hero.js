@@ -11,16 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Example: Add hover effect to cards
-  const cards = document.querySelectorAll('.hf-card');
-  cards.forEach(card => {
-    card.addEventListener('mouseenter', function() {
-      this.style.transform = 'scale(1.02)';
-      this.style.transition = 'transform 0.3s ease';
-    });
-    
-    card.addEventListener('mouseleave', function() {
-      this.style.transform = 'scale(1)';
-    });
-  });
+  // Hover effects removed - no more card interactions
+  // Cards will remain static without any hover transformations
 });

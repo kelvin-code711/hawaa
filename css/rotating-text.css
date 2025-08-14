@@ -113,19 +113,19 @@
   align-items: center;
   margin: 0;
   width: 100%;
-  line-height: 1.15;
+  line-height: 1.125;
   letter-spacing: -0.02em;
 }
 
 /* Rotating Text */
 #rotating-text-container {
   display: inline-block;
-  min-height: 1.15em;
-  line-height: 1.15;
+  min-height: 1.125em;
+  line-height: 1.125;
   position: relative;
   overflow: hidden;
   font-weight: 400;
-  font-size: 48px;
+  font-size: 50px;
   color: #00a275;
   text-transform: capitalize;
 }
@@ -151,22 +151,22 @@
 /* Static Subtext */
 .static-text-container {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 0px;
 }
 
 .static-text-main {
-  margin-bottom: 8px;
-  font-weight: 500;
-  font-size: 48px;
+  margin-bottom: 0px;
+  font-weight: 400;
+  font-size: 50px;
   color: #111;
-  line-height: 1.3;
+  line-height: 1.125;
 }
 
 .static-text-supporting {
   font-weight: 400;
   font-size: 18px;
   color: #555;
-  line-height: 1.4;
+  line-height: 1.3;
   opacity: 0.9;
   max-width: 600px;
 }
@@ -181,6 +181,23 @@
   .page-width {
     padding-left: 0px;
     padding-right: 0;
+  }
+
+  /* Mobile line spacing - 2px top/bottom padding for each text line */
+  #rotating-text-container {
+    padding: 2px 0;
+  }
+
+  .rotating-text {
+    padding: 2px 0;
+  }
+
+  .static-text-main {
+    padding: 2px 0;
+  }
+
+  .static-text-supporting {
+    padding: 2px 0;
   }
 }
 
@@ -219,15 +236,22 @@
   #rotating-text-container {
     font-size: 24px;
     font-weight: 500;
+    padding: 2px 0; /* Mobile line spacing */
+  }
+
+  .rotating-text {
+    padding: 2px 0; /* Mobile line spacing */
   }
 
   .static-text-main {
     font-size: 24px;
     font-weight: 500;
+    padding: 2px 0; /* Mobile line spacing */
   }
 
   .static-text-supporting {
     font-size: 15px;
+    padding: 2px 0; /* Mobile line spacing */
   }
 }
 

@@ -1,4 +1,4 @@
-/* ───────── GENERAL (desktop base) ───────── */
+/* â"€â"€â"€â"€â"€â"€â"€â"€â"€ GENERAL (desktop base) â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 .testimonials-section {
     position: relative;
     font-family: 'Outfit', sans-serif;
@@ -6,8 +6,6 @@
     overflow: hidden;
     width: 100%;
     border-radius: 32px 32px 0 0;
-    margin-top: 32px !important;
-    padding: 24px 0 !important;
     box-sizing: border-box;
 }
   
@@ -16,7 +14,7 @@
     margin: 0 0 24px 0 !important;
     padding: 0 20px !important;
     font-family: 'Outfit', sans-serif;
-    font-weight: 700;
+    font-weight: 400;
     font-size: clamp(24px, 4vw, 32px);
     color: #ffffff !important;
     line-height: 1.2;
@@ -31,8 +29,7 @@
 .testimonials-container {
     position: relative;
     display: flex;
-    gap: 20px;
-    padding: 0 40px 24px 40px !important;
+    gap: 16px;
     margin: 0 !important;
     overflow-x: auto;
     overflow-y: hidden;
@@ -74,7 +71,7 @@
     margin-top: 0 !important;
 }
 
-/* ───────── DESKTOP (>991 px) ───────── */
+/* â"€â"€â"€â"€â"€â"€â"€â"€â"€ DESKTOP (>991 px) â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 @media(min-width: 992px) {
     .testimonials-section {
         padding: 24px 0 !important;
@@ -90,6 +87,7 @@
     .testimonials-container {
         padding: 0 40px 24px 40px !important;
         background-color: transparent;
+        margin: 0 !important;
     }
 
     .nav-arrow {
@@ -137,7 +135,7 @@
     }
 }
 
-/* ───────── CARD ───────── */
+/* â"€â"€â"€â"€â"€â"€â"€â"€â"€ CARD â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 .testimonial-card {
     flex: 0 0 240px;
     height: 320px;
@@ -243,14 +241,14 @@
     font-weight: 400;
 }
 
-/* ───────── MOBILE (≤991 px) ───────── */
+/* â"€â"€â"€â"€â"€â"€â"€â"€â"€ MOBILE (â‰¤991 px) â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 @media(max-width: 991px) {
     .testimonials-section {
         background-color: #2d8fad !important;
         border-radius: 24px 24px 0 0;
-        margin-top: 24px !important;
+        margin: 0px 0 0 0 !important;
         overflow: hidden;
-        padding: 18px 0 18px !important;
+        padding: 24px 0 24px !important;
     }
     
     .testimonials-section-title {
@@ -262,11 +260,12 @@
     
     .testimonials-container {
         background-color: transparent;
-        padding: 0 5px 18px 5px !important;
+        padding: 0 5px 0px 20px !important;
+        margin: 0 !important;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         display: flex;
-        gap: 16px;
+        gap: 8px;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }

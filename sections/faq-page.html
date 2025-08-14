@@ -10,59 +10,60 @@
 <body>
     <div class="faq-container">
         <!-- Header -->
-  <header class="hawaa-header" id="hawaa-header">
-    <div class="header-container">
-      <a href="../index.html" class="header-logo">
-        <img src="../images/logo.svg" alt="Hawaa" width="120" height="auto" />
-      </a>
-      <div class="header-actions">
-        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <div class="hamburger-icon"><span></span><span></span><span></span></div>
-        </button>
-      </div>
-    </div>
-  </header>
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </button>
-          <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-          </button>
-          <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
+        <header class="hawaa-header" id="hawaa-header">
+            <div class="header-container">
+                <a href="../index.html" class="header-logo">
+                    <img src="../images/logo.svg" alt="Hawaa" width="120" height="auto" />
+                </a>
+                <div class="header-actions">
+                    <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+                        <div class="hamburger-icon"><span></span><span></span><span></span></div>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="mobile-nav" id="mobile-nav">
+            <div class="nav-overlay" id="nav-overlay"></div>
+            <div class="nav-panel">
+                <div class="nav-header">
+                    <h2 class="nav-title">Menu</h2>
+                    <div class="nav-icons">
+                        <button class="nav-icon" aria-label="Account">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </button>
+                        <button class="nav-icon" aria-label="Cart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        </button>
+                        <button class="nav-close" id="nav-close" aria-label="Close menu">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="nav-content">
+                    <div class="nav-section">
+                        <h3 class="section-title">EXPLORE</h3>
+                        <div class="nav-links-wrapper">
+                            <ul class="nav-links">
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="../sections/filter-learn.html">Filter Technology</a></li>
+                                <li><a href="/technology">Installation Guide</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="nav-section">
+                        <h3 class="section-title">ABOUT HAWAA</h3>
+                        <div class="nav-links-wrapper">
+                            <ul class="nav-links">
+                                <li><a href="../about.html">About Us</a></li>
+                                <li><a href="/faq">FAQ</a></li>
+                                <li><a href="../blog.html">Blog</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">EXPLORE</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="../sections/filter-learn.html">Filter Technology</a></li>
-              <li><a href="/technology">Instalation Guide</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="nav-section">
-          <h3 class="section-title">ABOUT HAWAA</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="../about.html">About Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="../blog.html">Blog</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -84,13 +85,9 @@
                 <div class="faq-list">
                     <!-- General Questions -->
                     <div class="faq-item" data-category="general">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">Is there a free trial available?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Yes, you can try our air purifier for free for 30 days. If you're not completely satisfied, we'll provide you with a free 30-day return period. Simply contact us to get started. Book a call with our team to learn more.</p>
@@ -100,13 +97,9 @@
                     </div>
 
                     <div class="faq-item" data-category="general">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">What is a HEPA air purifier?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>A HEPA (High-Efficiency Particulate Air) air purifier uses advanced filtration technology to remove 99.97% of particles as small as 0.3 microns from the air, including dust, pollen, pet dander, and other allergens.</p>
@@ -117,13 +110,9 @@
 
                     <!-- Pricing Questions -->
                     <div class="faq-item" data-category="pricing">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">Can I change my subscription plan later?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Yes, you can upgrade or downgrade your filter subscription plan at any time. Changes will be reflected in your next billing cycle. Contact our support team for assistance with plan changes.</p>
@@ -133,13 +122,9 @@
                     </div>
 
                     <div class="faq-item" data-category="pricing">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">What is your cancellation policy?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>You can cancel your filter subscription at any time with no cancellation fees. We offer a 30-day return policy on all air purifiers. If you're not satisfied, return the product for a full refund.</p>
@@ -150,13 +135,9 @@
 
                     <!-- Filter Questions -->
                     <div class="faq-item" data-category="filters">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">How often should I replace the filter?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>We recommend replacing your HEPA filter every 6-8 months for optimal performance. The frequency may vary depending on air quality and usage. Our smart indicator will alert you when it's time for replacement.</p>
@@ -166,13 +147,9 @@
                     </div>
 
                     <div class="faq-item" data-category="filters">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">Can other info be added to filter orders?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Yes, you can add special delivery instructions, preferred delivery times, or other relevant information when placing your filter order. Use the notes section during checkout.</p>
@@ -183,13 +160,9 @@
 
                     <!-- Support Questions -->
                     <div class="faq-item" data-category="support">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">How does billing work?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Billing is handled automatically through our secure payment system. You'll be charged based on your selected plan (monthly or annual). All transactions are encrypted and secure.</p>
@@ -199,13 +172,9 @@
                     </div>
 
                     <div class="faq-item" data-category="support">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">How do I change my account email?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>You can update your email address in your account settings or by contacting our support team. We'll send a verification email to your new address to confirm the change.</p>
@@ -215,13 +184,9 @@
                     </div>
 
                     <div class="faq-item" data-category="support">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">How does support work?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Our support team is available 24/7 through chat, email, or phone. We provide comprehensive setup assistance, troubleshooting guides, and ongoing maintenance support for all Hawaa products.</p>
@@ -231,13 +196,9 @@
                     </div>
 
                     <div class="faq-item" data-category="support">
-                        <button class="faq-question">
+                        <button class="faq-question" aria-expanded="false">
                             <span class="question-text">Do you provide tutorials?</span>
-                            <span class="faq-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
+                            <span class="faq-icon"></span>
                         </button>
                         <div class="faq-answer">
                             <p>Yes, we provide comprehensive video tutorials, step-by-step guides, and interactive walkthroughs for setup, maintenance, and troubleshooting. All resources are available in our support portal.</p>
