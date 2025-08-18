@@ -1,86 +1,36 @@
-/* Outfit Font Face Definitions */
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Thin.woff2') format('woff2'),
-       url('../fonts/Outfit-Thin.woff') format('woff');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
+/* =========================
+   Bento AQI — Full CSS (2025-08-18)
+   - Brand palette + gradients
+   - Search row with inline “Locate me” button
+   - Single particle lane (ambient; dots reach center)
+   - Right-side AQI ring/result states
+   ========================= */
+
+/* -------- Brand Palette -------- */
+:root{
+  --blue-50:#E5F6F9;
+  --blue-100:#D8F0F5;
+  --blue-200:#B5E1EC;
+  --blue-300:#82CADE;
+  --blue-400:#48ABCB;
+  --blue-500:#2D8FAD;
+  --blue-600:#287392;
+  --blue-700:#265E78;
+  --blue-800:#274F63;
+  --blue-900:#244255;
+  --blue-950:#132A39;
+
+  --ink-1:#0b0f12;
+  --ink-2:#111820;
+  --text-on-dark:#e7eef3;
+  --text-subtle:#9fb3bf;
+  --ring-track: rgba(255,255,255,.12);
+
+  --fg-scale: 0.86;   /* shrink a touch so every stroke is inside */
+  --fg-shift-y: -40px; /* nudge upward; positive moves it down */
 }
 
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-ExtraLight.woff2') format('woff2'),
-       url('../fonts/Outfit-ExtraLight.woff') format('woff');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Light.woff2') format('woff2'),
-       url('../fonts/Outfit-Light.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
-       url('../fonts/Outfit-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Medium.woff2') format('woff2'),
-       url('../fonts/Outfit-Medium.woff') format('woff');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
-       url('../fonts/Outfit-SemiBold.woff') format('woff');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
-       url('../fonts/Outfit-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-ExtraBold.woff2') format('woff2'),
-       url('../fonts/Outfit-ExtraBold.woff') format('woff');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Outfit';
-  src: url('../fonts/Outfit-Black.woff2') format('woff2'),
-       url('../fonts/Outfit-Black.woff') format('woff');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Bento Section Styles */
+/* -------- Layout shell -------- */
 .bento-wrapper {
   display: grid;
   grid-template-columns: 1.3fr 1fr 1fr;
@@ -88,198 +38,268 @@
   grid-template-areas:
     "box1 box2 box2"
     "box1 box3 box4";
-  gap: 8px;
+  gap: 12px;
   padding: 24px 12px;
-  background: #fafafa;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 400;
-}
-
-.bento-box {
-  padding: 20px;
-  border-radius: 18px;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.box1 {
-  grid-area: box1;
-  background-color: #f4f6f8;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 16px;
-  min-height: 120px;
-  width: 100%;
-  height: 100%;
-  color: #111;
-}
-
-.box1 h1 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  font-family: 'Outfit', sans-serif;
-  color: #111111;
-}
-
-.box1 p {
-  font-size: 14px;
-  font-weight: 400;
-  color: #555555;
-  margin-bottom: 16px;
-}
-
-.search-input {
-  position: relative;
-  width: 100%;
-  z-index: 10;
-}
-
-.search-input input {
-  width: 100%;
-  padding: 12px 48px 12px 16px;
-  border-radius: 9999px;
-  border: 1px solid #ccc;
   background: #fff;
-  font-size: 15px;
   font-family: 'Outfit', sans-serif;
   font-weight: 400;
-  color: #111;
-  z-index: 10;
 }
+.bento-box { padding: 20px; border-radius: 18px; box-sizing: border-box; background: rgba(0,0,0,.04); }
 
-.search-input input::placeholder {
-  color: #555;
-  font-weight: 300;
+/* -------- Box 1 (search) -------- */
+.box1{
+  grid-area: box1;
+  background: linear-gradient(145deg, var(--blue-50) 0%, var(--blue-100) 18%, var(--blue-200) 46%, var(--blue-300) 100%);
+  color: var(--ink-1);
+  display: flex; flex-direction: column; justify-content: center;
+  border-radius: 16px; min-height: 120px;
 }
+.box1 h1{ font-size:24px; font-weight:700; margin-bottom:6px; color:var(--blue-950); }
+.box1 p{ font-size:14px; font-weight:400; color:#2b3a40; margin-bottom:16px; }
 
-.search-input button {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #111111;
-  border: none;
-  border-radius: 50%;
-  padding: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 11;
+/* search row: input + locate inline */
+.search-row{ display:flex; gap:8px; align-items:center; width:100%; }
+.search-input{ position:relative; flex:1; }
+.search-input input{
+  width:100%; padding:12px 48px 12px 16px; border-radius:9999px;
+  border:1px solid var(--blue-200); background:#fff; font-size:15px; color:var(--ink-1);
+  box-shadow:0 1px 0 rgba(0,0,0,.04);
 }
-
-.search-input button:hover {
-  background: #333333;
+.search-input input::placeholder{ color:#5a6b73; font-weight:300; }
+.search-btn{
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  background:var(--blue-700); border:none; border-radius:50%;
+  padding:8px; cursor:pointer; transition:background .25s ease, transform .06s ease;
+  display:flex; align-items:center; justify-content:center;
 }
+.search-btn:hover{ background:var(--blue-800); }
+.search-btn:active{ transform:translateY(-52%) scale(.98); }
+.search-btn svg{ width:18px; height:18px; stroke:#fff; }
 
-.search-input button img {
-  height: 18px;
-  width: 18px;
-  filter: none;
+/* Locate me (secondary) */
+.locate-btn{
+  appearance:none; padding:12px 16px; border-radius:9999px;
+  border:1px solid var(--blue-500); background:transparent;
+  color:var(--blue-700); font-size:14px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;
+  transition:background .2s ease, color .2s ease, border-color .2s ease;
 }
+.locate-btn:hover{ background: color-mix(in srgb, var(--blue-500) 12%, transparent); }
+.locate-btn:active{ background: color-mix(in srgb, var(--blue-500) 18%, transparent); }
+.locate-btn .icon{ width:16px; height:16px; }
 
-.box2 {
+/* chips + label */
+.popular-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; position:relative; padding-top:22px; }
+.popular-chips::before{
+  content:"Popular search:"; position:absolute; top:0; left:0;
+  font-size:12px; font-weight:600; letter-spacing:.02em; color:#32515c;
+}
+.chip{
+  padding:6px 12px; border-radius:9999px; background:var(--blue-100); border:1px solid var(--blue-200);
+  color:var(--blue-800); font-size:13px; font-weight:600; cursor:pointer;
+  transition: transform .06s ease, background .2s ease, color .2s ease;
+}
+.chip:hover{ background:var(--blue-200); color:var(--blue-900); }
+.chip:active{ transform:translateY(1px); }
+
+/* -------- Box 2 (lane left, states right) -------- */
+.box2{
   grid-area: box2;
-  background-color: #d1d1d1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  text-align: center;
-  border-radius: 16px;
-  min-height: 120px;
-  width: 100%;
-  height: 100%;
+  background: linear-gradient(120deg, var(--blue-950) 0%, var(--blue-900) 16%, var(--blue-800) 32%, var(--blue-700) 48%, var(--blue-600) 64%, var(--blue-500) 100%);
+  color: var(--text-on-dark);
+  border-radius: 16px; min-height: 120px; position: relative; overflow: hidden; padding: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.box2-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center; height:100%; }
+
+/* LEFT: single particle lane */
+.lane-side{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+.lane-title{ font-size:14px; font-weight:600; color:var(--text-on-dark); opacity:.92; }
+
+.particle-lane{
+  position:relative; height:78px; width:260px; border-radius:12px; overflow:hidden;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--blue-900) 80%, black), var(--blue-950));
+  outline:1px solid rgba(255,255,255,.08);
+  box-shadow:0 2px 10px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.filter-line{
+  position:absolute; top:0; bottom:0; left:50%; width:2px; transform:translateX(-1px);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, #fff 45%, var(--blue-100)), transparent);
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.25));
+}
+.particles{ position:absolute; inset:0; }
+
+.p{
+  position:absolute; top:0; left: var(--spawn, -24px);
+  width:6px; height:6px; border-radius:50%;
+  background: color-mix(in srgb, var(--blue-300) 85%, #ffffff);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--blue-300) 35%, transparent);
+  opacity:0;
+  animation: drift-to-center var(--dur,2.4s) linear var(--delay,0s) infinite;
+}
+.p::after{ content:""; position:absolute; inset:0; border-radius:inherit; background: color-mix(in srgb, var(--blue-200) 35%, transparent); }
+
+@keyframes drift-to-center{
+  0%{ transform: translateX(0); opacity:0; }
+  10%{ opacity:.95; }
+  48%{ background: color-mix(in srgb, var(--blue-300) 95%, #ffffff); }
+  90%{ opacity:.95; }
+  100%{ transform: translateX(var(--toX,160px)); opacity:.18; }
 }
 
-.box2 span {
-  font-size: 14px;
-  font-weight: 500;
-}
+/* RIGHT states */
+.right-side{ display:grid; align-items:center; justify-items:center; min-height:140px; text-align:center; }
+.aqi-empty,.aqi-loading,.aqi-result{ width:100%; }
+.empty-hint{ font-size:14px; color:var(--text-subtle); }
+.loading-copy{ font-size:14px; color:var(--text-subtle); }
+.loading-copy b{ color:var(--text-on-dark); font-weight:600; }
 
-.box2 strong {
-  font-size: 22px;
-  font-weight: 700;
-  display: block;
-}
+.aqi-result{ display:grid; gap:8px; align-items:center; justify-items:center; }
 
-.box3 {
+/* AQI ring */
+.ring{ width:84px; height:84px; transform: rotate(-90deg); }
+.ring .track{ fill:none; stroke: var(--ring-track); stroke-width:8; }
+.ring .progress{ fill:none; stroke-width:8; stroke-linecap:round; transition: stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1); }
+
+/* Score */
+.result-score{ display:flex; align-items:baseline; gap:6px; }
+.result-score .num{ font-size:32px; font-weight:700; color:var(--text-on-dark); }
+.result-score .label{ font-size:12px; color:var(--text-subtle); text-transform:uppercase; letter-spacing:.08em; }
+.result-status{ font-size:13px; color:var(--text-subtle); }
+
+/* AQI categories */
+.box2.is-good .progress{ stroke:#34c759; }
+.box2.is-moderate .progress{ stroke:#ffd60a; }
+.box2.is-usg .progress{ stroke:#ff8c00; }
+.box2.is-unhealthy .progress{ stroke:#ff3b30; }
+.box2.is-very .progress{ stroke:#bf5af2; }
+.box2.is-hazard .progress{ stroke:#8e2a2a; }
+
+/* -------- Box 3 & 4 -------- */
+/* -------- Box 3 (dual Lottie, clipped) -------- */
+.box3{
   grid-area: box3;
-  background-color: #e6f0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 16px;
-  min-height: 120px;
+  background: linear-gradient(135deg, var(--blue-50), var(--blue-200));
+  border-radius:16px;
+  min-height:120px;
+  position: relative;
+  overflow: hidden;                 /* ✅ clip everything to the card */
+  display: grid;
+  place-items: center;
+}
+
+/* Iframe base */
+.lottie-iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  background: transparent;
+}
+
+/* Background Lottie: cover the whole card, subtle */
+.lottie-bg-wrap{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity: 100%;                      /* soften; tweak as you like */
+  rotate: 90;
+}
+.lottie-iframe--bg{
+  width:100%;
+  height:100%;
+}
+
+/* Foreground Lottie: centered fixed size */
+.lottie-fg-wrap{
+  position: relative;
+  z-index: 1;
+  width: clamp(200px, 18vw, 260px);
+  height: clamp(200px, 18vw, 260px);
+  display: grid;
+  place-items: center;
+  /* a tiny padding guarantees no edge clip even if SVG touches bounds */
+  padding: 6px;
+  box-sizing: border-box;
+}
+.lottie-iframe--fg{
   width: 100%;
   height: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;             /* avoid any masking of corners */
+  transform: translateY(var(--fg-shift-y)) scale(var(--fg-scale));
+  transform-origin: 50% 50%;
+  /* Prevent subpixel blur on transforms */
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
 }
 
-.box3 .rotating-text {
-  font-size: 18px;
-  font-weight: 600;
-  transition: opacity 0.5s ease-in-out;
-  color: #111;
-}
-
-.box4 {
+.box4{
   grid-area: box4;
-  background-color: #eafbea;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  min-height: 120px;
-  width: 100%;
-  height: 100%;
+  background: linear-gradient(135deg, var(--blue-100), var(--blue-300));
+  display:flex; align-items:center; justify-content:center; border-radius:16px; min-height:120px;
+}
+.quiz-btn{
+  background:var(--blue-700); color:#fff; padding:10px 20px; font-size:15px; font-weight:700; border-radius:30px; text-decoration:none;
+  box-shadow:0 2px 10px rgba(0,0,0,.08); transition: background .25s ease, transform .06s ease;
+}
+.quiz-btn:hover{ background:var(--blue-800); }
+.quiz-btn:active{ transform: translateY(1px); }
+
+
+/* -------- Motion preferences -------- */
+@media (prefers-reduced-motion: reduce){
+  .p{ animation-duration:6s; opacity:.35; }
+  .ring .progress{ transition:none; }
 }
 
-.quiz-btn {
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 15px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  border-radius: 30px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
+/* -------- Responsive -------- */
+@media (max-width: 768px){
+  .bento-wrapper{ display:block; padding:16px; }
+  .box1,.box2,.box3,.box4{ width:100% !important; margin-bottom:12px; height:auto; min-height:180px; }
+  .box2{ min-height:260px; }
+  .box2-grid{ grid-template-columns:1fr; gap:16px; }
+  .lane-title{ font-size:13px; }
+  .particle-lane{ width:200px; }
+  .box1 h1{ font-size:20px; }
+  .box3 .rotating-text{ font-size:16px; }
+  .quiz-btn{ font-size:14px; padding:8px 16px; }
+  .result-score .num{ font-size:28px; }
 
-.quiz-btn:hover {
-  background-color: #333;
-  transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-  .bento-wrapper {
-    display: block;
-    padding: 16px;
+  .bento-wrapper{ display:block; padding:16px; }
+  .box1,.box2,.box3,.box4{ width:100% !important; margin-bottom:12px; height:auto; min-height:180px; }
+  .box2{ min-height:260px; }
+  .box2-grid{ grid-template-columns:1fr; gap:16px; }
+  .lane-title{ font-size:13px; }
+  .particle-lane{ width:200px; }
+  .box1 h1{ font-size:20px; }
+  
+  /* Specific changes for box3 */
+  .box3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Push content to bottom */
+    padding: 0; /* Remove any padding */
+    min-height: 200px; /* Adjust height as needed */
   }
-  .box1, .box2, .box3, .box4 {
-    width: 100% !important;
-    margin-bottom: 12px;
+  
+  .lottie-fg-wrap {
+    width: 100%; /* Full width */
+    height: auto; /* Auto height */
+    padding: 0; /* Remove padding */
+    transform: none; /* Reset any transforms */
+    margin-top: auto; /* Push to bottom */
+  }
+  
+  .lottie-iframe--fg {
+    width: 100%;
     height: auto;
+    transform: none; /* Remove scaling */
+    transform-origin: bottom center; /* Align to bottom */
   }
   
-  .box1 h1 {
-    font-size: 20px;
-  }
-  
-  .box2 strong {
-    font-size: 20px;
-  }
-  
-  .box3 .rotating-text {
-    font-size: 16px;
-  }
-  
-  .quiz-btn {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+  .box3 .rotating-text{ font-size:16px; }
+  .quiz-btn{ font-size:14px; padding:8px 16px; }
+  .result-score .num{ font-size:28px; }
 }
