@@ -1,337 +1,436 @@
-/* ===========================
-   Bento AQI — Full JS (with Box 3 dual Lottie + clipping)
-   - Ambient particles that reach the center filter (responsive)
-   - Inline “Locate me” button (reverse geocode to city)
-   - Right-side AQI states + animated ring
-   - Box 3: Background + Foreground Lottie (no bleed outside card)
-   =========================== */
-(function () {
-  'use strict';
+/* =========================
+   Bento AQI — DEMO JS (no API)
+   Box3: per-band Lottie + per-band caption overlay
+   Particle lane fully removed
+   ========================= */
 
-  // Inputs / containers
-  const input   = document.getElementById('cityInput');
-  const box2    = document.getElementById('box2');
+(() => {
+  const MAX_AQI = 500;
+  const WHO_24H = { pm25: 15, pm10: 45 };
 
-  // Right-side states
-  const elEmpty   = document.getElementById('aqiEmpty');
-  const elLoading = document.getElementById('aqiLoading');
-  const elResult  = document.getElementById('aqiResult');
+  // ------- Helpers -------
+  const qs  = (sel, root = document) => root.querySelector(sel);
+  const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+  const rnd = (min, max) => Math.round(min + Math.random() * (max - min));
 
-  // Right-side elements
-  const cityLoadingName = document.getElementById('cityLoadingName');
-  const aqiValue  = document.getElementById('aqiValue');
-  const aqiStatus = document.getElementById('aqiStatus');
-  const gauge     = document.getElementById('gauge');
+  // Inputs & actions
+  const cityInput = qs('#cityInput') || qs('input[name="city"], .city-input');
+  const searchBtn = qs('.search-btn');
+  const locateBtn = qs('#locateBtn') || qs('#locateMe') || qs('.locate-btn');
 
-  // Left lane
-  const lane        = document.querySelector('.particle-lane');
-  const particlesEl = document.getElementById('particles');
+  // Box 2 + states
+  const box2 = qs('.box2');
+  const emptyState   = qs('.aqi-empty', box2);
+  const loadingState = qs('.aqi-loading', box2);
+  const resultState  = qs('.aqi-result', box2);
 
-  // Misc
-  const chipsWrap = document.getElementById('popularChips');
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const CIRC = 2 * Math.PI * 42; // ring circumference
-  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+  // PM tiles
+  const pm25El = qs('[data-js="pm25-value"]') || qs('.pm-stats .pm-tile:nth-child(1) .pm-value');
+  const pm10El = qs('[data-js="pm10-value"]') || qs('.pm-stats .pm-tile:nth-child(2) .pm-value');
+  const pm25UnitEl = qs('[data-js="pm25-unit"]') || qs('.pm-stats .pm-tile:nth-child(1) .pm-unit');
+  const pm10UnitEl = qs('[data-js="pm10-unit"]') || qs('.pm-stats .pm-tile:nth-child(2) .pm-unit');
 
-  function aqiCategory(v) {
-    if (v <= 50)  return { key: 'is-good',      label: 'Good',                    color: '#34c759' };
-    if (v <= 100) return { key: 'is-moderate',  label: 'Moderate',                color: '#ffd60a' };
-    if (v <= 150) return { key: 'is-usg',       label: 'Unhealthy for Sensitive', color: '#ff8c00' };
-    if (v <= 200) return { key: 'is-unhealthy', label: 'Unhealthy',               color: '#ff3b30' };
-    if (v <= 300) return { key: 'is-very',      label: 'Very Unhealthy',          color: '#bf5af2' };
-    return              { key: 'is-hazard',     label: 'Hazardous',               color: '#8e2a2a' };
-  }
-  function setBox2Category(key) {
-    box2.classList.remove('is-good','is-moderate','is-usg','is-unhealthy','is-very','is-hazard');
-    if (key) box2.classList.add(key);
-  }
+  // AQI ring + labels
+  const ringProg  = qs('.ring .progress');
+  const scoreNum  = qs('.result-score .num');
+  const scoreLbl  = qs('.result-score .label');
+  const statusTxt = qs('.result-status');
 
-  /* ---------- PARTICLES (reach exact center) ---------- */
-  let particlesBuilt = false;
-  function buildAmbientParticles(count = 26) {
-    if (!lane || !particlesEl) return;
-    particlesEl.innerHTML = '';
-    const laneH   = lane.clientHeight;
-    const centerX = Math.round(lane.clientWidth / 2);
+  // Box 3 refs
+  const box3 = qs('.box3');
+  const box3DefaultBG = box3 ? qs('.lottie-bg-wrap', box3) : null;
+  const box3DefaultFG = box3 ? qs('.lottie-fg-wrap', box3) : null;
 
-    for (let i = 0; i < count; i++) {
-      const dot = document.createElement('span');
-      dot.className = 'p';
+  let box3GoodWrap      = null;
+  let box3ModerateWrap  = null;
+  let box3USGWrap       = null;
+  let box3UnhealthyWrap = null;
+  let box3VeryWrap      = null;
+  let box3HazardWrap    = null;
+  let box3Caption       = null;
 
-      // size & vertical placement
-      const size = 3 + Math.random() * 5;
-      const top  = Math.max(2, Math.random() * (laneH - size - 2));
-      dot.style.width = dot.style.height = `${size}px`;
-      dot.style.top = `${top}px`;
+  // ring path length cache
+  let CIRC = 0;
 
-      // spawn x off-lane to the left
-      const spawnAbs = 16 + Math.random() * 24; // 16–40 px left of lane
-      dot.style.setProperty('--spawn', `${-spawnAbs}px`);
-      dot.dataset.spawnAbs = String(spawnAbs);
+  // ------- Demo data -------
+  const DEMO_DATA = {
+    'Mumbai':      { aqi: 132, pm25: 68,  pm10: 104 },
+    'Delhi':       { aqi: 242, pm25: 142, pm10: 210 },
+    'Ahmedabad':   { aqi: 176, pm25: 95,  pm10: 160 },
+    'Bengaluru':   { aqi: 88,  pm25: 36,  pm10: 70  },
+    'Chennai':     { aqi: 72,  pm25: 28,  pm10: 64  },
+    'Hyderabad':   { aqi: 110, pm25: 52,  pm10: 98  },
+    'Pune':        { aqi: 92,  pm25: 40,  pm10: 80  },
+    'Kolkata':     { aqi: 158, pm25: 82,  pm10: 140 },
+    'Toronto':     { aqi: 42,  pm25: 10,  pm10: 22  },
+    'Munich':      { aqi: 28,  pm25: 8,   pm10: 16  }
+  };
+  const DEMO_LOCATIONS_IN = ['Mumbai','Delhi','Ahmedabad','Bengaluru','Chennai','Hyderabad','Pune','Kolkata'];
 
-      // target: centerX + spawnAbs (px)
-      dot.style.setProperty('--toX', `${centerX + spawnAbs}px`);
-
-      // motion
-      const dur = prefersReduced ? 6 : (2.2 + Math.random() * 1.6);
-      const delay = Math.random() * (prefersReduced ? 1 : 2.2);
-      dot.style.setProperty('--dur', `${dur}s`);
-      dot.style.setProperty('--delay', `${delay}s`);
-
-      particlesEl.appendChild(dot);
-    }
-    particlesBuilt = true;
-  }
-  function retargetParticlesToCenter() {
-    if (!particlesBuilt || !lane || !particlesEl) return;
-    const centerX = Math.round(lane.clientWidth / 2);
-    particlesEl.querySelectorAll('.p').forEach(p => {
-      const spawnAbs = parseFloat(p.dataset.spawnAbs || '24');
-      p.style.setProperty('--toX', `${centerX + spawnAbs}px`);
-    });
-  }
-  window.addEventListener('resize', retargetParticlesToCenter);
-  window.addEventListener('load',   retargetParticlesToCenter);
-
-  /* ---------- RIGHT STATES + RING ---------- */
-  function showEmpty() {
-    elEmpty.hidden = false; elLoading.hidden = true; elResult.hidden = true; setBox2Category(null);
-  }
-  function showLoading(city) {
-    elEmpty.hidden = true; elResult.hidden = true; elLoading.hidden = false;
-    cityLoadingName.textContent = city || 'your city';
-  }
-  function showResult(aqi) {
-    elEmpty.hidden = true; elLoading.hidden = true; elResult.hidden = false;
-
-    const v = clamp(Math.round(aqi), 0, 500);
-    const cat = aqiCategory(v);
-    setBox2Category(cat.key);
-    aqiStatus.textContent = cat.label;
-
-    // ring
-    gauge.style.stroke = cat.color;
-    gauge.style.strokeDasharray = CIRC;
-    gauge.style.strokeDashoffset = CIRC;
-
-    // value animation (tiny overshoot)
-    const overshoot = Math.min(v + Math.max(3, Math.round(v * 0.03)), 500);
-    animateNumber(0, overshoot, 500, n => aqiValue.textContent = String(Math.round(n)));
-    setTimeout(() => animateNumber(overshoot, v, 220, n => aqiValue.textContent = String(Math.round(n))), 520);
-
-    const percent = v / 500;
-    const targetOffset = CIRC * (1 - percent);
-    requestAnimationFrame(() => { gauge.style.strokeDashoffset = String(targetOffset); });
-  }
-  function animateNumber(from, to, dur, cb) {
-    const start = performance.now();
-    (function frame(t){
-      const p = Math.min(1, (t - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      cb(from + (to - from) * eased);
-      if (p < 1) requestAnimationFrame(frame);
-    })(start);
-  }
-
-  /* ---------- PUBLIC SEARCH ---------- */
-  window.getAqi = async function getAqi() {
-    const city = (input?.value || '').trim();
-    if (!city) { showEmpty(); return; }
-    showLoading(city);
-
-    // Demo fetch — replace with your API call
-    await new Promise(r => setTimeout(r, 900 + Math.random() * 700));
-    const aqi = Math.floor(Math.random() * 300);
-    showResult(aqi);
+  // Caption text per band
+  const CAPTIONS = {
+    good:    'Every breath adds life 🌿',
+    moderate:'Like sitting in traffic all day 🚦',
+    usg:     'Each breath = one cigarette.',
+    unhealthy:'Today’s air = half a pack of smokes.',
+    very:    'Like working all day in choking dust.',
+    hazard:  'This air is poison — like living inside a chimney.'
   };
 
-  // chips + enter
-  chipsWrap?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.chip'); if (!btn) return;
-    input.value = (btn.dataset.city || btn.textContent || '').trim();
-    window.getAqi();
+  // ------- Init -------
+  document.addEventListener('DOMContentLoaded', () => {
+    // Remove any legacy particle lane in the DOM
+    const strayLane = qs('.particle-lane');
+    if (strayLane && strayLane.parentNode) strayLane.parentNode.removeChild(strayLane);
+
+    primeRing();
+
+    if (searchBtn) searchBtn.addEventListener('click', () => getAqi());
+    if (cityInput) cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') getAqi(); });
+    if (locateBtn) locateBtn.addEventListener('click', onLocateMe);
+
+    ensureCaption();
+    setEmpty('Enter a city to see the AQI.');
+    resetBox3ToDefault();
   });
-  input?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); window.getAqi(); }
-  });
 
-  /* ---------- LOCATE ME ---------- */
-  const locateBtn = document.getElementById('locateBtn');
-  if (locateBtn) {
-    locateBtn.addEventListener('click', async () => {
-      if (!navigator.geolocation) { alert('Location not supported on this browser.'); return; }
-      const originalHTML = locateBtn.innerHTML;
-      locateBtn.disabled = true;
-      locateBtn.innerHTML = '<span class="icon" aria-hidden="true">⌛</span> Locating…';
+  // Expose for inline HTML hooks
+  window.getAqi = async () => {
+    const city = (cityInput?.value || '').trim();
+    if (!city) { bumpInput(cityInput); return; }
+    setLoading('Preparing demo data…');
+    setTimeout(() => handleAqiPayload(makeDemoPayload(city)), 400);
+  };
 
-      const setCityAndSearch = (name) => {
-        if (input) input.value = name || '';
-        window.getAqi();
-      };
-
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        try {
-          const { latitude, longitude } = pos.coords;
-          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-          const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
-          const data = await res.json();
-          const addr = data.address || {};
-          const city = addr.city || addr.town || addr.village || addr.county || addr.state_district || addr.state || 'Your location';
-          setCityAndSearch(city);
-        } catch (_) {
-          setCityAndSearch('Your location');
-        } finally {
-          locateBtn.disabled = false;
-          locateBtn.innerHTML = originalHTML;
-        }
-      }, () => {
-        alert('Could not get your location.');
-        locateBtn.disabled = false;
-        locateBtn.innerHTML = originalHTML;
-      }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
-    });
+  // ------- Ring -------
+  function primeRing() {
+    if (!ringProg) return;
+    try {
+      CIRC = ringProg.getTotalLength();
+      ringProg.style.strokeDasharray = `${CIRC}`;
+      ringProg.style.strokeDashoffset = `${CIRC}`;
+    } catch {}
   }
 
-  /* ---------- LOTTIE HELPERS ---------- */
-  function ensureLottie(cb){
-    if (window.lottie) return cb();
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js';
-    s.onload = cb;
-    s.onerror = () => console.warn('[Bento AQI] Failed to load lottie-web CDN.');
-    document.head.appendChild(s);
+  // ------- Demo loaders -------
+  function onLocateMe() {
+    setLoading('Getting a quick demo reading…');
+    setTimeout(() => {
+      const city = DEMO_LOCATIONS_IN[rnd(0, DEMO_LOCATIONS_IN.length - 1)];
+      handleAqiPayload(makeDemoPayload(city, { labelOverride: 'My location (demo)' }));
+    }, 450);
   }
 
-  function stripLottieBackground(anim){
-    // Run after the SVG is built
-    anim.addEventListener('DOMLoaded', () => {
-      const svg = anim.renderer?.svgElement;
-      if (!svg) return;
-
-      // Helper to compare sizes loosely
-      const approx = (a, b) => Math.abs(a - b) <= 1;
-
-      // Get viewBox size (fallback to client size)
-      const vb = svg.getAttribute('viewBox')?.split(/\s+/).map(parseFloat);
-      const w = vb ? vb[2] : (svg.clientWidth || 0);
-      const h = vb ? vb[3] : (svg.clientHeight || 0);
-
-      // 1) Hide any obvious BG layers by name
-      svg.querySelectorAll('[id],[data-name]').forEach(el => {
-        const name = (el.getAttribute('id') || el.getAttribute('data-name') || '').toLowerCase();
-        if (name.includes('bg') || name.includes('background')) {
-          el.setAttribute('fill', 'transparent');
-          el.setAttribute('stroke', 'none');
-          el.setAttribute('opacity', '0');
-        }
-      });
-
-      // 2) Hide any <rect> that covers the whole canvas
-      svg.querySelectorAll('rect').forEach(r => {
-        const x  = parseFloat(r.getAttribute('x') || '0');
-        const y  = parseFloat(r.getAttribute('y') || '0');
-        const rw = parseFloat(r.getAttribute('width')  || '0');
-        const rh = parseFloat(r.getAttribute('height') || '0');
-        const fill = (r.getAttribute('fill') || '').toLowerCase();
-
-        if (approx(rw, w) && approx(rh, h) && x <= 1 && y <= 1 && fill !== 'none' && fill !== 'transparent') {
-          r.setAttribute('fill', 'transparent');
-          r.setAttribute('stroke', 'none');
-          r.setAttribute('opacity', '0');
-        }
-      });
-
-      // 3) Safety: kill any solid <path> used as a flat BG (rare)
-      svg.querySelectorAll('path').forEach(p => {
-        const name = (p.getAttribute('id') || p.getAttribute('data-name') || '').toLowerCase();
-        if (name.includes('bg') || name.includes('background')) {
-          p.setAttribute('fill', 'transparent');
-          p.setAttribute('stroke', 'none');
-          p.setAttribute('opacity', '0');
-        }
-      });
-    });
+  function makeDemoPayload(city, opts = {}) {
+    const base = DEMO_DATA[properCase(city)];
+    let aqi, pm25, pm10, label;
+    if (base) {
+      aqi  = clamp(base.aqi + rnd(-6, 8), 5, 400);
+      pm25 = clamp(base.pm25 + rnd(-4, 6), 2, 250);
+      pm10 = clamp(base.pm10 + rnd(-8, 10), 5, 400);
+      label = opts.labelOverride || properCase(city);
+    } else {
+      aqi = clamp(rnd(20, 240), 5, 400);
+      pm25 = clamp(Math.round(aqi * (0.38 + Math.random() * 0.16)), 3, 250);
+      pm10 = clamp(Math.round(aqi * (0.60 + Math.random() * 0.20)), 5, 400);
+      label = opts.labelOverride || properCase(city || 'Unknown city');
+    }
+    return { status:'ok', data:{ aqi, iaqi:{ pm25:{ v: pm25 }, pm10:{ v: pm10 } }, city:{ name: label } } };
   }
 
-  /* ---------- LOTTIE IN BOX 3 (BG + FG, clipped) ---------- */
-  function initLottie(){
-    const fg = document.getElementById('lottieBox3');
-    const bg = document.getElementById('lottieBg3');
-    if (!fg && !bg) return;
+  // ------- WHO helper -------
+  function whoFactor(value, kind = 'pm25') {
+    const limit = WHO_24H[kind];
+    if (!Number.isFinite(value) || !limit) return { factor: NaN, label:'—', stateClass:'is-na' };
+    const f = value / limit;
+    const rounded = f >= 10 ? Math.round(f) : Math.round(f*10)/10;
+    const label = `${rounded}× WHO`;
+    const stateClass =
+      f <= 1 ? 'is-healthy' :
+      f <= 2 ? 'is-elevated' :
+      f <= 3 ? 'is-high' :
+      f <= 6 ? 'is-very-high' : 'is-severe';
+    return { factor:f, label, stateClass };
+  }
 
-    // Ensure visible size for the foreground container (if CSS hasn’t applied yet)
-    if (fg) {
-      if (!fg.style.width)  fg.style.width  = '200px';
-      if (!fg.style.height) fg.style.height = '200px';
-      fg.style.display = 'flex';
-      fg.style.alignItems = 'center';
-      fg.style.justifyContent = 'center';
-      fg.style.background = 'transparent';
+  // ------- Render / State -------
+  function handleAqiPayload(json) {
+    const d = json?.data || {};
+    const aqi  = Number(d.aqi ?? NaN);
+    const pm25 = safeNum(d?.iaqi?.pm25?.v);
+    const pm10 = safeNum(d?.iaqi?.pm10?.v);
+    const city = d?.city?.name || '';
+
+    setPM(pm25El, pm25, 'pm25');
+    setPM(pm10El, pm10, 'pm10');
+
+    if (pm25UnitEl) pm25UnitEl.textContent = 'µg/m³';
+    if (pm10UnitEl) pm10UnitEl.textContent = 'µg/m³';
+
+    setAqi(aqi, city);
+    showResult();
+  }
+
+  function setPM(valueEl, value, kind) {
+    if (!valueEl) return;
+    const tile = valueEl.closest('.pm-tile');
+    if (Number.isFinite(value)) {
+      valueEl.textContent = String(value);
+      tile?.classList.remove('is-na');
+    } else {
+      valueEl.textContent = '—';
+      tile?.classList.add('is-na');
     }
 
-    // === Foreground animation (icon) ===
-    if (fg) {
-      const sources = [
-        // Prefer the JSON that worked for you
-        'https://lottie.host/embed/2b8e749b-4cd3-4320-9076-594a35c7e358/pUlp7B6m1m.json',
-        // Fallback
-        'https://lottie.host/embed/2f98f016-a108-4399-b171-efdfe09504bd/OgM6DVuwEP.json'
-      ];
-
-      const loadFG = (i = 0) => {
-        const anim = lottie.loadAnimation({
-          container: fg,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: sources[i],
-          rendererSettings: { progressiveLoad: true }
-        });
-
-        anim.addEventListener('data_failed', () => {
-          if (i + 1 < sources.length) loadFG(i + 1);
-          else console.warn('[Bento AQI] Foreground Lottie sources failed.');
-        });
-
-        // Remove any bg fill from FG to avoid a bounding box
-        stripLottieBackground(anim);
-      };
-
-      loadFG(0);
-    }
-
-    // === Background animation (fills card) ===
-    if (bg) {
-      const bgAnim = lottie.loadAnimation({
-        container: bg,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://lottie.host/embed/56ac60ad-7b43-4b04-bc9e-71d6b3c9bbb3/it7gfhRfdW.json',
-        rendererSettings: {
-          preserveAspectRatio: 'xMidYMid slice', // cover the box neatly
-          progressiveLoad: true
-        }
-      });
-
-      bgAnim.addEventListener('DOMLoaded', () => {
-        try { bgAnim.setSpeed(0.6); } catch (_){}
-      });
-
-      // In case the BG JSON includes a solid rect
-      stripLottieBackground(bgAnim);
+    if (tile) {
+      let badge = tile.querySelector('.pm-xwho');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'pm-xwho';
+        (valueEl.parentElement || tile).appendChild(badge);
+      }
+      const meta = whoFactor(value, kind);
+      badge.textContent = meta.label;
+      tile.classList.remove('is-healthy','is-elevated','is-high','is-very-high','is-severe');
+      tile.classList.add(meta.stateClass);
     }
   }
 
-  // Load after Lottie script + DOM
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => ensureLottie(initLottie));
-  } else {
-    ensureLottie(initLottie);
+  function setAqi(aqi, cityLabel = '') {
+    if (scoreNum) scoreNum.textContent = Number.isFinite(aqi) ? String(aqi) : '—';
+    if (scoreLbl)  scoreLbl.textContent  = 'AQI';
+    if (statusTxt) statusTxt.textContent = buildStatusText(aqi, cityLabel);
+
+    if (ringProg && CIRC) {
+      const norm = Number.isFinite(aqi) ? clamp(aqi, 0, MAX_AQI) / MAX_AQI : 0;
+      ringProg.style.strokeDashoffset = `${CIRC * (1 - norm)}`;
+    }
+
+    setAqiCategory(box2, aqi);
+    updateBox3Lottie(aqi); // swap animation + caption
   }
 
-  /* ---------- INIT ---------- */
-  buildAmbientParticles();       // always animating
-  retargetParticlesToCenter();   // ensure exact center target
-  showEmpty();                   // default right state
+  function buildStatusText(aqi, city) {
+    const category = aqiCategory(aqi);
+    const parts = [];
+    if (city) parts.push(city);
+    if (category) parts.push(category);
+    return parts.join(' • ') || '—';
+  }
+
+  function setAqiCategory(el, aqi) {
+    if (!el) return;
+    ['is-good','is-moderate','is-usg','is-unhealthy','is-very','is-hazard'].forEach(c => el.classList.remove(c));
+    const c = aqiClass(aqi);
+    if (c) el.classList.add(c);
+  }
+
+  function aqiCategory(aqi){
+    if (!Number.isFinite(aqi)) return '';
+    if (aqi <= 50)  return 'Good / Healthy';
+    if (aqi <= 100) return 'Moderate';
+    if (aqi <= 150) return 'Unhealthy for Sensitive Groups';
+    if (aqi <= 200) return 'Unhealthy for All';
+    if (aqi <= 300) return 'Very Unhealthy';
+    return 'Hazardous / Emergency';
+  }
+  function aqiClass(aqi){
+    if (!Number.isFinite(aqi)) return '';
+    if (aqi <= 50)  return 'is-good';
+    if (aqi <= 100) return 'is-moderate';
+    if (aqi <= 150) return 'is-usg';
+    if (aqi <= 200) return 'is-unhealthy';
+    if (aqi <= 300) return 'is-very';
+    return 'is-hazard';
+  }
+
+  // ------- Box 3: wrappers & caption -------
+  function ensureCaption(){
+    if (!box3) return null;
+    if (box3Caption && box3.contains(box3Caption)) return box3Caption;
+    const el = document.createElement('div');
+    el.className = 'box3-caption';
+    el.setAttribute('aria-live', 'polite');
+    el.style.display = 'none';
+    box3.appendChild(el);
+    box3Caption = el;
+    return el;
+  }
+
+  function ensureGoodWrap() {
+    if (!box3) return null;
+    if (box3GoodWrap && box3.contains(box3GoodWrap)) return box3GoodWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-good-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--good';
+    iframe.title = 'Good AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/69ef2c59-c01e-4ea8-8d91-e030c1bd3d2c/ytXU6mo7xS.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3GoodWrap = wrap; return wrap;
+  }
+  function ensureModerateWrap() {
+    if (!box3) return null;
+    if (box3ModerateWrap && box3.contains(box3ModerateWrap)) return box3ModerateWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-moderate-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--moderate';
+    iframe.title = 'Moderate AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/3ec86fb8-fdf7-4854-9241-c31d76ae1a1f/IXy5zPtHUX.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3ModerateWrap = wrap; return wrap;
+  }
+  function ensureUSGWrap() {
+    if (!box3) return null;
+    if (box3USGWrap && box3.contains(box3USGWrap)) return box3USGWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-usg-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--usg';
+    iframe.title = 'Unhealthy for Sensitive Groups AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/95f452fa-4d17-444a-a820-140e7a8e6da9/DucssUgjEL.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3USGWrap = wrap; return wrap;
+  }
+  function ensureUnhealthyWrap() {
+    if (!box3) return null;
+    if (box3UnhealthyWrap && box3.contains(box3UnhealthyWrap)) return box3UnhealthyWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-unhealthy-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--unhealthy';
+    iframe.title = 'Unhealthy AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/2cd2f30c-5fd0-49f2-91c8-8d1c7f92cfd2/dndklH6ELw.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3UnhealthyWrap = wrap; return wrap;
+  }
+  function ensureVeryWrap() {
+    if (!box3) return null;
+    if (box3VeryWrap && box3.contains(box3VeryWrap)) return box3VeryWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-very-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--very';
+    iframe.title = 'Very Unhealthy AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/ac2c9c48-23c7-454a-9988-f0f8d2db2862/uWZW7ant0U.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3VeryWrap = wrap; return wrap;
+  }
+  function ensureHazardWrap() {
+    if (!box3) return null;
+    if (box3HazardWrap && box3.contains(box3HazardWrap)) return box3HazardWrap;
+    const wrap = document.createElement('div'); wrap.className = 'lottie-hazard-wrap'; wrap.hidden = true;
+    const iframe = document.createElement('iframe');
+    iframe.className = 'lottie-iframe lottie-iframe--hazard';
+    iframe.title = 'Hazardous AQI Animation';
+    iframe.loading = 'lazy'; iframe.allow = 'autoplay';
+    iframe.src = 'https://lottie.host/embed/66a2944f-193d-46a3-aefc-bba1562ecf57/SCjkY1P63j.json';
+    wrap.appendChild(iframe); box3.appendChild(wrap); box3HazardWrap = wrap; return wrap;
+  }
+
+  function updateBox3Lottie(aqi){
+    if (!box3) return;
+
+    const isGood     = Number.isFinite(aqi) && aqi >= 0   && aqi <= 50;
+    const isModerate = Number.isFinite(aqi) && aqi >  50  && aqi <= 100;
+    const isUSG      = Number.isFinite(aqi) && aqi >  100 && aqi <= 150;
+    const isUnh      = Number.isFinite(aqi) && aqi >  150 && aqi <= 200;
+    const isVery     = Number.isFinite(aqi) && aqi >  200 && aqi <= 300;
+    const isHaz      = Number.isFinite(aqi) && aqi >  300 && aqi <= 500;
+
+    const good = ensureGoodWrap();
+    const mod  = ensureModerateWrap();
+    const usg  = ensureUSGWrap();
+    const unh  = ensureUnhealthyWrap();
+    const very = ensureVeryWrap();
+    const haz  = ensureHazardWrap();
+    ensureCaption();
+
+    // Only one visible at a time
+    if (good) good.hidden = !isGood;
+    if (mod)  mod.hidden  = !isModerate;
+    if (usg)  usg.hidden  = !isUSG;
+    if (unh)  unh.hidden  = !isUnh;
+    if (very) very.hidden = !isVery;
+    if (haz)  haz.hidden  = !isHaz;
+
+    // Default bg/fg visible only when no valid category
+    const useDefault = !(isGood || isModerate || isUSG || isUnh || isVery || isHaz);
+    if (box3DefaultBG) box3DefaultBG.hidden = !useDefault;
+    if (box3DefaultFG) box3DefaultFG.hidden = !useDefault;
+
+    // Background tints by state (optional)
+    box3.style.background =
+      isGood ? 'linear-gradient(135deg, #E8F7EE, #DFF7FF)' :
+      isModerate ? 'linear-gradient(135deg, #FFF6D6, #FFEFC2)' :
+      isUSG ? 'linear-gradient(135deg, #FFE8C9, #FFE0B3)' :
+      isUnh ? 'linear-gradient(135deg, #FFE1E1, #FFD0D0)' :
+      isVery ? 'linear-gradient(135deg, #F1D9FF, #E8C8FF)' :
+      isHaz ? 'linear-gradient(135deg, #F3C9C9, #E6B0B0)' :
+      'linear-gradient(135deg, var(--blue-50), var(--blue-200))';
+
+    // Apply per-band state class for CSS sizing/positioning
+    box3.classList.remove('state-good','state-moderate','state-usg','state-unhealthy','state-very','state-hazard');
+    let captionText = '';
+    if (isGood)        { box3.classList.add('state-good');      captionText = CAPTIONS.good; }
+    else if (isModerate){ box3.classList.add('state-moderate'); captionText = CAPTIONS.moderate; }
+    else if (isUSG)     { box3.classList.add('state-usg');      captionText = CAPTIONS.usg; }
+    else if (isUnh)     { box3.classList.add('state-unhealthy');captionText = CAPTIONS.unhealthy; }
+    else if (isVery)    { box3.classList.add('state-very');     captionText = CAPTIONS.very; }
+    else if (isHaz)     { box3.classList.add('state-hazard');   captionText = CAPTIONS.hazard; }
+
+    // Update caption visibility/text
+    if (box3Caption) {
+      if (useDefault) {
+        box3Caption.style.display = 'none';
+        box3Caption.textContent = '';
+      } else {
+        box3Caption.textContent = captionText || '';
+        box3Caption.style.display = captionText ? 'block' : 'none';
+      }
+    }
+  }
+
+  function resetBox3ToDefault(){
+    if (!box3) return;
+    if (box3DefaultBG) box3DefaultBG.hidden = false;
+    if (box3DefaultFG) box3DefaultFG.hidden = false;
+    if (box3GoodWrap)      box3GoodWrap.hidden      = true;
+    if (box3ModerateWrap)  box3ModerateWrap.hidden  = true;
+    if (box3USGWrap)       box3USGWrap.hidden       = true;
+    if (box3UnhealthyWrap) box3UnhealthyWrap.hidden = true;
+    if (box3VeryWrap)      box3VeryWrap.hidden      = true;
+    if (box3HazardWrap)    box3HazardWrap.hidden    = true;
+    if (box3Caption)       { box3Caption.style.display = 'none'; box3Caption.textContent = ''; }
+    box3.classList.remove('state-good','state-moderate','state-usg','state-unhealthy','state-very','state-hazard');
+    box3.style.background = 'linear-gradient(135deg, var(--blue-50), var(--blue-200))';
+  }
+
+  // ------- UI state helpers -------
+  function setLoading(msg='Fetching…'){
+    if (emptyState) emptyState.style.display = 'none';
+    if (resultState) resultState.style.display = 'none';
+    if (loadingState) {
+      loadingState.style.display = '';
+      const p = qs('.loading-copy', loadingState);
+      if (p) p.textContent = msg;
+    }
+    resetBox3ToDefault(); // keep defaults during loading
+  }
+  function setEmpty(msg='Enter a city to see the AQI.'){
+    if (loadingState) loadingState.style.display = 'none';
+    if (resultState)  resultState.style.display = 'none';
+    if (emptyState) {
+      emptyState.style.display = '';
+      const p = qs('.empty-hint', emptyState);
+      if (p) p.textContent = msg;
+    }
+    resetBox3ToDefault(); // show default bg+fg when no search
+  }
+  function showResult(){
+    if (emptyState) emptyState.style.display = 'none';
+    if (loadingState) loadingState.style.display = 'none';
+    if (resultState)  resultState.style.display = '';
+  }
+
+  // ------- Utils -------
+  function safeNum(v){ const n = Number(v); return Number.isFinite(n) ? Math.round(n) : NaN; }
+  function properCase(s){ if(!s) return s; return s.toLowerCase().split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '); }
+  function bumpInput(inputEl){ if(!inputEl) return; inputEl.focus(); inputEl.style.outline='2px solid #ff6666'; setTimeout(()=>{inputEl.style.outline='';},700); }
 })();
