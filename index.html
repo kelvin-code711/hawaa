@@ -124,15 +124,13 @@
     </div>
   </section>
 
-  <section id="bento-aqi">
+  <!-- Bento AQI Section -->
+<section id="bento-aqi">
   <div class="bento-wrapper">
-    <!-- BOX 1: Search + full-bleed particle lane -->
     <div class="bento-box box1">
-      <div class="particle-lane" aria-hidden="true">
-        <div class="filter-line"></div>
-        <div class="particles"></div>
-      </div>
-
+      <!-- Background image container -->
+      <div class="bg-image-container"></div>
+      
       <h1>Check the air quality in your city</h1>
       <p>Enter a city to see the AQI instantly</p>
 
@@ -145,35 +143,13 @@
             </svg>
           </button>
         </div>
-        <button id="locateBtn" class="locate-btn" type="button">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
-            <path d="M12 5V2m0 20v-3M5 12H2m20 0h-3M5.6 5.6l-2.1-2.1m16.9 16.9-2.1-2.1M5.6 18.4l-2.1 2.1m16.9-16.9-2.1 2.1" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Locate me
-        </button>
+        <button id="locateBtn" class="locate-btn" type="button">Locate me</button>
       </div>
-      <!-- Popular chips intentionally removed -->
     </div>
 
     <!-- BOX 2: PM tiles (left) + AQI ring (right) -->
     <div class="bento-box box2">
       <div class="box2-grid">
-        <div class="pm-stats">
-          <div class="pm-tile" data-type="pm25">
-            <div class="pm-label">PM 2.5</div>
-            <div class="pm-value" data-js="pm25-value">—</div>
-            <div class="pm-unit" data-js="pm25-unit">µg/m³</div>
-            <!-- × WHO badge will be injected -->
-          </div>
-          <div class="pm-tile" data-type="pm10">
-            <div class="pm-label">PM 10</div>
-            <div class="pm-value" data-js="pm10-value">—</div>
-            <div class="pm-unit" data-js="pm10-unit">µg/m³</div>
-            <!-- × WHO badge will be injected -->
-          </div>
-        </div>
-
         <div class="right-side">
           <div class="aqi-empty">
             <p class="empty-hint">Enter a city to see the AQI.</p>
@@ -190,6 +166,22 @@
               <span class="num">—</span><span class="label">AQI</span>
             </div>
             <div class="result-status">—</div>
+          </div>
+        </div>
+
+
+        <div class="pm-stats">
+          <div class="pm-tile" data-type="pm25">
+            <div class="pm-label">PM 2.5</div>
+            <div class="pm-value" data-js="pm25-value">—</div>
+            <div class="pm-unit" data-js="pm25-unit">µg/m³</div>
+            <!-- × WHO badge will be injected -->
+          </div>
+          <div class="pm-tile" data-type="pm10">
+            <div class="pm-label">PM 10</div>
+            <div class="pm-value" data-js="pm10-value">—</div>
+            <div class="pm-unit" data-js="pm10-unit">µg/m³</div>
+            <!-- × WHO badge will be injected -->
           </div>
         </div>
       </div>
@@ -225,11 +217,17 @@
   </div>
 </div>
 
-    <!-- BOX 4: CTA / anything -->
-    <div class="bento-box box4">
-      <a class="quiz-btn" href="#learn">Take the 60-second air quiz</a>
-    </div>
+   <!-- BOX 4: Products -->
+<div class="bento-box box4">
+  <div class="box4-grid">
+    <a class="prod-card" href="#air-purifier">
+      <img src="images/hero-mobile.png" alt="Hawaa Air Purifier">
+    </a>
+    <a class="prod-card" href="#filter">
+      <img src="images/filter-stage3-mobile.png" alt="Replacement Filter">
+    </a>
   </div>
+</div>
 </section>
 
 
