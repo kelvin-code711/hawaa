@@ -1,145 +1,107 @@
-// js/about.js
-document.addEventListener('DOMContentLoaded', function() {
-  const section = document.querySelector('.full-circle-section');
-  const cardSection = document.querySelector('.card-section');
-  const card = document.querySelector('.blank-card');
-  const wrapper = document.querySelector('.card-image-wrapper');
-  const impactPilotSection = document.querySelector('.impact-pilot-section');
-  const header = document.querySelector('.hawaa-header');
-  const body = document.body;
-
-  if (!section || !cardSection || !card || !wrapper) {
-    console.error('Missing required element.');
-    return;
+/* ===== 100vh mobile fix ===== */
+(function () {
+  function setVH() {
+    document.documentElement.style.setProperty("--vh", (window.innerHeight * 0.01) + "px");
   }
+  setVH();
+  window.addEventListener("resize", setVH, { passive: true });
+  window.addEventListener("orientationchange", setVH, { passive: true });
+})();
 
-  // Initialize element states
-  section.style.willChange = 'opacity, transform';
-  cardSection.style.willChange = 'transform';
-  if (impactPilotSection) {
-    impactPilotSection.style.opacity = '0';
-    impactPilotSection.style.transition = 'opacity 0.3s ease';
-    impactPilotSection.style.willChange = 'opacity';
-    // ensure natural flow defaults
-    impactPilotSection.style.position = 'relative';
-    impactPilotSection.style.top = '';
-    impactPilotSection.style.left = '';
-    impactPilotSection.style.width = '';
-    impactPilotSection.style.height = '';
-    impactPilotSection.style.zIndex = '';
-  }
+/* ===== Text ring rotates with scroll (kept) ===== */
+(function () {
+  const ring = document.querySelector("#scene1 .text-ring");
+  if (!ring) return;
+  const speed = 0.06;
+  const update = () => {
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    ring.style.transform =
+      `translate(-50%, calc(50% + var(--circle-offset-y))) ` +
+      `scale(var(--text-ring-scale)) rotate(${y * speed}deg)`;
+    requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+})();
 
-  // Calculate initial positions
-  let sectionTop = section.getBoundingClientRect().top + window.scrollY;
-  let sectionHeight = section.offsetHeight;
-  let wrapperRect = wrapper.getBoundingClientRect();
-  let wrapperWidth = wrapperRect.width;
-  let wrapperHeight = wrapper.offsetHeight;
-  let wrapperTop = wrapperRect.top + window.scrollY;
-  let maxScale = window.innerWidth / wrapperWidth;
-  let startZoom = wrapperTop - window.innerHeight * 0.5;
-  let endZoom = wrapperTop + wrapperHeight - window.innerHeight;
-  let cardTop = card.getBoundingClientRect().top + window.scrollY;
-  let cardHeight = card.offsetHeight;
-  let cardBottom = cardTop + cardHeight;
-  const rotationFactor = 80;
+/* ===== Ensure S1 paints correctly on iOS ===== */
+(function () {
+  const s1 = document.querySelector("#scene1 .card");
+  if (!s1) return;
+  const ensure = () => {
+    s1.style.minHeight = `calc(var(--vh, 1vh) * 100)`;
+    s1.style.top = "0px";
+  };
+  ensure();
+  window.addEventListener("resize", ensure, { passive: true });
+  window.addEventListener("orientationchange", ensure, { passive: true });
+})();
 
-  // Handle resize events to recalculate positions
-  window.addEventListener('resize', function() {
-    sectionTop = section.getBoundingClientRect().top + window.scrollY;
-    sectionHeight = section.offsetHeight;
-    wrapperRect = wrapper.getBoundingClientRect();
-    wrapperWidth = wrapperRect.width;
-    wrapperTop = wrapperRect.top + window.scrollY;
-    maxScale = window.innerWidth / wrapperWidth;
-    startZoom = wrapperTop - window.innerHeight * 0.5;
-    endZoom = wrapperTop + wrapperHeight - window.innerHeight;
-    cardTop = card.getBoundingClientRect().top + window.scrollY;
-    cardHeight = card.offsetHeight;
-    cardBottom = cardTop + cardHeight;
-  });
+/* ===== Horizontal scroll ONLY inside pilot cards; never the page ===== */
+document.addEventListener("DOMContentLoaded", function () {
+  const strip = document.querySelector(".cards-container");
+  if (!strip) return;
 
-  let ticking = false;
-  window.addEventListener('scroll', function() {
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        const y = window.scrollY;
-        const viewportHeight = window.innerHeight;
+  // Guard rails on the element itself
+  strip.style.touchAction = "pan-x pinch-zoom";
+  strip.style.overscrollBehaviorInline = "contain";
 
-        // 1) Rotate text-ring
-        let frac = (y - sectionTop) / sectionHeight;
-        frac = Math.min(Math.max(frac, 0), 1);
-        const angle = frac * rotationFactor;
-        section.style.setProperty('--rotation', `${angle}deg`);
+  // Trackpads / mice: map both horizontal and vertical deltas to X while hovering the strip
+  strip.addEventListener("wheel", function (e) {
+    const absX = Math.abs(e.deltaX);
+    const absY = Math.abs(e.deltaY);
 
-        // 2) Zoom image container
-        let t = (y - startZoom) / (endZoom - startZoom);
-        t = Math.min(Math.max(t, 0), 1);
-        wrapper.style.transform = `scale(${1 + t * (maxScale - 1)})`;
+    // If mostly horizontal, consume; otherwise translate vertical to horizontal
+    if (absX >= absY) {
+      e.preventDefault();
+      this.scrollLeft += e.deltaX;
+    } else if (absY > 0) {
+      e.preventDefault();
+      this.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
 
-        // 3) Handle half-circle visibility
-        const circleFadeStart = cardTop - viewportHeight * 0.3;
-        const circleFadeEnd = cardTop + viewportHeight * 0.7;
-        
-        if (y >= circleFadeStart) {
-          if (y >= circleFadeEnd) {
-            section.style.opacity = '0';
-            section.style.pointerEvents = 'none';
-          } else {
-            const opacity = 1 - (y - circleFadeStart) / (circleFadeEnd - circleFadeStart);
-            section.style.opacity = opacity;
-            section.style.pointerEvents = opacity > 0.1 ? 'auto' : 'none';
-          }
-        } else {
-          section.style.opacity = '1';
-          section.style.pointerEvents = 'auto';
-        }
+  // Touch: lock to X inside the strip
+  let startX = 0, startY = 0, active = false;
+  strip.addEventListener("touchstart", (e) => {
+    const t = e.touches[0]; if (!t) return;
+    startX = t.clientX; startY = t.clientY; active = true;
+  }, { passive: true });
 
-        // 4) Show Impact + Pilot Units Section in normal flow (fully scrollable)
-        if (impactPilotSection) {
-          const impactShowStart = cardTop + viewportHeight * 0.5;
-          const impactShowEnd = cardBottom - viewportHeight * 0.3;
+  strip.addEventListener("touchmove", (e) => {
+    if (!active) return;
+    const t = e.touches[0]; if (!t) return;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
 
-          if (y >= impactShowStart) {
-            // Always keep it in normal document flow so the whole section can be seen
-            impactPilotSection.style.position = 'relative';
-            impactPilotSection.style.top = '';
-            impactPilotSection.style.left = '';
-            impactPilotSection.style.width = '';
-            impactPilotSection.style.height = '';
-            impactPilotSection.style.zIndex = '';
-            impactPilotSection.style.opacity = '1';
+    if (Math.abs(dx) > Math.abs(dy)) {
+      // Horizontal gesture → keep it inside the strip
+      e.preventDefault();
+      strip.scrollLeft -= dx;
+      startX = t.clientX; // continue smooth dragging
+    }
+    // If vertical dominates, do nothing (page scrolls)
+  }, { passive: false });
 
-            // Optional subtle fade-in across the overlap region
-            if (y < impactShowEnd) {
-              // fade from 0.6→1 while card overlaps
-              const p = Math.min(Math.max((y - impactShowStart) / (impactShowEnd - impactShowStart), 0), 1);
-              const eased = 0.6 + p * 0.4;
-              impactPilotSection.style.opacity = String(eased);
-            } else {
-              impactPilotSection.style.opacity = '1';
-            }
-          } else {
-            // Before reveal point: keep hidden
-            impactPilotSection.style.opacity = '0';
-          }
-        }
+  strip.addEventListener("touchend", () => (active = false), { passive: true });
+});
 
-        // 5) Header appearance toggle
-        if (header) {
-          if (y > sectionTop + sectionHeight - header.offsetHeight) {
-            body.classList.add('scrolled-past-first');
-          } else {
-            body.classList.remove('scrolled-past-first');
-          }
-        }
-
-        ticking = false;
-      });
-      ticking = true;
+/* ===== Make sure S1 visuals are visible (no accidental hides) ===== */
+document.addEventListener("DOMContentLoaded", function () {
+  const elms = [
+    document.querySelector("#scene1 .circle"),
+    document.querySelector("#scene1 .text-ring"),
+    document.querySelector("#scene1 .circle-center-image"),
+  ];
+  elms.forEach((el) => {
+    if (!el) return;
+    const cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden" || cs.opacity === "0") {
+      el.style.display = "block";
+      el.style.visibility = "visible";
+      el.style.opacity = "1";
     }
   });
-
-  // Trigger initial scroll to set correct positions
-  window.dispatchEvent(new Event('scroll'));
 });
+
+/* ===== IMPORTANT FIX: remove any page-level horizontal touch blocking that broke curtain reveal =====
+   (We do NOT add global touchmove preventDefault anywhere.) */

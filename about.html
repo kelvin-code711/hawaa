@@ -1,245 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About Section</title>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>About — Curtain Reveal</title>
   <link rel="stylesheet" href="css/about.css" />
-  <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/header.css" />
-  <script src="js/header.js" defer></script>
-  <script src="js/about.js" defer></script>
 </head>
 <body class="about-page">
 
-  <!-- Header -->
-  <header class="hawaa-header" id="hawaa-header">
-    <div class="header-container">
-      <a href="index.html" class="header-logo">
-        <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
-      </a>
-      <div class="header-actions">
-        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <div class="hamburger-icon"><span></span><span></span><span></span></div>
-        </button>
-      </div>
-    </div>
-  </header>
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </button>
-          <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-          </button>
-          <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
+<main class="curtain">
+  <!-- SCENE 1: Section 1 visuals (circle + ring + center image) -->
+  <section class="scene" id="scene1">
+    <div class="card s1">
+      <div class="s1-wrap">
+        <div class="circle"></div>
+
+        <div class="circle-center-image">
+          <img src="images/breathing.png" alt="Center image" />
         </div>
-      </div>
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">EXPLORE</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="sections/filter-learn.html">Filter Technology</a></li>
-              <li><a href="/technology">Instalation Guide</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="nav-section">
-          <h3 class="section-title">ABOUT HAWAA</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="blog.html">Blog</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-<!-- Mobile Menu -->
-<div class="mobile-nav" id="mobile-nav">
-  <div class="nav-overlay" id="nav-overlay"></div>
-
-  <div class="nav-panel">
-    <div class="nav-header">
-      <h2 class="nav-title">Menu</h2>
-      <div class="nav-icons">
-        <button class="nav-icon" aria-label="Account">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </button>
-
-        <button class="nav-icon" aria-label="Cart">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-        </button>
-
-        <button class="nav-close" id="nav-close" aria-label="Close menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="nav-content">
-      <div class="nav-section">
-        <h3 class="section-title">EXPLORE</h3>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="/products">Products</a></li>
-          <li><a href="/technology">Technology</a></li>
-          <li><a href="/quiz">Take a Quiz</a></li>
-          <li><a href="/aqi">AQI Checker</a></li>
-        </ul>
-      </div>
-
-      <div class="nav-section">
-        <h3 class="section-title">ABOUT HAWAA</h3>
-        <ul class="nav-links">
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="/how-it-works">How It Works</a></li>
-          <li><a href="/faq">FAQ</a></li>
-          <li><a href="blog.html">Blog</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <!-- Sticky Half Circle Section -->
-  <section class="full-circle-section">
-
-    <div class="circle"></div>
-
-    <div class="circle-center-image">
-      <img src="images/breathing.png" alt="Center image">
-    </div>
-
-    <svg class="text-ring" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <defs>
-        <path id="circlePath"
-          d="M512,512 m-512,0 a512,512 0 1,1 1024,0 a512,512 0 1,1 -1024,0" />
-      </defs>
-      <text fill="#fff">
-        <textPath href="#circlePath" startOffset="0%">
-          Breath Better • Breath Better • Breath Better • Breath Better • Breath Better •
-          Breath Better • Breath Better • Breath Better • Breath Better • Breath Better •
-          Breath Better • Breath Better • Breath Better • Breath Better • Breath Better • Breath Better
-        </textPath>
-      </text>
-    </svg>
-  </section>
-
-  <!-- Card Section -->
-  <section class="card-section">
-    <div class="blank-card" style="--card-gap:24px; --card-letter-spacing:0.5px;">
-      <p>
-        The quality of every breath you take influences your energy and shapes the flow of your day.
-      </p>
-      <p>
-        Superior air care is about
-        <span class="highlight highlight-1">detecting</span> pollutants,
-        <span class="highlight highlight-2">optimizing</span> purification methods,
-        and <span class="highlight highlight-3">customizing</span> your clean-air environment.
-      </p>
-      <div class="card-image-wrapper">
-        <img src="images/image-blog.jpg" alt="Air purifier in use" />
-      </div>
-      <h2 class="card-headline">
-        Your air is personal. Now, so is your purification.
-      </h2>
-      <p class="card-subtext">
-        Founded by three friends who believe everyone deserves clean, healthy indoor air, Hawaa pairs medical-grade True HEPA filtration with smart sensors and an intuitive app—all in an ultra-quiet, energy-efficient package.
-      </p>
-    </div>
-  </section>
-
-  <!-- Impact + Pilot Units Section -->
-  <section class="impact-pilot-section">
-    <div class="container">
-      <h2 class="main-heading">Success is the standard.</h2>
-      <p class="description-text">
-        We obsess over results so you can focus on living your best life. From our very first prototype through every customer feedback loop and lab test, we measure every breath, every particle removed, and every moment of relief—so you know you're getting the cleanest air from day one.
-      </p>
-    </div>
-
-    <div class="cards-container">
-      <div class="stats-card">
-        <h2 class="stats-number">50+</h2>
-        <div class="image-container">
-          <div class="image-placeholder">
-            <div class="placeholder-icon">📊</div>
-            <div>Upload Image</div>
-          </div>
-        </div>
-        <p class="stats-description">Pilot units deployed</p>
-      </div>
-
-      <div class="stats-card">
-        <h2 class="stats-number">200+</h2>
-        <div class="image-container">
-          <div class="image-placeholder">
-            <div class="placeholder-icon">🧪</div>
-            <div>Upload Image</div>
-          </div>
-        </div>
-        <p class="stats-description">Hours of lab & field testing</p>
-      </div>
-
-      <div class="stats-card">
-        <h2 class="stats-number">95%</h2>
-        <div class="image-container">
-          <div class="image-placeholder">
-            <div class="placeholder-icon">⭐</div>
-            <div>Upload Image</div>
-          </div>
-        </div>
-        <p class="stats-description">Satisfaction rate from beta testers</p>
-      </div>
-
-      <div class="stats-card">
-        <h2 class="stats-number">98%</h2>
-        <div class="image-container">
-          <div class="image-placeholder">
-            <div class="placeholder-icon">👥</div>
-            <div>Upload Image</div>
-          </div>
-        </div>
-        <p class="stats-description">Would recommend Hawaa to a friend</p>
+        <svg class="text-ring" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <path id="circlePath"
+                  d="M512,512 m-512,0 a512,512 0 1,1 1024,0 a512,512 0 1,1 -1024,0" />
+          </defs>
+          <text>
+            <textPath href="#circlePath" startOffset="0%">
+              Breath Better • Breath Better • Breath Better • Breath Better • Breath Better •
+              Breath Better • Breath Better • Breath Better • Breath Better • Breath Better •
+              Breath Better • Breath Better • Breath Better • Breath Better • Breath Better • Breath Better
+            </textPath>
+          </text>
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- Footer Placeholder -->
-  <div class="footer-spacer" style="height: 60px;"></div>
-  <div id="footer-placeholder"></div>
+  <!-- SCENE 2: Card section -->
+  <section class="scene" id="scene2">
+    <div class="card s2">
+      <div class="blank-card" style="--card-gap:24px; --card-letter-spacing:0.5px;">
+        <p>
+          The quality of every breath you take influences your energy and shapes the flow of your day.
+        </p>
+        <p>
+          Superior air care is about
+          <span class="highlight highlight-1">detecting</span> pollutants,
+          <span class="highlight highlight-2">optimizing</span> purification methods,
+          and <span class="highlight highlight-3">customizing</span> your clean-air environment.
+        </p>
 
-  <!-- Inject Footer -->
-  <script>
-    fetch('sections/footer.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('footer-placeholder').innerHTML = html;
-      })
-      .catch(err => console.error('Error loading footer:', err));
-  </script>
+        <div class="card-image-wrapper">
+          <img src="images/image-blog.jpg" alt="Air purifier in use" />
+        </div>
+
+        <h2 class="card-headline">
+          Your air is personal. Now, so is your purification.
+        </h2>
+        <p class="card-subtext">
+          Founded by three friends who believe everyone deserves clean, healthy indoor air, Hawaa pairs medical-grade True HEPA filtration with smart sensors and an intuitive app—all in an ultra-quiet, energy-efficient package.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 3: Impact + Pilot Units -->
+  <section class="scene" id="scene3">
+    <!-- Final scene overlaps in, then scrolls normally -->
+    <div class="card s3">
+      <div class="impact-wrap">
+        <div class="container">
+          <h2 class="main-heading">Success is the standard.</h2>
+          <p class="description-text">
+            We obsess over results so you can focus on living your best life. From our very first prototype through every customer feedback loop and lab test, we measure every breath, every particle removed, and every moment of relief—so you know you're getting the cleanest air from day one.
+          </p>
+        </div>
+
+        <div class="cards-container">
+          <div class="stats-card">
+            <h2 class="stats-number">50+</h2>
+            <div class="image-container">
+              <div class="image-placeholder">
+                <div class="placeholder-icon">📊</div>
+                <div>Upload Image</div>
+              </div>
+            </div>
+            <p class="stats-description">Pilot units deployed</p>
+          </div>
+
+          <div class="stats-card">
+            <h2 class="stats-number">200+</h2>
+            <div class="image-container">
+              <div class="image-placeholder">
+                <div class="placeholder-icon">🧪</div>
+                <div>Upload Image</div>
+              </div>
+            </div>
+            <p class="stats-description">Hours of lab & field testing</p>
+          </div>
+
+          <div class="stats-card">
+            <h2 class="stats-number">95%</h2>
+            <div class="image-container">
+              <div class="image-placeholder">
+                <div class="placeholder-icon">⭐</div>
+                <div>Upload Image</div>
+              </div>
+            </div>
+            <p class="stats-description">Satisfaction rate from beta testers</p>
+          </div>
+
+          <div class="stats-card">
+            <h2 class="stats-number">98%</h2>
+            <div class="image-container">
+              <div class="image-placeholder">
+                <div class="placeholder-icon">👥</div>
+                <div>Upload Image</div>
+              </div>
+            </div>
+            <p class="stats-description">Would recommend Hawaa to a friend</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="js/about.js"></script>
 </body>
 </html>
