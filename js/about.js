@@ -1,162 +1,145 @@
 // js/about.js
-document.addEventListener('DOMContentLoaded', function () {
-  const section = document.querySelector('.full-circle-section');         // circle hero
-  const cardSection = document.querySelector('.card-section');            // text+image card
-  const card = document.querySelector('.blank-card');                     // card content
-  const wrapper = document.querySelector('.card-image-wrapper');          // zoom container
-  const impactPilotSection = document.querySelector('.impact-pilot-section'); // next section
+document.addEventListener('DOMContentLoaded', function() {
+  const section = document.querySelector('.full-circle-section');
+  const cardSection = document.querySelector('.card-section');
+  const card = document.querySelector('.blank-card');
+  const wrapper = document.querySelector('.card-image-wrapper');
+  const impactPilotSection = document.querySelector('.impact-pilot-section');
   const header = document.querySelector('.hawaa-header');
   const body = document.body;
 
-  if (!section || !cardSection || !card || !wrapper || !impactPilotSection) {
+  if (!section || !cardSection || !card || !wrapper) {
     console.error('Missing required element.');
     return;
   }
 
-  // Initial state
+  // Initialize element states
   section.style.willChange = 'opacity, transform';
-  section.style.opacity = '1';
-  section.style.position = 'sticky';
-  section.style.top = '0';
-  section.style.left = '0';
-  section.style.width = '100vw';
-  section.style.height = '100vh';
-  section.style.zIndex = '1';
-
   cardSection.style.willChange = 'transform';
-  cardSection.style.position = 'relative';
-  cardSection.style.zIndex = '10';
-
-  impactPilotSection.style.willChange = 'opacity, transform';
-  impactPilotSection.style.opacity = '0';
-  impactPilotSection.style.position = 'relative';
-  impactPilotSection.style.top = 'auto';
-  impactPilotSection.style.left = 'auto';
-  impactPilotSection.style.width = '100vw';
-  impactPilotSection.style.height = 'auto';
-  impactPilotSection.style.zIndex = '1';
-
-  // Positions
-  function recalculatePositions() {
-    const sectionRect = section.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    const wrapperRect = wrapper.getBoundingClientRect();
-
-    return {
-      sectionTop: sectionRect.top + window.scrollY,
-      sectionHeight: section.offsetHeight,
-      wrapperTop: wrapperRect.top + window.scrollY,
-      wrapperHeight: wrapper.offsetHeight,
-      maxScale: window.innerWidth / wrapperRect.width,
-      cardTop: cardRect.top + window.scrollY,
-      cardHeight: card.offsetHeight,
-      cardBottom: cardRect.top + window.scrollY + card.offsetHeight
-    };
+  if (impactPilotSection) {
+    impactPilotSection.style.opacity = '0';
+    impactPilotSection.style.transition = 'opacity 0.3s ease';
+    impactPilotSection.style.willChange = 'opacity';
+    // ensure natural flow defaults
+    impactPilotSection.style.position = 'relative';
+    impactPilotSection.style.top = '';
+    impactPilotSection.style.left = '';
+    impactPilotSection.style.width = '';
+    impactPilotSection.style.height = '';
+    impactPilotSection.style.zIndex = '';
   }
 
-  let positions = recalculatePositions();
-  let startZoom = positions.wrapperTop - window.innerHeight * 0.5;
-  let endZoom = positions.wrapperTop + positions.wrapperHeight - window.innerHeight;
+  // Calculate initial positions
+  let sectionTop = section.getBoundingClientRect().top + window.scrollY;
+  let sectionHeight = section.offsetHeight;
+  let wrapperRect = wrapper.getBoundingClientRect();
+  let wrapperWidth = wrapperRect.width;
+  let wrapperHeight = wrapper.offsetHeight;
+  let wrapperTop = wrapperRect.top + window.scrollY;
+  let maxScale = window.innerWidth / wrapperWidth;
+  let startZoom = wrapperTop - window.innerHeight * 0.5;
+  let endZoom = wrapperTop + wrapperHeight - window.innerHeight;
+  let cardTop = card.getBoundingClientRect().top + window.scrollY;
+  let cardHeight = card.offsetHeight;
+  let cardBottom = cardTop + cardHeight;
   const rotationFactor = 80;
 
-  window.addEventListener('resize', function () {
-    positions = recalculatePositions();
-    startZoom = positions.wrapperTop - window.innerHeight * 0.5;
-    endZoom = positions.wrapperTop + positions.wrapperHeight - window.innerHeight;
+  // Handle resize events to recalculate positions
+  window.addEventListener('resize', function() {
+    sectionTop = section.getBoundingClientRect().top + window.scrollY;
+    sectionHeight = section.offsetHeight;
+    wrapperRect = wrapper.getBoundingClientRect();
+    wrapperWidth = wrapperRect.width;
+    wrapperTop = wrapperRect.top + window.scrollY;
+    maxScale = window.innerWidth / wrapperWidth;
+    startZoom = wrapperTop - window.innerHeight * 0.5;
+    endZoom = wrapperTop + wrapperHeight - window.innerHeight;
+    cardTop = card.getBoundingClientRect().top + window.scrollY;
+    cardHeight = card.offsetHeight;
+    cardBottom = cardTop + cardHeight;
   });
 
   let ticking = false;
-  window.addEventListener('scroll', function () {
-    if (ticking) return;
-    window.requestAnimationFrame(function () {
-      const y = window.scrollY;
-      const vh = window.innerHeight;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        const y = window.scrollY;
+        const viewportHeight = window.innerHeight;
 
-      // 1) Rotate text-ring
-      let frac = (y - positions.sectionTop) / positions.sectionHeight;
-      frac = Math.min(Math.max(frac, 0), 1);
-      const angle = frac * rotationFactor;
-      section.style.setProperty('--rotation', `${angle}deg`);
+        // 1) Rotate text-ring
+        let frac = (y - sectionTop) / sectionHeight;
+        frac = Math.min(Math.max(frac, 0), 1);
+        const angle = frac * rotationFactor;
+        section.style.setProperty('--rotation', `${angle}deg`);
 
-      // 2) Zoom image container
-      let t = (y - startZoom) / (endZoom - startZoom);
-      t = Math.min(Math.max(t, 0), 1);
-      wrapper.style.transform = `scale(${1 + t * (positions.maxScale - 1)})`;
+        // 2) Zoom image container
+        let t = (y - startZoom) / (endZoom - startZoom);
+        t = Math.min(Math.max(t, 0), 1);
+        wrapper.style.transform = `scale(${1 + t * (maxScale - 1)})`;
 
-      // 3) Flow control across sections
-      const cardScrollStart = positions.cardTop - vh;
-      const cardScrollEnd = positions.cardBottom;
-
-      if (y < cardScrollStart) {
-        // Before card scroll
-        section.style.position = 'sticky';
-        section.style.opacity = '1';
-
-        impactPilotSection.style.position = 'relative';
-        impactPilotSection.style.opacity = '0';
-
-        cardSection.style.position = 'relative';
-        cardSection.style.zIndex = '10';
-      }
-      else if (y >= cardScrollStart && y <= cardScrollEnd) {
-        // While card is scrolling
-        section.style.position = 'fixed';
-        section.style.top = '0';
-        section.style.left = '0';
-        section.style.width = '100vw';
-        section.style.height = '100vh';
-        section.style.zIndex = '1';
-        section.style.opacity = '1'; // keep hero visible during card
-
-        // Keep impact+pilot hidden and in normal flow
-        impactPilotSection.style.position = 'relative';
-        impactPilotSection.style.top = 'auto';
-        impactPilotSection.style.left = 'auto';
-        impactPilotSection.style.width = '100vw';
-        impactPilotSection.style.height = 'auto';
-        impactPilotSection.style.zIndex = '1';
-        impactPilotSection.style.opacity = '0';
-
-        cardSection.style.position = 'relative';
-        cardSection.style.zIndex = '10';
-      }
-      else {
-        // After card fully scrolled
-        section.style.position = 'sticky';
-        section.style.top = '0';
-        section.style.left = '0';
-        section.style.width = '100vw';
-        section.style.height = '100vh';
-        section.style.zIndex = '1';
-        section.style.opacity = '0';        // hide hero
-        section.classList.add('released');  // allow normal flow if CSS provides override
-
-        impactPilotSection.style.position = 'relative';
-        impactPilotSection.style.top = 'auto';
-        impactPilotSection.style.left = 'auto';
-        impactPilotSection.style.width = '100vw';
-        impactPilotSection.style.height = 'auto';
-        impactPilotSection.style.zIndex = '1';
-        impactPilotSection.style.opacity = '1'; // now visible
-
-        cardSection.style.position = 'relative';
-        cardSection.style.zIndex = '10';
-      }
-
-      // 4) Header appearance toggle
-      if (header) {
-        if (y > positions.sectionTop + positions.sectionHeight - header.offsetHeight) {
-          body.classList.add('scrolled-past-first');
+        // 3) Handle half-circle visibility
+        const circleFadeStart = cardTop - viewportHeight * 0.3;
+        const circleFadeEnd = cardTop + viewportHeight * 0.7;
+        
+        if (y >= circleFadeStart) {
+          if (y >= circleFadeEnd) {
+            section.style.opacity = '0';
+            section.style.pointerEvents = 'none';
+          } else {
+            const opacity = 1 - (y - circleFadeStart) / (circleFadeEnd - circleFadeStart);
+            section.style.opacity = opacity;
+            section.style.pointerEvents = opacity > 0.1 ? 'auto' : 'none';
+          }
         } else {
-          body.classList.remove('scrolled-past-first');
+          section.style.opacity = '1';
+          section.style.pointerEvents = 'auto';
         }
-      }
 
-      ticking = false;
-    });
-    ticking = true;
+        // 4) Show Impact + Pilot Units Section in normal flow (fully scrollable)
+        if (impactPilotSection) {
+          const impactShowStart = cardTop + viewportHeight * 0.5;
+          const impactShowEnd = cardBottom - viewportHeight * 0.3;
+
+          if (y >= impactShowStart) {
+            // Always keep it in normal document flow so the whole section can be seen
+            impactPilotSection.style.position = 'relative';
+            impactPilotSection.style.top = '';
+            impactPilotSection.style.left = '';
+            impactPilotSection.style.width = '';
+            impactPilotSection.style.height = '';
+            impactPilotSection.style.zIndex = '';
+            impactPilotSection.style.opacity = '1';
+
+            // Optional subtle fade-in across the overlap region
+            if (y < impactShowEnd) {
+              // fade from 0.6→1 while card overlaps
+              const p = Math.min(Math.max((y - impactShowStart) / (impactShowEnd - impactShowStart), 0), 1);
+              const eased = 0.6 + p * 0.4;
+              impactPilotSection.style.opacity = String(eased);
+            } else {
+              impactPilotSection.style.opacity = '1';
+            }
+          } else {
+            // Before reveal point: keep hidden
+            impactPilotSection.style.opacity = '0';
+          }
+        }
+
+        // 5) Header appearance toggle
+        if (header) {
+          if (y > sectionTop + sectionHeight - header.offsetHeight) {
+            body.classList.add('scrolled-past-first');
+          } else {
+            body.classList.remove('scrolled-past-first');
+          }
+        }
+
+        ticking = false;
+      });
+      ticking = true;
+    }
   });
 
-  // kick once
+  // Trigger initial scroll to set correct positions
   window.dispatchEvent(new Event('scroll'));
 });

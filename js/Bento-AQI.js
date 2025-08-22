@@ -1,5 +1,5 @@
 /* =========================
-   Bento AQI — Full JS (Final)
+   Bento AQI — Full JS (Final, Air Breeze removed)
    ========================= */
 (() => {
   const MAX_AQI = 500;
@@ -73,186 +73,15 @@
     good:     'Every breath adds life 🌿',
     moderate: 'Like sitting in traffic all day 🚦',
     usg:      'Each breath = one cigarette.',
-    unhealthy:'Today’s air = half a pack of smokes.',
+    unhealthy:'Today\'s air = half a pack of smokes.',
     very:     'Like working all day in choking dust.',
     hazard:   'This air is poison — like living inside a chimney.'
   };
 
-  // =========================
-  // Soft Air Breeze
-  // =========================
-  class AirBreeze {
-    constructor(root, opts = {}) {
-      this.root = typeof root === 'string' ? document.querySelector(root) : root;
-      if (!this.root) return;
-
-      // Canvas
-      this.canvas = document.createElement('canvas');
-      this.ctx = this.canvas.getContext('2d');
-      this.root.appendChild(this.canvas);
-
-      // Options
-      this.opts = Object.assign({
-        speed: 1.0,
-        density: 1.6,
-        hue: 190, sat: 80, light: 78,
-        aMin: 0.12, aMax: 0.28,
-        blur: 12, sAlpha: 0.85
-      }, opts);
-
-      // State
-      this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      this.particles = [];
-      this.time = 0;
-      this.prev = performance.now();
-      this.accum = 0;
-      this.fixedDt = 1 / 75;
-
-      // Events
-      window.addEventListener('resize', this.resize.bind(this), { passive:true });
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) cancelAnimationFrame(this.raf);
-        else { this.prev = performance.now(); this.raf = requestAnimationFrame(this.loop.bind(this)); }
-      });
-
-      this.resize();
-      this.spawn();
-      this.loop();
-    }
-
-    resize() {
-      const rect = this.root.getBoundingClientRect();
-      const dpr = this.pixelRatio;
-      this.w = Math.max(1, Math.floor(rect.width));
-      this.h = Math.max(1, Math.floor(rect.height));
-      this.canvas.width  = Math.floor(this.w * dpr);
-      this.canvas.height = Math.floor(this.h * dpr);
-      this.canvas.style.width = this.w + 'px';
-      this.canvas.style.height = this.h + 'px';
-      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const base = Math.round((this.w * this.h) / 10000);
-      this.targetCount = Math.max(120, Math.min(340, Math.round(base * this.opts.density)));
-      this.syncCount();
-    }
-
-    spawn() {
-      this.particles.length = 0;
-      for (let i = 0; i < this.targetCount; i++) this.particles.push(this.make(true));
-    }
-    syncCount() {
-      while (this.particles.length < this.targetCount) this.particles.push(this.make(true));
-      while (this.particles.length > this.targetCount) this.particles.pop();
-    }
-
-    make(initial = false) {
-      const margin = 28;
-      const x = initial ? (Math.random() * (this.w + 2 * margin) - margin) : -margin;
-      const y = Math.random() * this.h;
-      const size  = 1.2 + Math.random() * 2.1;
-      const speed = 0.55 + Math.random() * 0.75;
-
-      return {
-        x, y, px: x, py: y, ppx: x, ppy: y,
-        size, speed,
-        vx: 0, vy: 0,
-        life: Math.random() * 3,
-        maxLife: 10 + Math.random() * 10
-      };
-    }
-
-    noise(x, y, t) {
-      const s = Math.sin, c = Math.cos;
-      const k1 = s((x * 0.007 + t * 0.00035)) * c((y * 0.011 - t * 0.00027));
-      const k2 = c((x * 0.0032 - t * 0.00018)) * s((y * 0.0050 + t * 0.00022));
-      const k3 = s((x * 0.0012 + y * 0.0014) + t * 0.00012);
-      return (k1 + 0.7 * k2 + 0.4 * k3) * 0.46;
-    }
-
-    step(p, dt) {
-      const baseAngle = Math.sin(this.time * 0.00016) * 0.26;
-      const windX = Math.cos(baseAngle);
-      const windY = Math.sin(baseAngle) * 0.06;
-
-      const n = this.noise(p.x, p.y, this.time);
-      const dir = baseAngle + n * 0.42;
-
-      const tvx = windX * p.speed + Math.cos(dir) * 0.24;
-      const tvy = windY * p.speed + Math.sin(dir) * 0.11;
-
-      const k = 0.14;
-      p.vx += (tvx - p.vx) * k;
-      p.vy += (tvy - p.vy) * k;
-
-      p.ppx = p.px; p.ppy = p.py;
-      p.px = p.x;  p.py = p.y;
-      p.x += p.vx * (16 * dt);
-      p.y += p.vy * (16 * dt);
-
-      const margin = 28;
-      const span = this.w + 2 * margin;
-      if (p.x > this.w + margin) { p.x -= span; p.px = p.ppx = p.x; }
-      else if (p.x < -margin)     { p.x += span; p.px = p.ppx = p.x; }
-
-      if (p.y > this.h + margin) { p.y = -margin; p.py = p.ppy = p.y; }
-      else if (p.y < -margin)    { p.y = this.h + margin; p.py = p.ppy = p.y; }
-
-      p.life += dt;
-      if (p.life > p.maxLife) p.life = 0;
-    }
-
-    fadeTrails() {
-      const ctx = this.ctx;
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.fillStyle = 'rgba(0,0,0,0.94)';
-      ctx.fillRect(0, 0, this.w, this.h);
-      ctx.globalCompositeOperation = 'source-over';
-    }
-
-    draw(p) {
-      const ctx = this.ctx;
-      const phase = p.life / p.maxLife;
-      const ramp  = phase < 0.5 ? (phase * 2) : (1 - (phase - 0.5) * 2);
-
-      const alpha = this.opts.aMin + (this.opts.aMax - this.opts.aMin) * ramp;
-      const h = this.opts.hue + Math.sin((p.y / this.h) * 1.6 + this.time * 0.00024) * 4;
-
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.lineWidth = p.size;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = `hsla(${h}, ${this.opts.sat}%, ${this.opts.light}%, ${alpha})`;
-      ctx.shadowBlur = this.opts.blur;
-      ctx.shadowColor = `hsla(${h}, ${this.opts.sat + 5}%, ${this.opts.light - 3}%, ${alpha * this.opts.sAlpha})`;
-
-      const mx = (p.px + p.ppx) * 0.5;
-      const my = (p.py + p.ppy) * 0.5;
-
-      ctx.beginPath();
-      ctx.moveTo(mx, my);
-      ctx.quadraticCurveTo(p.px, p.py, p.x, p.y);
-      ctx.stroke();
-    }
-
-    loop(now = performance.now()) {
-      let dt = Math.min(0.05, (now - this.prev) / 1000);
-      this.prev = now;
-      this.time = now;
-
-      this.accum += dt;
-
-      this.fadeTrails();
-
-      while (this.accum >= this.fixedDt) {
-        for (let i = 0; i < this.particles.length; i++) this.step(this.particles[i], this.fixedDt);
-        this.accum -= this.fixedDt;
-      }
-
-      for (let i = 0; i < this.particles.length; i++) this.draw(this.particles[i]);
-
-      this.raf = requestAnimationFrame(this.loop.bind(this));
-    }
-  }
+  // Box 1 particle lane elements
+  const laneBox1 = document.querySelector('.box1 .particle-lane');
+  const dotsElBox1 = document.getElementById('particlesBox1');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ------- Init -------
   document.addEventListener('DOMContentLoaded', () => {
@@ -268,34 +97,14 @@
 
     // Mobile: Box 2 hidden on first load
     setBox2MobileHidden(true);
-    window.addEventListener('resize', () => setBox2MobileHidden(!hasSearchedYet));
+    window.addEventListener('resize', () => {
+      setBox2MobileHidden(!hasSearchedYet);
+      retargetBox1Particles();
+    });
 
-    // === Mount Soft Air Breeze in Box 1 ===
-    const box1 = qs('.box1');
-    if (box1){
-      const oldImg = box1.querySelector('.bg-image-container');
-      if (oldImg) oldImg.style.display = 'none';
-
-      let host = box1.querySelector('.air-breeze');
-      if (!host){
-        host = document.createElement('div');
-        host.className = 'air-breeze';
-        box1.insertBefore(host, box1.firstChild);
-      }
-      new AirBreeze(host);
-    }
-
-    // === Box 4: ensure product grid (non-breaking) ===
-    const box4 = qs('.box4');
-    if (box4 && !box4.querySelector('.box4-grid')) {
-      // If old quiz button exists, replace with grid; otherwise do nothing harmful
-      box4.innerHTML = `
-        <div class="box4-grid">
-          <a class="prod-card" href="#air-purifier"><img src="your-air-purifier.jpg" alt="Air Purifier"></a>
-          <a class="prod-card" href="#filter"><img src="your-filter.jpg" alt="Replacement Filter"></a>
-        </div>
-      `;
-    }
+    // === Build Ambient Particle Lane in Box 1 (Air Breeze removed) ===
+    buildBox1Particles();
+    retargetBox1Particles();
   });
 
   // Expose for inline HTML hooks
@@ -443,7 +252,7 @@
     );
   }
 
-  // ------- Box 3: wrappers & caption -------
+  // ------- Box 3: wrappers & caption (unchanged) -------
   function ensureCaption(){
     if (!box3) return null;
     if (box3Caption && box3.contains(box3Caption)) return box3Caption;
@@ -456,7 +265,6 @@
     return el;
   }
 
-  // Create/ensure a default BG (CSS-animated) for Box 3 and keep it visible when no band
   function ensureDefaultBG(){
     if (!box3) return;
     if (!box3DefaultBG){
@@ -473,7 +281,6 @@
     }
   }
 
-  // Lottie ensures (if you use them; harmless otherwise)
   function ensureWrap(refName, cls, title, src){
     if (!box3) return null;
     if (refName && box3[refName] && box3.contains(box3[refName])) return box3[refName];
@@ -507,7 +314,6 @@
     if (box3DefaultBG) box3DefaultBG.hidden = !useDefault;
     if (box3DefaultFG) box3DefaultFG.hidden = !useDefault;
 
-    // Toggle default-looping bg class
     if (useDefault) box3.classList.add('is-default');
     else            box3.classList.remove('is-default');
 
@@ -566,8 +372,6 @@
     if (box3HazardWrap)    box3HazardWrap.hidden    = true;
     if (box3Caption)       { box3Caption.style.display = 'none'; box3Caption.textContent = ''; }
     box3.classList.remove('state-good','state-moderate','state-usg','state-unhealthy','state-very','state-hazard');
-
-    // Ensure pulsing loop runs in default state
     box3.classList.add('is-default');
   }
 
@@ -580,7 +384,7 @@
       const p = qs('.loading-copy', loadingState);
       if (p) p.textContent = msg;
     }
-    resetBox3ToDefault(); // show default bg
+    resetBox3ToDefault();
     setBox2MobileHidden(false);
   }
   function setEmpty(msg='Enter a city to see the AQI.'){
@@ -591,7 +395,7 @@
       const p = qs('.empty-hint', emptyState);
       if (p) p.textContent = msg;
     }
-    resetBox3ToDefault(); // show default bg
+    resetBox3ToDefault();
     hasSearchedYet = false;
     setBox2MobileHidden(true);
   }
@@ -614,14 +418,61 @@
   function bumpInput(inputEl){
     if(!inputEl) return;
     inputEl.focus();
-    inputEl.classList.add('input-bump');       // CSS controls color
+    inputEl.classList.add('input-bump');
     setTimeout(()=>{ inputEl.classList.remove('input-bump'); }, 700);
   }
 
-  // Maintain docking on resize
+  // ------- Box 1 Ambient Particle Lane (build & retarget) -------
+  function buildBox1Particles(count = 26){
+    if (!laneBox1 || !dotsElBox1) return;
+    const centerX = Math.round(laneBox1.clientWidth / 2);
+    const laneH   = laneBox1.clientHeight;
+
+    dotsElBox1.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'p';
+
+      // Size & vertical position
+      const size = 3 + Math.random() * 5;
+      const top  = Math.max(2, Math.random() * (laneH - size - 2));
+      dot.style.width = dot.style.height = `${size}px`;
+      dot.style.top = `${top}px`;
+
+      // Spawn offset (negative = left of lane)
+      const spawnAbs = 16 + Math.random() * 24;
+      dot.style.setProperty('--spawn', `${-spawnAbs}px`);
+
+      // Travel to the exact center line (accounting for spawn distance)
+      dot.style.setProperty('--toX', `${centerX + spawnAbs}px`);
+
+      // Motion
+      const dur   = prefersReduced ? 6 : (2.2 + Math.random() * 1.6);
+      const delay = Math.random() * (prefersReduced ? 1 : 2.2);
+      dot.style.setProperty('--dur', `${dur}s`);
+      dot.style.setProperty('--delay', `${delay}s`);
+
+      dotsElBox1.appendChild(dot);
+    }
+  }
+
+  function retargetBox1Particles(){
+    if (!laneBox1 || !dotsElBox1) return;
+    const centerX = Math.round(laneBox1.clientWidth / 2);
+    dotsElBox1.querySelectorAll('.p').forEach(p => {
+      // compute spawnAbs from current --spawn value
+      const style = getComputedStyle(p);
+      const spawn = parseFloat(style.getPropertyValue('--spawn')) || -24;
+      const spawnAbs = Math.abs(spawn);
+      p.style.setProperty('--toX', `${centerX + spawnAbs}px`);
+    });
+  }
+
+  // Maintain docking on resize for Box 3 lotties
   window.addEventListener('resize', () => {
     dockBottom(box3GoodWrap); dockBottom(box3ModerateWrap); dockBottom(box3USGWrap);
     dockBottom(box3UnhealthyWrap); dockBottom(box3VeryWrap); dockBottom(box3HazardWrap);
+    retargetBox1Particles();
   });
 
   // Dock util for lottie wrappers

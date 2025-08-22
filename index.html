@@ -127,10 +127,11 @@
   <!-- Bento AQI Section -->
 <section id="bento-aqi">
   <div class="bento-wrapper">
+    <!-- BOX 1: Search + Ambient Particle Lane (new) -->
     <div class="bento-box box1">
-      <!-- Background image container -->
+      <!-- Background image container (kept) -->
       <div class="bg-image-container"></div>
-      
+
       <h1>Check the air quality in your city</h1>
       <p>Enter a city to see the AQI instantly</p>
 
@@ -144,6 +145,15 @@
           </button>
         </div>
         <button id="locateBtn" class="locate-btn" type="button">Locate me</button>
+      </div>
+
+      <!-- NEW: Ambient particle lane (Box 1 only) -->
+      <div class="lane-side box1-lane" aria-hidden="false">
+        <div class="lane-title">Air quality, at a glance</div>
+        <div class="particle-lane">
+          <div class="filter-line"></div>
+          <div class="particles" id="particlesBox1"></div>
+        </div>
       </div>
     </div>
 
