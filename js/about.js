@@ -49,8 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
   strip.addEventListener("wheel", function (e) {
     const absX = Math.abs(e.deltaX);
     const absY = Math.abs(e.deltaY);
-
-    // If mostly horizontal, consume; otherwise translate vertical to horizontal
     if (absX >= absY) {
       e.preventDefault();
       this.scrollLeft += e.deltaX;
@@ -72,36 +70,66 @@ document.addEventListener("DOMContentLoaded", function () {
     const t = e.touches[0]; if (!t) return;
     const dx = t.clientX - startX;
     const dy = t.clientY - startY;
-
     if (Math.abs(dx) > Math.abs(dy)) {
-      // Horizontal gesture → keep it inside the strip
       e.preventDefault();
       strip.scrollLeft -= dx;
-      startX = t.clientX; // continue smooth dragging
+      startX = t.clientX;
     }
-    // If vertical dominates, do nothing (page scrolls)
   }, { passive: false });
 
   strip.addEventListener("touchend", () => (active = false), { passive: true });
 });
 
-/* ===== Make sure S1 visuals are visible (no accidental hides) ===== */
+/* ===== Ensure card image shows on desktop + robust fallbacks ===== */
 document.addEventListener("DOMContentLoaded", function () {
-  const elms = [
-    document.querySelector("#scene1 .circle"),
-    document.querySelector("#scene1 .text-ring"),
-    document.querySelector("#scene1 .circle-center-image"),
-  ];
-  elms.forEach((el) => {
-    if (!el) return;
-    const cs = getComputedStyle(el);
-    if (cs.display === "none" || cs.visibility === "hidden" || cs.opacity === "0") {
-      el.style.display = "block";
-      el.style.visibility = "visible";
-      el.style.opacity = "1";
+  const img = document.querySelector(".card-image-wrapper img");
+  if (!img) return;
+
+  const ensureVisible = () => {
+    img.style.visibility = "visible";
+    img.style.opacity = "1";
+  };
+
+  // If loaded, just reveal; else prepare fallbacks
+  if (img.complete && img.naturalWidth > 0) {
+    ensureVisible();
+    return;
+  }
+
+  const original = img.getAttribute("src") || "";
+
+  const tryFallbacks = () => {
+    if (img.dataset.fallbackTried) return;
+    img.dataset.fallbackTried = "1";
+
+    const candidates = [];
+    // .jpg → .jpeg
+    if (/\.jpg(\?.*)?$/i.test(original)) {
+      candidates.push(original.replace(/\.jpg(\?.*)?$/i, ".jpeg$1"));
     }
-  });
+    // relative → absolute
+    if (!original.startsWith("/")) {
+      candidates.push("/" + original);
+    }
+    // try /images/ prefix if not already there
+    if (!/^\/?images\//i.test(original)) {
+      const fname = original.replace(/^.*\//, "");
+      candidates.push("/images/" + fname);
+    }
+
+    const tryNext = () => {
+      const next = candidates.shift();
+      if (!next) return; // give up silently
+      const probe = new Image();
+      probe.onload = () => { img.src = next; ensureVisible(); };
+      probe.onerror = tryNext;
+      probe.src = next;
+    };
+    tryNext();
+  };
+
+  img.addEventListener("load", ensureVisible, { once: true });
+  img.addEventListener("error", tryFallbacks, { once: true });
 });
 
-/* ===== IMPORTANT FIX: remove any page-level horizontal touch blocking that broke curtain reveal =====
-   (We do NOT add global touchmove preventDefault anywhere.) */
+/* ===== IMPORTANT: do not block global vertical scroll (curtain reveal stays intact) ===== */

@@ -88,21 +88,35 @@ body{
 
 /* -------- SCENE 2 (white card) -------- */
 .s2{ background:transparent; }
+
+/* IMPORTANT: let content scroll inside the pinned card on desktop */
 .blank-card{
-  position:relative; z-index:2;
-  width:100vw; max-width:100vw;
-  height:calc(var(--vh,1vh)*100);
+  position:relative; 
+  z-index:2;
+  width:100vw; 
+  max-width:100vw;
+
+  /* 👇 remove forced height/scroll and allow auto sizing */
+  height:auto;
+  max-height:none;
+  overflow:visible;
+
   padding:32px clamp(16px,4vw,40px);
   margin:0 auto;
-  background:#fff; border-radius:24px;
+  background:#fff; 
+  border-radius:24px;
   box-shadow:0 2px 6px rgba(0,0,0,.1);
-  overflow:hidden;
 
   display:grid;
   grid-template-columns:1fr;
   justify-items:center;
   row-gap:var(--card-gap,24px);
 }
+
+.blank-card::-webkit-scrollbar{ width:8px; }
+.blank-card::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.15); border-radius:8px; }
+.blank-card::-webkit-scrollbar-track{ background:transparent; }
+
 .blank-card p{
   font-size:clamp(18px,3.2vw,40px);
   line-height:1.25; text-align:left; margin:0; max-width:600px; color:#333;
@@ -121,9 +135,12 @@ body{
 
 .card-image-wrapper{
   width:min(1100px,92vw); border-radius:32px; overflow:hidden;
-  transform-origin:center; will-change:transform; position:relative; z-index:20;
+  transform-origin:center; will-change:transform; position:relative; z-index:2000; /* ensure on top */
 }
-.card-image-wrapper img{ display:block; width:100%; height:auto; }
+.card-image-wrapper img{
+  display:block; width:100%; height:auto;
+  visibility:visible !important; opacity:1 !important; pointer-events:auto;
+}
 
 /* -------- SCENE 3 (Impact + Pilot Units) -------- */
 #scene3{ height:auto; }
@@ -178,6 +195,7 @@ body{
 .s3 .placeholder-icon{ font-size:32px; margin-bottom:8px; opacity:0.7; }
 .s3 .stats-description{ font-weight:500; font-size:18px; line-height:1.4; color:#265e78; margin:0; }
 
+
 /* Optional: snap S1+S2 */
 @supports (scroll-snap-type:y mandatory){
   .curtain{ scroll-snap-type:y proximity; }
@@ -187,42 +205,114 @@ body{
 /* Motion safety */
 @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
 
-/* -------- Mobile tweaks -------- */
-@media (max-width:768px){
+/* =========================
+   MOBILE-ONLY CONTROLS (Section 1 fully editable)
+   Works same for all devices ≤ 768px
+   ========================= */
+
+@media (max-width: 768px){
+  /* ——— Section 1 knobs (edit these only) ——— */
   :root{
-    --text-ring-font-size:40px;
-    --circle-offset-y:28vh;   /* bring ring/circle into view on phones */
+    /* Section height */
+    --m-s1-height:             100vh;
+
+    /* Circle + text ring */
+    --m-circle-size:           160vw;     /* circle + ring diameter */
+    --m-circle-offset-y:       -24vh;     /* Y-axis offset of circle & ring */
+    --m-text-ring-scale:       1.02;
+    --m-text-ring-font-size:   64px;
+
+    /* Center image */
+    --m-center-image-size:     280px;
+    --m-center-image-offset-y: -120%;
+
+    /* Margins & paddings for Section 1 wrapper */
+    --m-s1-padding-top:        0px;
+    --m-s1-padding-bottom:     0px;
+    --m-s1-margin-top:         0px;
+    --m-s1-margin-bottom:      0px;
+
+    /* Map knobs → actual variables used in layout */
+    --circle-size:             var(--m-circle-size);
+    --circle-offset-y:         var(--m-circle-offset-y);
+    --text-ring-scale:         var(--m-text-ring-scale);
+    --text-ring-font-size:     var(--m-text-ring-font-size);
   }
-  .s1 .circle-center-image{ width:320px; height:320px; }
 
-  /* Fit S2 content within 100vh on phones so it doesn’t spill under S3 */
-  .blank-card{ border-radius:20px; padding:20px clamp(12px,4vw,24px); row-gap:18px; }
-  .blank-card p{ line-height:1.32; }
-  .card-headline{ margin-bottom:6px; }
-  .card-image-wrapper{ border-radius:20px; }
+  /* Force Outfit everywhere */
+  body, .about-page,
+  .s1, .s2, .s3,
+  .blank-card,
+  .s3 .stats-card,
+  .s1 .text-ring text{
+    font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+  }
 
-  .s3 .container{ padding:0 24px; margin-bottom:48px; }
-  .s3 .main-heading{ margin-bottom:24px; }
-  .s3 .description-text{ font-size:18px; line-height:1.5; }
+  /* Section 1 container */
+  #scene1 .card{
+    height: var(--m-s1-height);
+    padding-top: var(--m-s1-padding-top);
+    padding-bottom: var(--m-s1-padding-bottom);
+    margin-top: var(--m-s1-margin-top);
+    margin-bottom: var(--m-s1-margin-bottom);
+  }
 
+  .s1 .circle{
+    width: var(--circle-size);
+    height: var(--circle-size);
+    transform: translate(-50%, calc(50% + var(--circle-offset-y)));
+  }
+
+  .s1 .text-ring{
+    width: var(--circle-size);
+    height: var(--circle-size);
+    transform:
+      translate(-50%, calc(50% + var(--circle-offset-y)))
+      scale(var(--text-ring-scale))
+      rotate(var(--rotation));
+  }
+  .s1 .text-ring text{
+    font-size: var(--text-ring-font-size);
+    fill: #fff;
+  }
+
+  .s1 .circle-center-image{
+    width: var(--m-center-image-size);
+    height: var(--m-center-image-size);
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, var(--m-center-image-offset-y));
+  }
+
+  /* Pilot cards: guaranteed horizontal scroll on mobile */
   .s3 .cards-container{
-    gap:20px; padding:0 20px;
-    width:calc(320px * 4 + 20px * 3 + 40px);
-    scrollbar-width:none;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pinch-zoom !important;
+    overscroll-behavior-x: contain;
+    pointer-events: auto;
+    scroll-snap-type: x proximity;
   }
-  .s3 .cards-container::-webkit-scrollbar{ display:none; }
+  .s3 .stats-card{ scroll-snap-align: start; }
 
-  .s3 .stats-card{ width:320px; height:400px; padding:28px 22px; border-radius:20px; }
-  .s3 .stats-number{ font-size:56px; }
-  .s3 .image-container{ width:120px; height:120px; margin:16px 0; }
-  .s3 .stats-description{ font-size:16px; }
-  .s3 .placeholder-icon{ font-size:28px; }
-}
-
-@media (max-width:480px){
-  :root{
-    --text-ring-font-size:32px;
-    --circle-offset-y:24vh;   /* keep ring visible even on small phones */
+  /* Section 2 mobile rounding/spacing */
+  .blank-card{
+    border-radius: 20px;
+    padding: 20px clamp(12px,4vw,24px);
+    row-gap: 18px;
   }
-  .s1 .circle-center-image{ width:280px; height:280px; }
+  .blank-card p{ line-height: 1.32; }
+  .card-headline{ margin-bottom: 6px; }
+  .card-image-wrapper{ border-radius: 20px; }
+
+  .s3 .container{ padding: 0 24px; margin-bottom: 48px; }
+  .s3 .main-heading{ margin-bottom: 24px; }
+  .s3 .description-text{ font-size: 18px; line-height: 1.5; }
+
+  .s3 .stats-card{ width: 320px; height: 400px; padding: 28px 22px; border-radius: 20px; }
+  .s3 .image-container{ width: 120px; height: 120px; margin: 16px 0; }
+  .s3 .stats-number{ font-size: 56px; }
+  .s3 .stats-description{ font-size: 16px; }
+  .s3 .placeholder-icon{ font-size: 28px; }
 }
