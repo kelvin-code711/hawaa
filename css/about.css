@@ -26,8 +26,8 @@ body{
   color:#fff;
   background:#fff;            /* page bg #fff */
   overflow-x:clip;            /* hard stop any horizontal page scroll */
-  touch-action:pan-y;         /* allow vertical page scroll only */
-  overscroll-behavior-x:none; /* block horizontal overscroll chaining */
+  touch-action:manipulation;
+  overscroll-behavior-x:none;
 }
 
 /* Vars (S1 geometry) */
@@ -40,28 +40,37 @@ body{
   --vh:1vh; /* JS will set real mobile 1% height */
 }
 
-/* -------- Curtain Reveal scaffold -------- */
-.curtain{ width:100%; overflow-x:clip; }
+/* ===== Normal scroll layout (no curtain/pinning) ===== */
+.curtain{ width:100%; overflow-x:clip; scroll-snap-type:none !important; }
+
 .scene{
   position:relative;
-  height:200vh;               /* pin + slide */
+  height:auto;                  /* cancel 200vh */
 }
-.scene + .scene{ margin-top:-100vh; } /* overlap by one viewport */
+.scene + .scene{
+  margin-top:0;                 /* cancel -100vh overlap */
+}
 
-/* Sticky card per scene (S1 & S2 sticky; S3 relaxes later) */
+/* Cards scroll normally with the page */
 .card{
-  position:sticky; top:0;
-  height:100vh; height:calc(var(--vh,1vh)*100);
-  display:grid; place-items:center; isolation:isolate;
-  text-align:center; padding:0;
+  position:static;              /* cancel sticky */
+  top:auto;
+  height:auto;                  /* let content define height */
+  display:block;
+  padding:0;                    /* inner blocks manage their own spacing */
 }
-#scene1 .card{ z-index:1; }
-#scene2 .card{ z-index:2; }
-#scene3 .card{ z-index:3; }
 
-/* -------- SCENE 1 -------- */
-.s1{ background:#287392; overflow:hidden; }
-.s1-wrap{ position:relative; width:100vw; height:calc(var(--vh,1vh)*100); }
+/* ===== SCENE 1 ===== */
+#scene1 .s1{
+  background:#287392;
+  overflow:hidden;
+  min-height:calc(var(--vh,1vh) * 100);    /* ensure full-viewport presence */
+}
+.s1-wrap{
+  position:relative;
+  width:100vw;
+  height:calc(var(--vh,1vh) * 100);
+}
 
 .s1 .circle{
   position:absolute; bottom:0; left:50%;
@@ -86,17 +95,17 @@ body{
 }
 .s1 .circle-center-image img{ width:100%; height:100%; object-fit:cover; }
 
-/* -------- SCENE 2 (white card) -------- */
+/* ===== SCENE 2 (content card) ===== */
 .s2{ background:transparent; }
 
-/* IMPORTANT: let content scroll inside the pinned card on desktop */
+/* Content card (auto height, no inner scroll) */
 .blank-card{
   position:relative; 
-  z-index:2;
+  z-index:100;
   width:100vw; 
   max-width:100vw;
 
-  /* 👇 remove forced height/scroll and allow auto sizing */
+  min-height:calc(var(--vh,1vh) * 100);  /* fully visible section by default */
   height:auto;
   max-height:none;
   overflow:visible;
@@ -135,102 +144,32 @@ body{
 
 .card-image-wrapper{
   width:min(1100px,92vw); border-radius:32px; overflow:hidden;
-  transform-origin:center; will-change:transform; position:relative; z-index:2000; /* ensure on top */
+  transform-origin:center; will-change:transform; position:relative; z-index:2000;
 }
 .card-image-wrapper img{
   display:block; width:100%; height:auto;
   visibility:visible !important; opacity:1 !important; pointer-events:auto;
 }
 
-/* -------- SCENE 3 (Impact + Pilot Units) -------- */
-#scene3{ height:auto; }
-#scene3 .card.s3{
-  position:relative; top:auto; height:auto; display:block;
-  background:rgba(229,246,249,1);
-  color:#333; text-align:left; padding:120px 0 80px 0;
+/* ===== Motion safety ===== */
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
 }
-.s3 .impact-wrap{ width:100%; }
-.s3 .container{ max-width:600px; margin:0 auto 80px; padding:0 40px; }
-.s3 .main-heading{
-  font:600 clamp(28px,5vw,48px)/1.2 "Outfit",sans-serif;
-  color:#287392; margin:0 0 40px 0; letter-spacing:-0.5px;
-}
-.s3 .description-text{ font-size:clamp(16px,2.2vw,24px); line-height:1.6; color:#333; margin:0; }
-
-/* Pilot cards strip */
-.s3 .cards-container{
-  display:flex; gap:24px; padding:0 40px;
-  width:calc(420px * 4 + 24px * 3 + 80px);
-  min-width:max-content;
-
-  overflow-x:auto; overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;
-
-  /* KEY: only this element can scroll horizontally */
-  touch-action:pan-x pinch-zoom;
-  overscroll-behavior-inline:contain;
-  overscroll-behavior-x:contain;
-
-  scrollbar-width:thin; scrollbar-color:#ccc transparent;
-}
-.s3 .cards-container::-webkit-scrollbar{ height:8px; }
-.s3 .cards-container::-webkit-scrollbar-track{ background:transparent; }
-.s3 .cards-container::-webkit-scrollbar-thumb{ background:#ccc; border-radius:4px; }
-.s3 .cards-container::-webkit-scrollbar-thumb:hover{ background:#999; }
-
-.s3 .stats-card{
-  width:420px; height:480px; background:#fff; border-radius:24px;
-  padding:40px 32px; display:flex; flex-direction:column; justify-content:space-between;
-  align-items:flex-start; text-align:left; overflow:hidden; flex-shrink:0;
-}
-.s3 .stats-number{ font-weight:600; font-size:clamp(36px,6vw,72px); line-height:0.9; color:#287392; margin:0; }
-.s3 .image-container{ width:140px; height:140px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin:20px 0; flex-shrink:0; }
-.s3 .stats-image{ width:100%; height:100%; object-fit:cover; object-position:center; display:block !important; }
-.s3 .image-placeholder{
-  width:100%; height:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:linear-gradient(135deg,#e5f6f9,#48abc8);
-  color:#333; font-weight:400; font-size:14px; text-align:center; opacity:0.8;
-}
-.s3 .placeholder-icon{ font-size:32px; margin-bottom:8px; opacity:0.7; }
-.s3 .stats-description{ font-weight:500; font-size:18px; line-height:1.4; color:#265e78; margin:0; }
-
-
-/* Optional: snap S1+S2 */
-@supports (scroll-snap-type:y mandatory){
-  .curtain{ scroll-snap-type:y proximity; }
-  #scene1 .card, #scene2 .card{ scroll-snap-align:start; }
-}
-
-/* Motion safety */
-@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
 
 /* =========================
-   MOBILE-ONLY CONTROLS (Section 1 fully editable)
-   Works same for all devices ≤ 768px
+   MOBILE-ONLY CONTROLS (≤ 768px)
    ========================= */
-
 @media (max-width: 768px){
-  /* ——— Section 1 knobs (edit these only) ——— */
   :root{
-    /* Section height */
+    /* Section 1 knobs (edit these only) */
     --m-s1-height:             100vh;
-
-    /* Circle + text ring */
     --m-circle-size:           160vw;     /* circle + ring diameter */
     --m-circle-offset-y:       -24vh;     /* Y-axis offset of circle & ring */
     --m-text-ring-scale:       1.02;
     --m-text-ring-font-size:   64px;
 
-    /* Center image */
     --m-center-image-size:     280px;
     --m-center-image-offset-y: -120%;
-
-    /* Margins & paddings for Section 1 wrapper */
-    --m-s1-padding-top:        0px;
-    --m-s1-padding-bottom:     0px;
-    --m-s1-margin-top:         0px;
-    --m-s1-margin-bottom:      0px;
 
     /* Map knobs → actual variables used in layout */
     --circle-size:             var(--m-circle-size);
@@ -241,21 +180,15 @@ body{
 
   /* Force Outfit everywhere */
   body, .about-page,
-  .s1, .s2, .s3,
+  .s1, .s2,
   .blank-card,
-  .s3 .stats-card,
   .s1 .text-ring text{
     font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
   }
 
-  /* Section 1 container */
-  #scene1 .card{
-    height: var(--m-s1-height);
-    padding-top: var(--m-s1-padding-top);
-    padding-bottom: var(--m-s1-padding-bottom);
-    margin-top: var(--m-s1-margin-top);
-    margin-bottom: var(--m-s1-margin-bottom);
-  }
+  /* Section 1 sizing */
+  #scene1 .s1{ min-height: var(--m-s1-height); }
+  #scene1 .card{ height: var(--m-s1-height); } /* harmless with position:static */
 
   .s1 .circle{
     width: var(--circle-size);
@@ -284,35 +217,15 @@ body{
     transform: translate(-50%, var(--m-center-image-offset-y));
   }
 
-  /* Pilot cards: guaranteed horizontal scroll on mobile */
-  .s3 .cards-container{
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pinch-zoom !important;
-    overscroll-behavior-x: contain;
-    pointer-events: auto;
-    scroll-snap-type: x proximity;
-  }
-  .s3 .stats-card{ scroll-snap-align: start; }
-
-  /* Section 2 mobile rounding/spacing */
+  /* Section 2 spacing/rounding + pull up */
   .blank-card{
     border-radius: 20px;
     padding: 20px clamp(12px,4vw,24px);
     row-gap: 18px;
+    min-height: calc(var(--vh,1vh) * 100); /* fully visible on small screens */
+    margin-top: -340px;                      /* pull 2nd section up on mobile */
   }
   .blank-card p{ line-height: 1.32; }
   .card-headline{ margin-bottom: 6px; }
   .card-image-wrapper{ border-radius: 20px; }
-
-  .s3 .container{ padding: 0 24px; margin-bottom: 48px; }
-  .s3 .main-heading{ margin-bottom: 24px; }
-  .s3 .description-text{ font-size: 18px; line-height: 1.5; }
-
-  .s3 .stats-card{ width: 320px; height: 400px; padding: 28px 22px; border-radius: 20px; }
-  .s3 .image-container{ width: 120px; height: 120px; margin: 16px 0; }
-  .s3 .stats-number{ font-size: 56px; }
-  .s3 .stats-description{ font-size: 16px; }
-  .s3 .placeholder-icon{ font-size: 28px; }
 }

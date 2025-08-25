@@ -8,10 +8,65 @@
   />
   <title>About — Curtain Reveal</title>
   <link rel="stylesheet" href="css/about.css" />
+  <link rel="stylesheet" href="css/header.css" />
 </head>
 <body class="about-page">
 
 <main class="curtain">
+  <!-- Header -->
+  <header class="hawaa-header" id="hawaa-header">
+    <div class="header-container">
+      <a href="index.html" class="header-logo">
+        <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
+      </a>
+      <div class="header-actions">
+        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+          <div class="hamburger-icon"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="nav-overlay" id="nav-overlay"></div>
+    <div class="nav-panel">
+      <div class="nav-header">
+        <h2 class="nav-title">Menu</h2>
+        <div class="nav-icons">
+          <button class="nav-icon" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </button>
+          <button class="nav-icon" aria-label="Cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          </button>
+          <button class="nav-close" id="nav-close" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+      <div class="nav-content">
+        <div class="nav-section">
+          <h3 class="section-title">EXPLORE</h3>
+          <div class="nav-links-wrapper">
+            <ul class="nav-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="../sections/filter-learn.html">Filter Technology</a></li>
+              <li><a href="/sections/installation-guide.html">Instalation Guide</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="nav-section">
+          <h3 class="section-title">ABOUT HAWAA</h3>
+          <div class="nav-links-wrapper">
+            <ul class="nav-links">
+              <li><a href="../about.html">About Us</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="../blog.html">Blog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- SCENE 1: Section 1 visuals (circle + ring + center image) -->
   <section class="scene" id="scene1">
     <div class="card s1">
@@ -65,70 +120,10 @@
         </p>
       </div>
     </div>
-  </section>
-
-  <!-- SCENE 3: Impact + Pilot Units -->
-  <section class="scene" id="scene3">
-    <!-- Final scene overlaps in, then scrolls normally -->
-    <div class="card s3">
-      <div class="impact-wrap">
-        <div class="container">
-          <h2 class="main-heading">Success is the standard.</h2>
-          <p class="description-text">
-            We obsess over results so you can focus on living your best life. From our very first prototype through every customer feedback loop and lab test, we measure every breath, every particle removed, and every moment of relief—so you know you're getting the cleanest air from day one.
-          </p>
-        </div>
-
-        <div class="cards-container">
-          <div class="stats-card">
-            <h2 class="stats-number">50+</h2>
-            <div class="image-container">
-              <div class="image-placeholder">
-                <div class="placeholder-icon">📊</div>
-                <div>Upload Image</div>
-              </div>
-            </div>
-            <p class="stats-description">Pilot units deployed</p>
-          </div>
-
-          <div class="stats-card">
-            <h2 class="stats-number">200+</h2>
-            <div class="image-container">
-              <div class="image-placeholder">
-                <div class="placeholder-icon">🧪</div>
-                <div>Upload Image</div>
-              </div>
-            </div>
-            <p class="stats-description">Hours of lab & field testing</p>
-          </div>
-
-          <div class="stats-card">
-            <h2 class="stats-number">95%</h2>
-            <div class="image-container">
-              <div class="image-placeholder">
-                <div class="placeholder-icon">⭐</div>
-                <div>Upload Image</div>
-              </div>
-            </div>
-            <p class="stats-description">Satisfaction rate from beta testers</p>
-          </div>
-
-          <div class="stats-card">
-            <h2 class="stats-number">98%</h2>
-            <div class="image-container">
-              <div class="image-placeholder">
-                <div class="placeholder-icon">👥</div>
-                <div>Upload Image</div>
-              </div>
-            </div>
-            <p class="stats-description">Would recommend Hawaa to a friend</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  </section>         
 </main>
 
 <script src="js/about.js"></script>
+<script src="js/header.js"></script>
 </body>
 </html>

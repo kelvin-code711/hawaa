@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const header = document.getElementById('hawaa-header');
   const menuToggle = document.getElementById('menu-toggle');
   const mobileNav = document.getElementById('mobile-nav');
   const navClose = document.getElementById('nav-close');
@@ -29,25 +28,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
       toggleMenu();
     }
-  });
-
-  // Header scroll behavior for filter-learn page
-  const heroSection = document.querySelector('.hero-section');
-  
-  window.addEventListener('scroll', function () {
-    const currentScroll = window.pageYOffset;
-    
-    // Get the hero section height to determine when to make header fixed
-    const heroHeight = heroSection ? heroSection.offsetTop + 100 : 100;
-    
-    // Add fixed positioning and white background when scrolled past hero
-    if (currentScroll > heroHeight) {
-      header.classList.add('header-fixed');
-    } else {
-      header.classList.remove('header-fixed');
-    }
-    
-    // Remove any scroll transform classes to keep header always visible
-    header.classList.remove('scroll-up', 'scroll-down');
   });
 });

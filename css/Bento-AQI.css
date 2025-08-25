@@ -49,17 +49,31 @@
   grid-area: box1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* content anchored to bottom */
+  justify-content: space-between; /* Changed from center to space-between */
+  align-items: stretch !important;
+  text-align: left !important;
   color: #fff;
   background: linear-gradient(135deg, var(--blue-950) 0%, var(--blue-900) 42%, var(--blue-800) 100%);
   min-height: 120px;
   position: relative;
+  padding: 20px; /* Restored padding */
+}
+
+/* Content container for vertical spacing */
+.box1-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  margin-top: 90px; /* Push content down to account for particle lane */
+  position: relative;
+  z-index: 2;
 }
 
 /* Lane overlay at the very top */
 .box1 .box1-lane{
   position: absolute;
-  top: 48px; 
+  top: 64px; 
   left: 50%; 
   transform: translateX(-50%);
   width: min(92%, 320px);
@@ -128,7 +142,7 @@
 .box1 p,
 .box1 .search-row{ position: relative; z-index: 2; }
 .box1 h1{ font-size: 24px; font-weight: 700; margin: 0 0 6px; color: #fff; }
-.box1 p{ font-size: 14px; margin: 0 0 10px; color: #f6fbfe; }
+.box1 p{ font-size: 14px; margin: 0 0 20px; color: #f6fbfe; }
 
 /* Input + button row */
 .box1 .search-row{
@@ -174,6 +188,10 @@
 
 /* Locate Me — BELOW the input, full width */
 #locateBtn.locate-btn{
+  display: inline-flex;          /* flex for icon + text */
+  align-items: center;           /* vertical centering */
+  justify-content: center;
+  gap: 8px;                      /* 8px gap between icon and text */
   order: 2;
   flex: 1 1 100%;
   width: 100%;
@@ -191,6 +209,13 @@
 }
 #locateBtn.locate-btn:hover{ background: rgba(255,255,255,.14); color: #0d1b21; }
 #locateBtn.locate-btn:active{ background: rgba(255,255,255,.22); }
+
+#locateBtn .locate-icon svg{
+  width: 18px; 
+  height: 18px; 
+  stroke: currentColor;
+  display: block;
+}
 
 /* Temporary input highlight (optional) */
 .input-bump{ outline: 2px solid var(--accent-outline); outline-offset: 2px; }
@@ -443,12 +468,22 @@
   .box1{
     min-height: 420px !important;
     height: 420px !important;
+    justify-content: space-between; /* Keep space-between on mobile too */
   }
+  
+  .box1-content {
+    margin-top: 90px; /* Same as desktop */
+    padding: 0; /* Remove padding on mobile */
+  }
+  
   .box1 h1{ font-size: 20px; margin-top: 6px; }
   .box1 .search-row{ gap: 8px; }
   #locateBtn.locate-btn{ font-size: 14px; }
 
-  .box1 .box1-lane{ width: min(96%, 280px); top: 64px; }
+  .box1 .box1-lane{ 
+    width: min(96%, 280px); 
+    top: 48px; /* Keep at top on mobile too */
+  }
 
   .box2{ min-height: 260px; }
   .box2-grid{ grid-template-columns: 1fr; gap: 16px; }

@@ -132,4 +132,16 @@ document.addEventListener("DOMContentLoaded", function () {
   img.addEventListener("error", tryFallbacks, { once: true });
 });
 
+/* ===== Fix Scene 3 horizontal scroll initialization ===== */
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".s3 .cards-container");
+  if (!container) return;
+  
+  // Force repaint to ensure proper scroll width calculation
+  setTimeout(() => {
+    container.style.display = 'none';
+    container.offsetHeight; // Trigger reflow
+    container.style.display = 'flex';
+  }, 100);
+});
 /* ===== IMPORTANT: do not block global vertical scroll (curtain reveal stays intact) ===== */

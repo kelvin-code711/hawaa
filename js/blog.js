@@ -1,36 +1,41 @@
-const wrapper = document.querySelector('.card-image-wrapper');
-const img = wrapper?.querySelector('img');
+// Minimal JS: menu + curtain glue (keeps layout breathing on all devices)
 
-// Menu
+// Mobile menu
 const menuToggle = document.getElementById('menu-toggle');
-const mobileNav = document.getElementById('mobile-nav');
-const navClose = document.getElementById('nav-close');
+const mobileNav  = document.getElementById('mobile-nav');
+const navClose   = document.getElementById('nav-close');
 const navOverlay = document.getElementById('nav-overlay');
 
-// === Menu Events — run ONCE, not inside scroll ===
 if (menuToggle && mobileNav && navClose && navOverlay) {
-  menuToggle.addEventListener('click', function () {
-    mobileNav.classList.add('active');
-  });
+  const open = () => { mobileNav.classList.add('active'); mobileNav.setAttribute('aria-hidden','false'); };
+  const close = () => { mobileNav.classList.remove('active'); mobileNav.setAttribute('aria-hidden','true'); };
 
-  navClose.addEventListener('click', function () {
-    mobileNav.classList.remove('active');
-  });
-
-  navOverlay.addEventListener('click', function () {
-    mobileNav.classList.remove('active');
-  });
+  menuToggle.addEventListener('click', open);
+  navClose.addEventListener('click', close);
+  navOverlay.addEventListener('click', close);
 }
 
-// === Scroll zoom effect ===
-window.addEventListener('scroll', () => {
-  if (!wrapper || !img) return;
+// Curtain: make scene1 sticky under real header height, add soft shadow on overlap
+(() => {
+  const curtain = document.querySelector('.curtain');
+  const scene2  = document.getElementById('scene2');
+  const header  = document.getElementById('hawaa-header');
+  if (!curtain || !scene2) return;
 
-  const rect = wrapper.getBoundingClientRect();
-  const vh = window.innerHeight;
+  const syncHeaderH = () => {
+    const h = header ? header.offsetHeight : 72;
+    document.documentElement.style.setProperty('--header-h', `${h}px`);
+  };
+  syncHeaderH();
+  window.addEventListener('resize', syncHeaderH, { passive: true });
+  window.addEventListener('orientationchange', syncHeaderH, { passive: true });
 
-  const visible = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0)) / (rect.height + vh);
-
-  const scale = 1 + visible * 0.1;
-  img.style.transform = `translate3d(0,0,0) scale3d(${scale},${scale},1)`;
-});
+  // Toggle shadow when scene2 overlaps the hero edge
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { curtain.classList.add('is-crossing'); }
+      else { curtain.classList.remove('is-crossing'); }
+    }
+  }, { threshold: 0.01 });
+  io.observe(scene2);
+})();

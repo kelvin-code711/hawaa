@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Hawaa Blog</title>
-  <!-- Add this meta tag for better mobile menu behavior -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/blog.css">
 </head>
 <body>
 
-  <!-- ===== Site Header ===== -->
-  <!-- Header -->
+  <!-- ===== Header ===== -->
   <header class="hawaa-header" id="hawaa-header">
     <div class="header-container">
       <a href="index.html" class="header-logo">
@@ -66,136 +64,109 @@
     </div>
   </div>
 
-  <!-- ===== Mobile Menu ===== -->
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">👤</button>
-          <button class="nav-icon" aria-label="Cart">🛒</button>
-          <button class="nav-close" id="nav-close" aria-label="Close menu">✖</button>
-        </div>
-      </div>
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">Explore</h3>
-          <ul class="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/products">Products</a></li>
-            <li><a href="/technology">Technology</a></li>
-            <li><a href="/quiz">Take a Quiz</a></li>
-            <li><a href="/aqi">AQI Checker</a></li>
-          </ul>
-        </div>
-        <div class="nav-section">
-          <h3 class="section-title">About Hawaa</h3>
-          <ul class="nav-links">
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="/how-it-works">How It Works</a></li>
-            <li><a href="/faq">FAQ</a></li>
-            <li><a href="blog.html">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Hero Section ===== -->
-  <section class="good-health-hero">
-    <div class="hero-content">
-      <h1 class="hero-title">Breathe Better</h1>
-      <p class="hero-subtitle">
-        Explore the science of clean air, expert tips on indoor health, and how Hawaa is
-        redefining the way we breathe—one purifier at a time.
-      </p>
-      <div class="category-chips">
-        <a href="#air-quality" class="chip">Air Quality</a>
-        <a href="#clean-living" class="chip">Clean Living</a>
-        <a href="#product-insights" class="chip">Product Insights</a>
-        <a href="#purifier-tech" class="chip">Purifier Tech</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Blog Section ===== -->
-  <section class="hawaa-blog-section">
-    <div class="hawaa-blog-container">
-
-      <!-- Main Featured Article -->
-      <article class="main-article">
-        <div class="main-article-image">
-          <img src="images/main-article.jpg" alt="Main article image">
-        </div>
-        <div class="main-article-content">
-          <div class="main-article-meta">
-            <span class="author-info">
-              <span>Corinne O'Keefe Osborn</span>
-              <span>in</span>
-              <span>Air Health</span>
-            </span>
-          </div>
-          <h2 class="main-article-title">
-            How Long Does an Air Purifier Take to Work?
-          </h2>
-          <p class="main-article-excerpt">
-            Curious when you'll start noticing a difference after turning on your air purifier?
-            Here's how long it really takes for pollutants to drop, allergies to ease, and freshness
-            to return—based on room size, filter type, and usage.
+  <!-- ===== Curtain wrapper ===== -->
+  <main class="curtain">
+    <!-- Scene 1: sticky hero -->
+    <section class="scene" id="scene1" aria-label="Pinned blog hero">
+      <section class="good-health-hero card">
+        <div class="hero-content">
+          <h1 class="hero-title">Breathe Better</h1>
+          <p class="hero-subtitle">
+            Explore the science of clean air, expert tips on indoor health, and how Hawaa is
+            redefining the way we breathe—one purifier at a time.
           </p>
-          <div class="main-article-tags">
-            <span class="tag">Filtration Time</span>
-            <span class="tag">HEPA</span>
-            <span class="tag">Pollutants</span>
+          <div class="category-chips">
+            <a href="#air-quality" class="chip">Air Quality</a>
+            <a href="#clean-living" class="chip">Clean Living</a>
+            <a href="#product-insights" class="chip">Product Insights</a>
+            <a href="#purifier-tech" class="chip">Purifier Tech</a>
           </div>
         </div>
-      </article>
+      </section>
+    </section>
 
-      <!-- Sidebar Articles -->
-      <aside class="sidebar-articles">
-        <article class="sidebar-article">
-          <div class="sidebar-article-image">
-            <img src="images/sidebar1.jpg" alt="Sidebar article 1">
-          </div>
-          <div class="sidebar-article-content">
-            <h3 class="sidebar-article-title">
-              Should You Sleep with an Air Purifier On?
-            </h3>
-            <p class="sidebar-article-snippet">
-              Sleeping with your air purifier on could help reduce nighttime allergies,
-              snoring, and dust exposure—but here's what to watch out for (and which fan mode to use).
-            </p>
-            <div class="sidebar-article-tags">
-              <span class="tag">Sleep Health</span>
-              <span class="tag">Bedroom Air</span>
+    <!-- Scene 2: list that slides over the hero -->
+    <section class="scene" id="scene2" aria-label="Blog list">
+      <section class="hawaa-blog-section">
+        <div class="hawaa-blog-container">
+
+          <article class="main-article" style="position:relative;">
+            <!-- CLICK-THROUGH OVERLAY to the inner blog page -->
+            <a
+              href="sections/blog-inner.html"
+              aria-label="Open: How Long Does an Air Purifier Take to Work?"
+              style="position:absolute; inset:0; z-index:1;"
+            ></a>
+
+            <div class="main-article-image">
+              <img src="images/main-article.jpg" alt="Main article image">
             </div>
-          </div>
-        </article>
-
-        <article class="sidebar-article">
-          <div class="sidebar-article-image">
-            <img src="images/sidebar2.jpg" alt="Sidebar article 2">
-          </div>
-          <div class="sidebar-article-content">
-            <h3 class="sidebar-article-title">
-              Study: 4 Indian Cities Where Indoor Air Is Worse Than Outside
-            </h3>
-            <p class="sidebar-article-snippet">
-              It's not just smog outside—many urban homes trap more pollutants than the air
-              outdoors. Here are 4 places in India where indoor AQI spikes during the day,
-              and how to fix it.
-            </p>
-            <div class="sidebar-article-tags">
-              <span class="tag">Indoor AQI</span>
-              <span class="tag">Urban Living</span>
+            <div class="main-article-content">
+              <div class="main-article-meta">
+                <span class="author-info">
+                  <span>Corinne O'Keefe Osborn</span>
+                  <span>in</span>
+                  <span>Air Health</span>
+                </span>
+              </div>
+              <h2 class="main-article-title">How Long Does an Air Purifier Take to Work?</h2>
+              <p class="main-article-excerpt">
+                Curious when you'll start noticing a difference after turning on your air purifier?
+                Here's how long it really takes for pollutants to drop, allergies to ease, and freshness
+                to return—based on room size, filter type, and usage.
+              </p>
+              <div class="main-article-tags">
+                <span class="tag">Filtration Time</span>
+                <span class="tag">HEPA</span>
+                <span class="tag">Pollutants</span>
+              </div>
             </div>
-          </div>
-        </article>
-      </aside>
+          </article>
 
-    </div>
-  </section>
-<script src="js/header.js" defer></script>
+          <aside class="sidebar-articles">
+            <article class="sidebar-article">
+              <div class="sidebar-article-image">
+                <img src="images/sidebar1.jpg" alt="Sidebar article 1">
+              </div>
+              <div class="sidebar-article-content">
+                <h3 class="sidebar-article-title">Should You Sleep with an Air Purifier On?</h3>
+                <p class="sidebar-article-snippet">
+                  Sleeping with your air purifier on could help reduce nighttime allergies,
+                  snoring, and dust exposure—but here's what to watch out for (and which fan mode to use).
+                </p>
+                <div class="sidebar-article-tags">
+                  <span class="tag">Sleep Health</span>
+                  <span class="tag">Bedroom Air</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="sidebar-article">
+              <div class="sidebar-article-image">
+                <img src="images/sidebar2.jpg" alt="Sidebar article 2">
+              </div>
+              <div class="sidebar-article-content">
+                <h3 class="sidebar-article-title">
+                  Study: 4 Indian Cities Where Indoor Air Is Worse Than Outside
+                </h3>
+                <p class="sidebar-article-snippet">
+                  It's not just smog outside—many urban homes trap more pollutants than the air outdoors.
+                  Here are 4 places in India where indoor AQI spikes during the day, and how to fix it.
+                </p>
+                <div class="sidebar-article-tags">
+                  <span class="tag">Indoor AQI</span>
+                  <span class="tag">Urban Living</span>
+                </div>
+              </div>
+            </article>
+          </aside>
+
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/js/header.js" defer></script>
+  <script src="js/blog.js" defer></script>
 </body>
 </html>
