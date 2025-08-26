@@ -1,11 +1,9 @@
 /* =========================
-   Bento AQI — JS (2025-08-24)
-   - Box 1 content vertically centered
-   - Particle lane ALWAYS above the title
-   - Lane spacer passed to CSS via --lane-spacer
-   - Locate Me button icon + demo data
-   - Box 2 ring + WHO factors
-   - Box 3 Lottie states + captions
+   Bento AQI — JS (2025-08-26)
+   - Live AQICN (CPCB/NAQI) fetch for city/geo/uid
+   - Type-ahead dropdown with /search (deduped; UID-backed)
+   - Top-of-page toast when typed city has no CPCB station
+   - Keeps all previous UI/animation logic intact
 ========================= */
 (() => {
   const MAX_AQI = 500;
@@ -49,10 +47,10 @@
   const box3DefaultFG = box3 ? qs('.lottie-fg-wrap', box3) : null;
   let box3GoodWrap = null, box3ModerateWrap = null, box3USGWrap = null, box3UnhealthyWrap = null, box3VeryWrap = null, box3HazardWrap = null, box3Caption = null;
 
-  // Box 1 lane + title
+  // Box 1 lane + title (existing visuals kept)
   const box1    = qs('.box1');
   const titleH1 = qs('.box1 h1');
-  const laneBox = qs('.box1 .particle-lane');          // the visual lane container
+  const laneBox = qs('.box1 .particle-lane');
   const laneDots = laneBox ? laneBox.querySelector('.particles') : null;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -62,7 +60,7 @@
   // Mobile visibility flag for Box 2
   let hasSearchedYet = false;
 
-  // Demo data
+  // Demo data (kept for typed-city fallback; not used for location)
   const DEMO_DATA = {
     'Mumbai': { aqi:132, pm25:68,  pm10:104 }, 'Delhi':{ aqi:242, pm25:142, pm10:210 },
     'Ahmedabad':{ aqi:176, pm25:95, pm10:160 }, 'Bengaluru':{ aqi:88, pm25:36, pm10:70  },
@@ -70,9 +68,7 @@
     'Pune':{ aqi:92, pm25:40,  pm10:80  }, 'Kolkata':{ aqi:158, pm25:82, pm10:140 },
     'Toronto':{ aqi:42, pm25:10, pm10:22 }, 'Munich':{ aqi:28, pm25:8, pm10:16 }
   };
-  const DEMO_LOCATIONS_IN = ['Mumbai','Delhi','Ahmedabad','Bengaluru','Chennai','Hyderabad','Pune','Kolkata'];
 
-  // Caption text per band
   const CAPTIONS = {
     good:'Every breath adds life 🌿',
     moderate:'Like sitting in traffic all day 🚦',
@@ -82,6 +78,208 @@
     hazard:'This air is poison — like living inside a chimney.'
   };
 
+  // ------- Live AQI helpers (AQICN, CPCB/NAQI source) -------
+  // Set your token in HTML before this script OR hardcode below:
+  // <script>window.AQICN_TOKEN='YOUR_TOKEN'</script>
+  const AQICN_TOKEN = 'd51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d';
+
+  async function fetchAQICNByCity(city){
+    const url = `https://api.waqi.info/feed/${encodeURIComponent(city)}/?token=${AQICN_TOKEN}`;
+    const resp = await fetch(url, { cache: 'no-store' });
+    const json = await resp.json();
+    if (json.status !== 'ok') throw new Error(json.data || 'AQICN city fetch failed');
+    return mapAQICN(json);
+  }
+  async function fetchAQICNByGeo(lat, lon){
+    const url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${AQICN_TOKEN}`;
+    const resp = await fetch(url, { cache: 'no-store' });
+    const json = await resp.json();
+    if (json.status !== 'ok') throw new Error(json.data || 'AQICN geo fetch failed');
+    return mapAQICN(json);
+  }
+  async function fetchAQICNByUid(uid){
+    const url = `https://api.waqi.info/feed/@${encodeURIComponent(uid)}/?token=${AQICN_TOKEN}`;
+    const resp = await fetch(url, { cache: 'no-store' });
+    const json = await resp.json();
+    if (json.status !== 'ok') throw new Error(json.data || 'AQICN uid fetch failed');
+    return mapAQICN(json);
+  }
+  function mapAQICN(json){
+    const d = json?.data || {};
+    const n = (v) => { const num = Number(v); return Number.isFinite(num) ? Math.round(num) : NaN; };
+    return {
+      status: 'ok',
+      data: {
+        aqi: n(d.aqi),
+        iaqi: {
+          pm25: { v: n(d?.iaqi?.pm25?.v) },
+          pm10: { v: n(d?.iaqi?.pm10?.v) },
+        },
+        city: { name: d?.city?.name || '' },
+        idx: d?.idx
+      }
+    };
+  }
+
+  // ------- Type-ahead (AQICN /search) -------
+  let suggestionWrap = null;
+  let selectedUid = null;
+  let lastSuggestQuery = '';
+  let suggestReqId = 0;
+
+  function initTypeahead(){
+    if (!cityInput) return;
+
+    // dropdown container (styled in CSS)
+    const holder = cityInput.closest('.search-input') || cityInput.parentElement;
+    suggestionWrap = document.createElement('div');
+    suggestionWrap.className = 'aqi-suggest';
+    holder.appendChild(suggestionWrap);
+
+    cityInput.addEventListener('input', onType);
+    cityInput.addEventListener('focus', () => {
+      if (suggestionWrap && suggestionWrap.childElementCount) suggestionWrap.classList.add('is-open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!suggestionWrap) return;
+      if (!suggestionWrap.contains(e.target) && e.target !== cityInput) hideSuggest();
+    });
+  }
+
+  const onType = debounce(async (valEvt) => {
+    selectedUid = null;
+    const q = (typeof valEvt === 'string' ? valEvt : valEvt.target.value).trim();
+    if (q.length < 2){ hideSuggest(); lastSuggestQuery=''; return; }
+    if (q === lastSuggestQuery) return;
+    lastSuggestQuery = q;
+
+    const reqId = ++suggestReqId;
+    try{
+      const results = await searchStations(q);
+      if (reqId !== suggestReqId) return; // stale
+      if (!results.length){ hideSuggest(); return; }
+      renderSuggest(results, q);
+    } catch { hideSuggest(); }
+  }, 220);
+
+  // INDIA-ONLY filter for dropdown
+  async function searchStations(q){
+    const url = `https://api.waqi.info/search/?token=${AQICN_TOKEN}&keyword=${encodeURIComponent(q)}`;
+    const resp = await fetch(url, { cache: 'no-store' });
+    const json = await resp.json();
+    if (json.status !== 'ok') return [];
+
+    const seen = new Set();
+    const items = (json.data || []).map(it => {
+      const name = it?.station?.name || it?.station || it?.city || '';
+      const aqi = safeNum(it?.aqi);
+      const uid = it?.uid ?? it?.station?.idx ?? it?.idx;
+      const countryRaw = it?.station?.country ?? it?.country ?? '';
+      const country = typeof countryRaw === 'string' ? countryRaw.toLowerCase() : '';
+      return { name, aqi, uid, country };
+    }).filter(x => {
+      if (!x.name || !(x.uid || x.uid === 0)) return false;
+      const nameLC = x.name.toLowerCase();
+      const isIndiaByCountry = x.country.includes('india');
+      const isIndiaByName =
+        nameLC.includes(', india') ||
+        nameLC.endsWith(', in') ||
+        /\bindia\b/.test(nameLC);
+      return isIndiaByCountry || isIndiaByName;
+    });
+
+    const dedup = [];
+    for (const x of items){
+      if (seen.has(x.uid)) continue;
+      seen.add(x.uid);
+      dedup.push(x);
+    }
+    const qlc = q.toLowerCase();
+    dedup.sort((a,b) => {
+      const an=a.name.toLowerCase(), bn=b.name.toLowerCase();
+      const asw = an.startsWith(qlc), bsw = bn.startsWith(qlc);
+      if (asw !== bsw) return bsw - asw;
+      const ain = an.includes(qlc), bin = bn.includes(qlc);
+      if (ain !== bin) return bin - ain;
+      const av = Number.isFinite(a.aqi) ? a.aqi : 9999;
+      const bv = Number.isFinite(b.aqi) ? b.aqi : 9999;
+      return av - bv;
+    });
+    return dedup;
+  }
+
+  function renderSuggest(list, query){
+    if (!suggestionWrap) return;
+    suggestionWrap.innerHTML = '';
+    list.slice(0, 8).forEach(item => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'aqi-suggest__row';
+      row.innerHTML = `
+        <span class="aqi-suggest__name">${highlight(item.name, query)}</span>
+        <span class="aqi-suggest__aqi">${Number.isFinite(+item.aqi) ? `AQI ${item.aqi}` : '—'}</span>
+      `;
+      row.addEventListener('click', () => {
+        cityInput.value = item.name;
+        selectedUid = item.uid;
+        hideSuggest();
+        getAqi();
+      });
+      suggestionWrap.appendChild(row);
+    });
+    suggestionWrap.classList.add('is-open');
+  }
+  function hideSuggest(){
+    if (!suggestionWrap) return;
+    suggestionWrap.classList.remove('is-open');
+    suggestionWrap.innerHTML = '';
+  }
+  function highlight(text, q){
+    const i = text.toLowerCase().indexOf(q.toLowerCase());
+    if (i < 0) return text;
+    return `${text.slice(0,i)}<strong>${text.slice(i, i+q.length)}</strong>${text.slice(i+q.length)}`;
+  }
+  function debounce(fn, ms){
+    let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  // --- Top-of-page toast (CSS-only styling) ---
+  let aqiToastTimer = null;
+  function getToastHost(){
+    let host = document.getElementById('aqi-toast-host');
+    if (!host){
+      host = document.createElement('div');
+      host.id = 'aqi-toast-host';
+      host.className = 'aqi-toast-host';
+      document.body.prepend(host);
+    }
+    return host;
+  }
+  function showToast(html, timeout = 4000){
+    const host = getToastHost();
+    const el = document.createElement('div');
+    el.className = 'aqi-toast';
+    el.innerHTML = html;
+    host.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('is-visible'));
+    clearTimeout(aqiToastTimer);
+    aqiToastTimer = setTimeout(() => {
+      el.classList.remove('is-visible');
+      el.addEventListener('transitionend', () => el.remove(), { once: true });
+    }, timeout);
+  }
+  function warnNoStationIfMismatch(typed, stationLabel, usedUid){
+    const q = (typed || '').trim().toLowerCase();
+    if (!q) return;
+    if (usedUid) return;
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const s = (stationLabel || '').toLowerCase();
+    const allPresent = tokens.every(tok => s.includes(tok));
+    if (!allPresent){
+      showToast(`No CPCB station found in <strong>${properCase(typed)}</strong>. Showing nearest station: <strong>${stationLabel || '—'}</strong>.`);
+    }
+  }
+
   // ------- Init -------
   document.addEventListener('DOMContentLoaded', () => {
     primeRing();
@@ -90,21 +288,18 @@
     if (cityInput) cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') getAqi(); });
     if (locateBtn) locateBtn.addEventListener('click', onLocateMe);
 
-    injectLocateIcon();             // add icon into "Locate me" button
+    initTypeahead();
+    injectLocateIcon();
     ensureCaption();
     ensureDefaultBG();
     setEmpty('Enter a city to see the AQI.');
 
-    // Mobile: Box 2 hidden until first search
     setBox2MobileHidden(true);
-
-    // Build particles + place lane above title
     primeLaneStyles();
     buildLaneParticles();
-    positionLaneAboveTitle();       // <— key: always above H1
+    positionLaneAboveTitle();
     retargetLaneParticles();
 
-    // recalc on resize & font reflow
     window.addEventListener('resize', () => {
       setBox2MobileHidden(!hasSearchedYet);
       positionLaneAboveTitle();
@@ -113,18 +308,43 @@
       dockBottom(box3UnhealthyWrap); dockBottom(box3VeryWrap); dockBottom(box3HazardWrap);
     });
 
-    // small reflow pass after paint
     setTimeout(() => { positionLaneAboveTitle(); retargetLaneParticles(); }, 60);
   });
 
-  // Expose for inline HTML hooks if needed
+  // ------- UPDATED: Live city search / UID aware -------
   window.getAqi = async () => {
-    const city = (cityInput?.value || '').trim();
-    if (!city) { bumpInput(cityInput); return; }
+    const typed = (cityInput?.value || '').trim();
+    if (!typed) { bumpInput(cityInput); return; }
+
     hasSearchedYet = true;
     setBox2MobileHidden(false);
-    setLoading('Preparing demo data…');
-    setTimeout(() => handleAqiPayload(makeDemoPayload(city)), 400);
+    setLoading('Fetching latest air data…');
+    hideSuggest();
+
+    try {
+      const payload = selectedUid ? await fetchAQICNByUid(selectedUid)
+                                  : await fetchAQICNByCity(typed);
+
+      const stationName = payload?.data?.city?.name || '';
+      const stationUid  = payload?.data?.idx ?? null;
+
+      handleAqiPayload(payload, {
+        typedQuery: typed,
+        stationName,
+        stationUid,
+        mismatch: false
+      });
+    } catch (err) {
+      console.warn('[AQI city/uid fetch failed, fallback to demo]', err);
+      setLoading('Live source unavailable — showing demo…');
+      setTimeout(() =>
+        handleAqiPayload(
+          makeDemoPayload(typed, { labelOverride: properCase(typed) }),
+          { typedQuery: typed, stationName: properCase(typed), stationUid: null, mismatch: false }
+        ), 300);
+    } finally {
+      selectedUid = null;
+    }
   };
 
   // ------- Ring -------
@@ -137,17 +357,41 @@
     } catch {}
   }
 
-  // ------- Demo loaders -------
+  // ------- Locate Me (geo -> live) — DEMO REMOVED -------
   function onLocateMe(){
     hasSearchedYet = true;
     setBox2MobileHidden(false);
-    setLoading('Getting a quick demo reading…');
-    setTimeout(() => {
-      const city = DEMO_LOCATIONS_IN[rnd(0, DEMO_LOCATIONS_IN.length - 1)];
-      handleAqiPayload(makeDemoPayload(city, { labelOverride:'My location (demo)' }));
-    }, 450);
+    setLoading('Getting location & fetching air data…');
+
+    const noData = (msg = 'No station/data found for your location. Try searching a nearby city.') => {
+      showToast(msg, 5000);
+      setEmpty('No station/data found for your location. Try searching by city.');
+    };
+
+    if (!navigator.geolocation){
+      console.warn('Geolocation unsupported');
+      noData();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const { latitude, longitude } = pos.coords || {};
+        const payload = await fetchAQICNByGeo(latitude, longitude);
+        const stationName = payload?.data?.city?.name || '';
+        handleAqiPayload(payload, { typedQuery:'', stationName, stationUid: payload?.data?.idx ?? null, mismatch:false });
+      } catch (err) {
+        console.warn('[AQI geo fetch failed]', err);
+        noData();
+      }
+    }, (err) => {
+      console.warn('Geolocation error', err);
+      // Per requirement: show "no station/data found" instead of permission denied
+      noData();
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
   }
 
+  // ------- Demo loader (kept for typed search fallback only) -------
   function makeDemoPayload(city, opts={}){
     const base = DEMO_DATA[properCase(city)];
     let aqi, pm25, pm10, label;
@@ -162,7 +406,7 @@
       pm10 = clamp(Math.round(aqi * (0.60 + Math.random() * 0.20)), 5, 400);
       label = opts.labelOverride || properCase(city || 'Unknown city');
     }
-    return { status:'ok', data:{ aqi, iaqi:{ pm25:{ v: pm25 }, pm10:{ v: pm10 } }, city:{ name: label } } };
+    return { status:'ok', data:{ aqi, iaqi:{ pm25:{ v: pm25 }, pm10:{ v: pm10 } }, city:{ name: label }, idx: null } };
   }
 
   // ------- WHO helper -------
@@ -177,12 +421,12 @@
   }
 
   // ------- Render / State -------
-  function handleAqiPayload(json){
+  function handleAqiPayload(json, meta = { typedQuery:'', stationName:'', stationUid:null, mismatch:false }){
     const d = json?.data || {};
     const aqi  = Number(d.aqi ?? NaN);
     const pm25 = safeNum(d?.iaqi?.pm25?.v);
     const pm10 = safeNum(d?.iaqi?.pm10?.v);
-    const city = d?.city?.name || '';
+    const stationLabel = d?.city?.name || meta.stationName || '';
 
     setPM(pm25El, pm25, 'pm25');
     setPM(pm10El, pm10, 'pm10');
@@ -190,7 +434,10 @@
     if (pm25UnitEl) pm25UnitEl.textContent = 'µg/m³';
     if (pm10UnitEl) pm10UnitEl.textContent = 'µg/m³';
 
-    setAqi(aqi, city);
+    setAqi(aqi, stationLabel);
+
+    if (meta.typedQuery) warnNoStationIfMismatch(meta.typedQuery, stationLabel, meta.stationUid);
+
     showResult();
     setBox2MobileHidden(false);
   }
@@ -233,6 +480,7 @@
       aqi <= 300 ? 'Very Unhealthy' : 'Hazardous / Emergency';
     return [city, category].filter(Boolean).join(' • ') || '—';
   }
+
   function setAqiCategory(el, aqi){
     if (!el) return;
     ['is-good','is-moderate','is-usg','is-unhealthy','is-very','is-hazard'].forEach(c => el.classList.remove(c));
@@ -360,16 +608,14 @@
   // ------- Small UI helpers -------
   function bumpInput(inputEl){ if(!inputEl) return; inputEl.focus(); inputEl.classList.add('input-bump'); setTimeout(()=>{ inputEl.classList.remove('input-bump'); }, 700); }
 
-  // ------- Box 1 lane: styles, build, and keep above title -------
+  // ------- Box 1 lane: styles/build/position (existing behavior kept) -------
   function primeLaneStyles(){
     if (!laneBox) return;
-    // Force positioning so we can control its top without requiring CSS edits
     laneBox.style.position = 'absolute';
     laneBox.style.left = '50%';
     laneBox.style.transform = 'translateX(-50%)';
     laneBox.style.width = 'min(92%, 320px)';
-    laneBox.style.zIndex = '1';          // under text elements
-    // Ensure the filter line/particles container exist
+    laneBox.style.zIndex = '1';
     if (laneDots) laneDots.style.pointerEvents = 'none';
   }
 
@@ -396,20 +642,14 @@
     }
   }
 
-  // Position lane so that its BOTTOM sits 16px (mobile) / 24px (desktop) ABOVE the H1
   function positionLaneAboveTitle(){
     if (!box1 || !laneBox || !titleH1) return;
     const gap = isMobile() ? 16 : 24;
-
-    // H1 top relative to .box1
     const h1Top = titleH1.offsetTop;
     const laneH = laneBox.offsetHeight || 78;
-
     let top = h1Top - gap - laneH;
-    top = Math.max(12, top); // keep small safe padding from top
+    top = Math.max(12, top);
     laneBox.style.top = `${top}px`;
-
-    // Tell CSS how much vertical space the lane occupies above H1
     box1.style.setProperty('--lane-spacer', `${laneH + gap}px`);
   }
 
@@ -424,7 +664,6 @@
     });
   }
 
-  // Add a small location icon in the "Locate me" button
   function injectLocateIcon(){
     if (!locateBtn) return;
     if (locateBtn.querySelector('.locate-icon')) return;
@@ -438,7 +677,6 @@
     locateBtn.prepend(span);
   }
 
-  // Maintain docking on resize for Box 3 lotties
   function dockBottom(wrap){
     if (!wrap) return;
     wrap.style.position = 'absolute';
