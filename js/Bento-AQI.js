@@ -1,9 +1,10 @@
 /* =========================
-   Bento AQI — JS (2025-08-26)
-   - Live AQICN (CPCB/NAQI) fetch for city/geo/uid
-   - Type-ahead dropdown with /search (deduped; UID-backed)
-   - Top-of-page toast when typed city has no CPCB station
-   - Keeps all previous UI/animation logic intact
+   Bento AQI — JS (2025-08-27)
+   - Bounds-aware dropdown (Leaflet/Google Maps)
+   - India-only stations
+   - City-not-in-station toast
+   - Dropdown shows names only (no AQI)
+   - NEW: Box 2 shows "Nearest station: <name>" when applicable
 ========================= */
 (() => {
   const MAX_AQI = 500;
@@ -47,7 +48,7 @@
   const box3DefaultFG = box3 ? qs('.lottie-fg-wrap', box3) : null;
   let box3GoodWrap = null, box3ModerateWrap = null, box3USGWrap = null, box3UnhealthyWrap = null, box3VeryWrap = null, box3HazardWrap = null, box3Caption = null;
 
-  // Box 1 lane + title (existing visuals kept)
+  // Box 1 lane + title
   const box1    = qs('.box1');
   const titleH1 = qs('.box1 h1');
   const laneBox = qs('.box1 .particle-lane');
@@ -60,12 +61,12 @@
   // Mobile visibility flag for Box 2
   let hasSearchedYet = false;
 
-  // Demo data (kept for typed-city fallback; not used for location)
+  // Demo data (kept)
   const DEMO_DATA = {
     'Mumbai': { aqi:132, pm25:68,  pm10:104 }, 'Delhi':{ aqi:242, pm25:142, pm10:210 },
-    'Ahmedabad':{ aqi:176, pm25:95, pm10:160 }, 'Bengaluru':{ aqi:88, pm25:36, pm10:70  },
-    'Chennai':{ aqi:72, pm25:28,  pm10:64  }, 'Hyderabad':{ aqi:110, pm25:52, pm10:98  },
-    'Pune':{ aqi:92, pm25:40,  pm10:80  }, 'Kolkata':{ aqi:158, pm25:82, pm10:140 },
+    'Ahmedabad':{ aqi:176, pm25:95, pm10:160 }, 'Bengaluru':{ aqi:88, pm25:36, pm10:70 },
+    'Chennai':{ aqi:72, pm25:28, pm10:64 }, 'Hyderabad':{ aqi:110, pm25:52, pm10:98 },
+    'Pune':{ aqi:92, pm25:40, pm10:80 }, 'Kolkata':{ aqi:158, pm25:82, pm10:140 },
     'Toronto':{ aqi:42, pm25:10, pm10:22 }, 'Munich':{ aqi:28, pm25:8, pm10:16 }
   };
 
@@ -79,8 +80,6 @@
   };
 
   // ------- Live AQI helpers (AQICN, CPCB/NAQI source) -------
-  // Set your token in HTML before this script OR hardcode below:
-  // <script>window.AQICN_TOKEN='YOUR_TOKEN'</script>
   const AQICN_TOKEN = 'd51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d';
 
   async function fetchAQICNByCity(city){
@@ -111,10 +110,7 @@
       status: 'ok',
       data: {
         aqi: n(d.aqi),
-        iaqi: {
-          pm25: { v: n(d?.iaqi?.pm25?.v) },
-          pm10: { v: n(d?.iaqi?.pm10?.v) },
-        },
+        iaqi: { pm25: { v: n(d?.iaqi?.pm25?.v) }, pm10: { v: n(d?.iaqi?.pm10?.v) } },
         city: { name: d?.city?.name || '' },
         idx: d?.idx
       }
@@ -127,10 +123,35 @@
   let lastSuggestQuery = '';
   let suggestReqId = 0;
 
+  // Bounds-driven suggestion
+  const USE_BOUNDS_FOR_SUGGEST = true;
+  const MAX_SUGGESTIONS = 30;
+
+  function getCurrentBounds() {
+    if (window.map && typeof window.map.getBounds === 'function') {
+      const b = window.map.getBounds();
+      const sw = b.getSouthWest ? b.getSouthWest() : b._southWest;
+      const ne = b.getNorthEast ? b.getNorthEast() : b._northEast;
+      if (sw && ne) return { minLat: sw.lat, maxLat: ne.lat, minLng: sw.lng, maxLng: ne.lng };
+    }
+    if (window.gmap && typeof window.gmap.getBounds === 'function') {
+      const b = window.gmap.getBounds();
+      if (b) {
+        const sw = b.getSouthWest();
+        const ne = b.getNorthEast();
+        return { minLat: sw.lat(), maxLat: ne.lat(), minLng: sw.lng(), maxLng: ne.lng() };
+      }
+    }
+    return null;
+  }
+  function pointInBounds(lat, lng, bounds) {
+    if (!bounds) return true;
+    return lat >= bounds.minLat && lat <= bounds.maxLat && lng >= bounds.minLng && lng <= bounds.maxLng;
+  }
+
   function initTypeahead(){
     if (!cityInput) return;
 
-    // dropdown container (styled in CSS)
     const holder = cityInput.closest('.search-input') || cityInput.parentElement;
     suggestionWrap = document.createElement('div');
     suggestionWrap.className = 'aqi-suggest';
@@ -144,6 +165,21 @@
       if (!suggestionWrap) return;
       if (!suggestionWrap.contains(e.target) && e.target !== cityInput) hideSuggest();
     });
+
+    if (window.map && typeof window.map.on === 'function') {
+      window.map.on('moveend', () => {
+        if (window._lastSuggestList && suggestionWrap?.classList.contains('is-open')) {
+          renderSuggest(window._lastSuggestList, lastSuggestQuery);
+        }
+      });
+    }
+    if (window.gmap && typeof window.gmap.addListener === 'function') {
+      window.gmap.addListener('idle', () => {
+        if (window._lastSuggestList && suggestionWrap?.classList.contains('is-open')) {
+          renderSuggest(window._lastSuggestList, lastSuggestQuery);
+        }
+      });
+    }
   }
 
   const onType = debounce(async (valEvt) => {
@@ -158,6 +194,7 @@
       const results = await searchStations(q);
       if (reqId !== suggestReqId) return; // stale
       if (!results.length){ hideSuggest(); return; }
+      window._lastSuggestList = results;
       renderSuggest(results, q);
     } catch { hideSuggest(); }
   }, 220);
@@ -176,7 +213,10 @@
       const uid = it?.uid ?? it?.station?.idx ?? it?.idx;
       const countryRaw = it?.station?.country ?? it?.country ?? '';
       const country = typeof countryRaw === 'string' ? countryRaw.toLowerCase() : '';
-      return { name, aqi, uid, country };
+      const g = it?.station?.geo || it?.geo || [];
+      const lat = Number(g?.[0]);
+      const lng = Number(g?.[1]);
+      return { name, aqi, uid, country, lat, lng };
     }).filter(x => {
       if (!x.name || !(x.uid || x.uid === 0)) return false;
       const nameLC = x.name.toLowerCase();
@@ -208,17 +248,27 @@
     return dedup;
   }
 
+  // renderSuggest — names only + bounds + cap
   function renderSuggest(list, query){
     if (!suggestionWrap) return;
     suggestionWrap.innerHTML = '';
-    list.slice(0, 8).forEach(item => {
+
+    let out = Array.isArray(list) ? list.slice() : [];
+
+    if (USE_BOUNDS_FOR_SUGGEST) {
+      const b = getCurrentBounds();
+      out = out.filter(it => Number.isFinite(it.lat) && Number.isFinite(it.lng) && pointInBounds(it.lat, it.lng, b));
+    }
+
+    out = out.slice(0, Number.isFinite(MAX_SUGGESTIONS) ? MAX_SUGGESTIONS : out.length);
+
+    if (!out.length) { suggestionWrap.classList.remove('is-open'); return; }
+
+    out.forEach(item => {
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'aqi-suggest__row';
-      row.innerHTML = `
-        <span class="aqi-suggest__name">${highlight(item.name, query)}</span>
-        <span class="aqi-suggest__aqi">${Number.isFinite(+item.aqi) ? `AQI ${item.aqi}` : '—'}</span>
-      `;
+      row.innerHTML = `<span class="aqi-suggest__name">${highlight(item.name, query)}</span>`;
       row.addEventListener('click', () => {
         cityInput.value = item.name;
         selectedUid = item.uid;
@@ -243,7 +293,7 @@
     let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
   }
 
-  // --- Top-of-page toast (CSS-only styling) ---
+  // --- Top-of-page toast (CSS already in Bento-AQI.css) ---
   let aqiToastTimer = null;
   function getToastHost(){
     let host = document.getElementById('aqi-toast-host');
@@ -271,13 +321,37 @@
   function warnNoStationIfMismatch(typed, stationLabel, usedUid){
     const q = (typed || '').trim().toLowerCase();
     if (!q) return;
-    if (usedUid) return;
+    if (usedUid) return; // explicit station chosen
     const tokens = q.split(/\s+/).filter(Boolean);
     const s = (stationLabel || '').toLowerCase();
     const allPresent = tokens.every(tok => s.includes(tok));
     if (!allPresent){
-      showToast(`No CPCB station found in <strong>${properCase(typed)}</strong>. Showing nearest station: <strong>${stationLabel || '—'}</strong>.`);
+      showToast(`No CPCB station found in <strong>${properCase(typed)}</strong>. Showing nearest station: <strong>${stationLabel || '—'}</strong>.`, 5000);
     }
+  }
+
+  // ------- NEW: Nearest station note in Box 2 -------
+  function ensureNearestNote(){
+    if (!box2 || !resultState) return null;
+    let el = qs('.nearest-note', box2);
+    if (!el){
+      el = document.createElement('div');
+      el.className = 'nearest-note';
+      // minimal inline styling to avoid CSS changes
+      el.style.fontSize = '12px';
+      el.style.color = 'var(--text-subtle)';
+      el.style.marginTop = '2px';
+      el.style.textAlign = 'center';
+      resultState.appendChild(el);
+    }
+    return el;
+  }
+  function setNearestNote(text){
+    const el = ensureNearestNote();
+    if (!el) return;
+    if (!text){ el.style.display = 'none'; el.textContent = ''; return; }
+    el.innerHTML = text;
+    el.style.display = 'block';
   }
 
   // ------- Init -------
@@ -311,7 +385,7 @@
     setTimeout(() => { positionLaneAboveTitle(); retargetLaneParticles(); }, 60);
   });
 
-  // ------- UPDATED: Live city search / UID aware -------
+  // ------- UPDATED: Live city search / UID aware + pre-check + nearest note -------
   window.getAqi = async () => {
     const typed = (cityInput?.value || '').trim();
     if (!typed) { bumpInput(cityInput); return; }
@@ -320,6 +394,17 @@
     setBox2MobileHidden(false);
     setLoading('Fetching latest air data…');
     hideSuggest();
+
+    // Pre-check if typed city exists in CPCB/AQICN station list
+    let typedInList = true;
+    try {
+      const list = await searchStations(typed);
+      const qlc = typed.toLowerCase();
+      typedInList = list.some(it => it.name.toLowerCase().includes(qlc));
+      if (!typedInList) {
+        showToast(`No CPCB station available in <strong>${properCase(typed)}</strong>. Showing nearest station.`, 5000);
+      }
+    } catch { /* ignore pre-check errors */ }
 
     try {
       const payload = selectedUid ? await fetchAQICNByUid(selectedUid)
@@ -332,7 +417,7 @@
         typedQuery: typed,
         stationName,
         stationUid,
-        mismatch: false
+        mismatch: !typedInList
       });
     } catch (err) {
       console.warn('[AQI city/uid fetch failed, fallback to demo]', err);
@@ -340,7 +425,7 @@
       setTimeout(() =>
         handleAqiPayload(
           makeDemoPayload(typed, { labelOverride: properCase(typed) }),
-          { typedQuery: typed, stationName: properCase(typed), stationUid: null, mismatch: false }
+          { typedQuery: typed, stationName: properCase(typed), stationUid: null, mismatch: true }
         ), 300);
     } finally {
       selectedUid = null;
@@ -357,7 +442,7 @@
     } catch {}
   }
 
-  // ------- Locate Me (geo -> live) — DEMO REMOVED -------
+  // ------- Locate Me (geo -> live) -------
   function onLocateMe(){
     hasSearchedYet = true;
     setBox2MobileHidden(false);
@@ -379,7 +464,7 @@
         const { latitude, longitude } = pos.coords || {};
         const payload = await fetchAQICNByGeo(latitude, longitude);
         const stationName = payload?.data?.city?.name || '';
-        handleAqiPayload(payload, { typedQuery:'', stationName, stationUid: payload?.data?.idx ?? null, mismatch:false });
+        handleAqiPayload(payload, { typedQuery:'', stationName, stationUid: payload?.data?.idx ?? null, mismatch:false, fromGeo:true });
       } catch (err) {
         console.warn('[AQI geo fetch failed]', err);
         noData();
@@ -391,7 +476,7 @@
     }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
   }
 
-  // ------- Demo loader (kept for typed search fallback only) -------
+  // ------- Demo loader (kept) -------
   function makeDemoPayload(city, opts={}){
     const base = DEMO_DATA[properCase(city)];
     let aqi, pm25, pm10, label;
@@ -421,7 +506,7 @@
   }
 
   // ------- Render / State -------
-  function handleAqiPayload(json, meta = { typedQuery:'', stationName:'', stationUid:null, mismatch:false }){
+  function handleAqiPayload(json, meta = { typedQuery:'', stationName:'', stationUid:null, mismatch:false, fromGeo:false }){
     const d = json?.data || {};
     const aqi  = Number(d.aqi ?? NaN);
     const pm25 = safeNum(d?.iaqi?.pm25?.v);
@@ -436,6 +521,21 @@
 
     setAqi(aqi, stationLabel);
 
+    // Box 2: show nearest station note when needed
+    let showNearest = false;
+    if (meta.fromGeo) {
+      showNearest = true; // locating always uses a nearby station
+    } else if (meta.typedQuery) {
+      const mismatchFlag = meta.mismatch || !stationLabel.toLowerCase().includes(meta.typedQuery.toLowerCase());
+      showNearest = mismatchFlag;
+    }
+    if (showNearest && stationLabel) {
+      setNearestNote(`Nearest station: <strong>${stationLabel}</strong>`);
+    } else {
+      setNearestNote('');
+    }
+
+    // Also keep the toast behavior
     if (meta.typedQuery) warnNoStationIfMismatch(meta.typedQuery, stationLabel, meta.stationUid);
 
     showResult();
@@ -608,7 +708,7 @@
   // ------- Small UI helpers -------
   function bumpInput(inputEl){ if(!inputEl) return; inputEl.focus(); inputEl.classList.add('input-bump'); setTimeout(()=>{ inputEl.classList.remove('input-bump'); }, 700); }
 
-  // ------- Box 1 lane: styles/build/position (existing behavior kept) -------
+  // ------- Box 1 lane ------
   function primeLaneStyles(){
     if (!laneBox) return;
     laneBox.style.position = 'absolute';
@@ -618,7 +718,6 @@
     laneBox.style.zIndex = '1';
     if (laneDots) laneDots.style.pointerEvents = 'none';
   }
-
   function buildLaneParticles(count = 26){
     if (!laneBox || !laneDots) return;
     const laneH = laneBox.clientHeight || 78;
@@ -641,7 +740,6 @@
       laneDots.appendChild(dot);
     }
   }
-
   function positionLaneAboveTitle(){
     if (!box1 || !laneBox || !titleH1) return;
     const gap = isMobile() ? 16 : 24;
@@ -652,7 +750,6 @@
     laneBox.style.top = `${top}px`;
     box1.style.setProperty('--lane-spacer', `${laneH + gap}px`);
   }
-
   function retargetLaneParticles(){
     if (!laneBox || !laneDots) return;
     const centerX = Math.round((laneBox.clientWidth || 280) / 2);
@@ -663,7 +760,6 @@
       p.style.setProperty('--toX', `${centerX + spawnAbs}px`);
     });
   }
-
   function injectLocateIcon(){
     if (!locateBtn) return;
     if (locateBtn.querySelector('.locate-icon')) return;
@@ -676,7 +772,6 @@
       </svg>`;
     locateBtn.prepend(span);
   }
-
   function dockBottom(wrap){
     if (!wrap) return;
     wrap.style.position = 'absolute';
