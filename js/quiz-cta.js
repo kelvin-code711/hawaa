@@ -1,4 +1,4 @@
-/* quiz-cta.js — fully updated, single-script version (no external deps) */
+/* quiz-cta.js — robust, class-disabled, auto-advance, with email step */
 
 console.log("🚀 Quiz CTA script loading...");
 
@@ -7,36 +7,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Elements
   const startQuizBtn = document.getElementById("startQuizBtn");
-  const quizModal = document.getElementById("airQualityQuizModal");
-  const closeBtn = document.querySelector(".quiz-close");
-  const navOverlay = document.querySelector(".quiz-modal-overlay");
+  const quizModal   = document.getElementById("airQualityQuizModal");
+  const closeBtn    = document.querySelector(".quiz-close");
+  const navOverlay  = document.querySelector(".quiz-modal-overlay");
   const progressBar = document.querySelector(".quiz-progress-bar");
 
-  if (!startQuizBtn || !quizModal) {
-    console.error("❌ Required quiz elements missing.", {
-      startQuizBtn: !!startQuizBtn,
-      quizModal: !!quizModal,
-    });
+  if (!quizModal) {
+    console.error("❌ Required quiz modal (#airQualityQuizModal) missing.");
     return;
   }
 
   // State
-  let currentQuestion = 1;     // 1..6 (Q1-5 + Email)
-  const totalQuestions = 6;
+  let currentQuestion = 1; // 1..N
+  const totalQuestions = document.querySelectorAll(".quiz-question").length; // includes email step if present
   let answers = {};
 
-  // Core helpers
+  // ---------- Helpers ----------
+  function isValidEmail(str) {
+    // simple but effective enough for UI gating
+    return /\S+@\S+\.\S+/.test(String(str || "").trim());
+  }
+
+  // class-based disabling so buttons stay visible
+  function setBtnDisabled(btn, disabled) {
+    if (!btn) return;
+    btn.classList.toggle("is-disabled", !!disabled);
+    btn.setAttribute("aria-disabled", disabled ? "true" : "false");
+  }
+  function isBtnDisabled(btn) {
+    return btn?.classList.contains("is-disabled");
+  }
+
+  // Normalize any native [disabled] → class .is-disabled (keeps them visible)
+  function normalizeDisabledAttributes() {
+    document.querySelectorAll(".quiz-btn[disabled]").forEach((btn) => {
+      btn.removeAttribute("disabled");
+      setBtnDisabled(btn, true);
+    });
+  }
+
   function updateProgressBar() {
     if (!progressBar) return;
     const pct = ((currentQuestion - 1) / totalQuestions) * 100;
     progressBar.style.width = `${pct}%`;
   }
 
+  function syncQuestionUI(n) {
+    const qEl = document.querySelector(`[data-question="${n}"]`);
+    if (!qEl) return;
+
+    // Prev button: disabled only on Q1
+    const prevBtn = qEl.querySelector(".quiz-btn-secondary");
+    setBtnDisabled(prevBtn, n === 1);
+
+    // Primary (Next / See results) button:
+    const primaryBtn = qEl.querySelector(".quiz-btn-primary");
+    if (!primaryBtn) return;
+
+    if (n >= 1 && n <= 5) {
+      setBtnDisabled(primaryBtn, answers[n] == null);
+    } else if (n === 6) {
+      const email = document.getElementById("quizEmailInput")?.value || "";
+      setBtnDisabled(primaryBtn, !isValidEmail(email));
+    } else {
+      // If you ever add more screens, default to enabled
+      setBtnDisabled(primaryBtn, false);
+    }
+  }
+
   function showQuestion(n) {
     document.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
     const qEl = document.querySelector(`[data-question="${n}"]`);
-    qEl && qEl.classList.add("active");
-    updateProgressBar();
+    if (qEl) {
+      currentQuestion = n;                 // 🔧 keep state in sync
+      qEl.classList.add("active");
+      updateProgressBar();
+      syncQuestionUI(n);                   // 🔧 buttons state per screen
+    }
   }
 
   function resetQuiz() {
@@ -46,18 +93,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // clear selections
     document.querySelectorAll(".quiz-option").forEach(opt => opt.classList.remove("selected"));
 
-    // reset buttons (keep restartBtn usable)
+    // reset all primary buttons except restart
     document.querySelectorAll(".quiz-btn-primary").forEach(btn => {
-      if (btn.id !== "restartBtn") btn.disabled = true;
+      if (btn.id !== "restartBtn") setBtnDisabled(btn, true);
     });
 
-    // clear email
+    // email
     const emailInput = document.getElementById("quizEmailInput");
     if (emailInput) emailInput.value = "";
 
     // hide results
-    const resultsEl = document.getElementById("quizResults");
-    resultsEl && resultsEl.classList.remove("active");
+    document.getElementById("quizResults")?.classList.remove("active");
 
     showQuestion(1);
   }
@@ -73,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "";
   }
 
-  // Scoring
+  // ---------- Scoring & Results ----------
   function calculateScore() {
     const scoreMap = {
       1: { daily: 0, weekly: 1, rarely: 2 },
@@ -85,21 +131,19 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = 0;
     for (let q = 1; q <= 5; q++) {
       const a = answers[q];
-      if (a != null && scoreMap[q] && scoreMap[q][a] != null) total += scoreMap[q][a];
+      if (a != null && scoreMap[q]?.[a] != null) total += scoreMap[q][a];
     }
     return total;
   }
 
   function showAirQualityResults() {
-    const score = calculateScore();
-
     // hide questions
     document.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
 
     // fill results
-    const resultsSection = document.getElementById("quizResults");
-    const titleEl = document.getElementById("pollutionResultTitle");
-    const descEl = document.getElementById("pollutionResultDescription");
+    const resultsSection   = document.getElementById("quizResults");
+    const titleEl          = document.getElementById("pollutionResultTitle");
+    const descEl           = document.getElementById("pollutionResultDescription");
     const recommendationEl = document.getElementById("quizRecommendation");
 
     if (!resultsSection) {
@@ -107,7 +151,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const score = calculateScore();
     let title, description, recommendation;
+
     if (score <= 3) {
       title = "Good Air Quality Environment 🌿";
       description = "Your home has relatively clean air with minimal pollution sources.";
@@ -139,14 +185,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (recommendationEl) recommendationEl.innerHTML = recommendation;
 
     resultsSection.classList.add("active");
-    progressBar && (progressBar.style.width = "100%");
+    if (progressBar) progressBar.style.width = "100%";
   }
 
-  // Navigation
+  // ---------- Navigation ----------
   function goToNextQuestion() {
-    if (currentQuestion < totalQuestions) {
-      currentQuestion++;
-      showQuestion(currentQuestion);
+    const nextIndex = currentQuestion + 1;
+    if (nextIndex <= totalQuestions && document.querySelector(`[data-question="${nextIndex}"]`)) {
+      showQuestion(nextIndex);
     } else {
       showAirQualityResults();
     }
@@ -154,35 +200,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function goToPreviousQuestion() {
     if (currentQuestion > 1) {
-      currentQuestion--;
-      showQuestion(currentQuestion);
-
-      // re-enable next if already answered
-      const currentEl = document.querySelector(`[data-question="${currentQuestion}"]`);
-      const nextBtn = currentEl?.querySelector(".quiz-btn-primary");
-      if (nextBtn) {
-        if (currentQuestion === 6) {
-          const email = document.getElementById("quizEmailInput")?.value?.trim() || "";
-          nextBtn.disabled = !(email.includes("@") && email.length > 5);
-        } else {
-          nextBtn.disabled = answers[currentQuestion] == null;
-        }
-      }
+      showQuestion(currentQuestion - 1);
     }
   }
 
-  // Listeners
-  startQuizBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    openQuizModal();
-  });
+  // ---------- Event bindings ----------
+  normalizeDisabledAttributes(); // 🔧 make disabled buttons visible from your HTML
 
-  closeBtn && closeBtn.addEventListener("click", (e) => {
+  if (startQuizBtn) {
+    startQuizBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openQuizModal();
+    });
+  } else {
+    // If modal is opened via other UI, at least prep it
+    resetQuiz();
+  }
+
+  closeBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     closeQuizModal();
   });
 
-  navOverlay && navOverlay.addEventListener("click", (e) => {
+  navOverlay?.addEventListener("click", (e) => {
     if (e.target === navOverlay) closeQuizModal();
   });
 
@@ -190,34 +230,43 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape" && quizModal.classList.contains("active")) closeQuizModal();
   });
 
-  // Options
+  // Option select → record answer, enable Next, auto-advance
   document.querySelectorAll(".quiz-option").forEach((option) => {
     option.addEventListener("click", () => {
       const qEl = option.closest(".quiz-question");
       if (!qEl) return;
 
-      // select/deselect
+      // mark selected
       qEl.querySelectorAll(".quiz-option").forEach(o => o.classList.remove("selected"));
       option.classList.add("selected");
 
       const qNum = parseInt(qEl.dataset.question, 10);
       answers[qNum] = option.dataset.value;
 
-      // enable next
+      // enable primary button for this screen
       const nextBtn = qEl.querySelector(".quiz-btn-primary");
-      if (nextBtn) nextBtn.disabled = false;
+      setBtnDisabled(nextBtn, false);
+
+      // make sure our state matches whatever is visible, then advance
+      currentQuestion = qNum;
+
+      setTimeout(() => {
+        if (currentQuestion < totalQuestions) {
+          showQuestion(currentQuestion + 1);
+        } else {
+          showAirQualityResults();
+        }
+      }, 120);
     });
   });
 
-  // Email validation (Q6)
+  // Email input (Q6)
   function handleEmailEnable() {
     const emailInput = document.getElementById("quizEmailInput");
-    const nextBtn = document.getElementById("nextBtn6");
+    const nextBtn    = document.getElementById("nextBtn6");
     if (!emailInput || !nextBtn) return;
-    const email = emailInput.value.trim();
-    nextBtn.disabled = !(email.includes("@") && email.length > 5);
+    setBtnDisabled(nextBtn, !isValidEmail(emailInput.value));
   }
-
   const emailInput = document.getElementById("quizEmailInput");
   if (emailInput) {
     emailInput.addEventListener("input", handleEmailEnable);
@@ -233,12 +282,22 @@ document.addEventListener("DOMContentLoaded", () => {
         resetQuiz();
         return;
       }
+      if (isBtnDisabled(btn)) return; // visible but inert
 
       const qEl = btn.closest(".quiz-question");
-      if (!qEl) return;
+      if (!qEl) {
+        // If pressed from results CTA etc.
+        return;
+      }
 
       const qNum = parseInt(qEl.dataset.question, 10);
+      if (qNum >= 1 && qNum <= 5 && answers[qNum] == null) return; // require answer
       if (qNum === 6) {
+        const ok = isValidEmail(document.getElementById("quizEmailInput")?.value);
+        if (!ok) return;
+      }
+
+      if (qNum >= totalQuestions) {
         showAirQualityResults();
       } else {
         goToNextQuestion();
@@ -246,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Previous / Restart buttons
+  // Previous buttons
   document.querySelectorAll(".quiz-btn-secondary").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -258,17 +317,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Expose for integrations if needed
+  // Expose for integrations
   window.showAirQualityResults = showAirQualityResults;
-  window.getQuizAnswers = () => ({ ...answers });
-  window.calculateQuizScore = calculateScore;
+  window.getQuizAnswers       = () => ({ ...answers });
+  window.calculateQuizScore   = calculateScore;
 
   console.log("✅ Quiz initialization complete!");
 });
 
-// Fallback init if DOM already loaded and script appended late
+// Fallback init if script appended late
 if (document.readyState !== "loading") {
-  // trigger DOMContentLoaded handler above
-  const ev = new Event("DOMContentLoaded");
-  document.dispatchEvent(ev);
+  document.dispatchEvent(new Event("DOMContentLoaded"));
 }
