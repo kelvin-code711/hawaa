@@ -347,6 +347,11 @@ body {
   cursor:not-allowed;
   transform:none;
 }
+/* keep disabled buttons visible but inert */
+.quiz-btn.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 /* Results */
 .quiz-results {
@@ -442,3 +447,10 @@ input, textarea, select, button {
   .image-container { width:140px; height:140px; }
   .quiz-button { padding:14px 28px; font-size:15px; }
 }
+
+.quiz-navigation { display: flex !important; }
+.quiz-navigation .quiz-btn { display: inline-flex !important; visibility: visible !important; }
+
+.quiz-navigation .quiz-btn[disabled] { display: inline-flex !important; visibility: visible !important; }
+
+.quiz-btn.is-disabled { opacity: 0.5; pointer-events: none; }
