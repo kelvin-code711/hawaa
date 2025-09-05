@@ -113,128 +113,70 @@
   </video>
 
   <!-- Demo image fallback (replace src with your own image) -->
-  <img src="images/demo-image.jpg" alt="Hero placeholder" class="hero-media fallback">
+  <img src="images/image-blog.jpg" alt="Hero placeholder" class="hero-media fallback">
 </section>
 
 
-  <!-- Bento AQI Section -->
+  <!-- Bento AQI — Single Box (Centered UI; Image on the right) -->
 <section id="bento-aqi">
-  <div class="bento-wrapper">
-    <!-- BOX 1: Search + Ambient Particle Lane (new) -->
-    <div class="bento-box box1">
-      <!-- Background image container (kept) -->
-      <div class="bg-image-container"></div>
+  <div class="bento-merged">
+    <div class="bento-merged__left">
+      <div class="left-inner">
+        <header class="bento-head">
+          <h1>Check the air quality in your city</h1>
+          <p>Enter a city or station; pick from the list</p>
+        </header>
 
-      <!-- NEW: Ambient particle lane (Box 1 only) - MOVED TO TOP -->
-      <div class="lane-side box1-lane" aria-hidden="false">
-        <div class="lane-title">Air quality, at a glance</div>
-        <div class="particle-lane">
-          <div class="filter-line"></div>
-          <div class="particles" id="particlesBox1"></div>
-        </div>
-      </div>
-
-      <!-- Content container for vertical centering -->
-      <div class="box1-content">
-        <h1>Check the air quality in your city</h1>
-        <p>Enter a city to see the AQI instantly</p>
-
+        <!-- Input first, then both buttons BELOW (desktop) -->
         <div class="search-row">
           <div class="search-input">
-            <input id="cityInput" type="text" placeholder="Enter city..." />
-            <button class="search-btn" aria-label="Search city AQI">
+            <input id="cityInput" type="text" placeholder="Start typing a city or station…" autocomplete="off" />
+            <!-- NEW: typeahead dropdown -->
+            <div id="typeahead" class="typeahead" role="listbox" aria-label="Stations"></div>
+          </div>
+          <div class="actions">
+            <button id="locateBtn" class="locate-btn" type="button">Locate me</button>
+            <button class="search-btn" type="button" aria-label="Search city AQI">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
                 <path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
           </div>
-          <button id="locateBtn" class="locate-btn" type="button">Locate me</button>
         </div>
-      </div>
-    </div>
 
-    <!-- BOX 2: PM tiles (left) + AQI ring (right) -->
-    <div class="bento-box box2">
-      <div class="box2-grid">
-        <div class="right-side">
-          <div class="aqi-empty">
-            <p class="empty-hint">Enter a city to see the AQI.</p>
-          </div>
-          <div class="aqi-loading" style="display:none;">
-            <p class="loading-copy">Fetching latest air data…</p>
-          </div>
+        <!-- States / Result (center-aligned) -->
+        <div class="aqi-states">
+          <div class="aqi-empty"><p class="empty-hint">Enter a city to see the AQI.</p></div>
+          <div class="aqi-loading" style="display:none;"><p class="loading-copy">Fetching latest air data…</p></div>
+
           <div class="aqi-result" style="display:none;">
-            <svg class="ring" viewBox="0 0 100 100" aria-label="AQI gauge">
-              <circle class="track" cx="50" cy="50" r="40"></circle>
-              <circle class="progress" cx="50" cy="50" r="40"></circle>
-            </svg>
-            <div class="result-score">
-              <span class="num">—</span><span class="label">AQI</span>
-            </div>
+            <div class="ring" aria-label="AQI gauge"></div>
+            <div class="result-score"><span class="num">—</span><span class="label">AQI</span></div>
             <div class="result-status">—</div>
+            <div class="pm-stats">
+              <div class="pm-tile" data-type="pm25">
+                <div class="pm-label">PM 2.5</div>
+                <div class="pm-value" data-js="pm25-value">—</div>
+                <div class="pm-unit" data-js="pm25-unit">µg/m³</div>
+              </div>
+              <div class="pm-tile" data-type="pm10">
+                <div class="pm-label">PM 10</div>
+                <div class="pm-value" data-js="pm10-value">—</div>
+                <div class="pm-unit" data-js="pm10-unit">µg/m³</div>
+              </div>
+            </div>
           </div>
         </div>
-
-
-        <div class="pm-stats">
-          <div class="pm-tile" data-type="pm25">
-            <div class="pm-label">PM 2.5</div>
-            <div class="pm-value" data-js="pm25-value">—</div>
-            <div class="pm-unit" data-js="pm25-unit">µg/m³</div>
-            <!-- × WHO badge will be injected -->
-          </div>
-          <div class="pm-tile" data-type="pm10">
-            <div class="pm-label">PM 10</div>
-            <div class="pm-value" data-js="pm10-value">—</div>
-            <div class="pm-unit" data-js="pm10-unit">µg/m³</div>
-            <!-- × WHO badge will be injected -->
-          </div>
-        </div>
-      </div>
+      </div><!-- /.left-inner -->
     </div>
 
-    <!-- BOX 3: dual Lottie by default; switch to "Good" Lottie when AQI 0–50 -->
-<div class="bento-box box3">
-  <!-- Default background -->
-  <div class="lottie-bg-wrap" data-role="box3-default-bg">
-    <iframe
-      class="lottie-iframe lottie-iframe--bg"
-      src="https://lottie.host/embed/56ac60ad-7b43-4b04-bc9e-71d6b3c9bbb3/it7gfhRfdW.json"
-      title="Background Lottie" loading="lazy" allow="autoplay"
-    ></iframe>
+    <!-- Right visual (image only) -->
+    <div class="bento-merged__right" style="--image-x: 50%;">
+      <img id="aqi-visual" src="images/breathing.png" alt="Air quality visual" loading="lazy">
+    </div>
   </div>
-
-  <!-- Default foreground -->
-  <div class="lottie-fg-wrap" data-role="box3-default-fg">
-    <iframe
-      class="lottie-iframe lottie-iframe--fg"
-      src="https://lottie.host/embed/2b8e749b-4cd3-4320-9076-594a35c7e358/pUlp7B6m1m.json"
-      title="Foreground Lottie" loading="lazy" allow="autoplay"
-    ></iframe>
-  </div>
-
-  <!-- GOOD (0–50) state animation -->
-  <div class="lottie-good-wrap" data-role="box3-good" hidden>
-    <iframe
-      class="lottie-iframe lottie-iframe--good"
-      src="https://lottie.host/embed/69ef2c59-c01e-4ea8-8d91-e030c1bd3d2c/ytXU6mo7xS.json"
-      title="Good AQI Animation" loading="lazy" allow="autoplay"
-    ></iframe>
-  </div>
-</div>
-
-   <!-- BOX 4: Products -->
-<div class="bento-box box4">
-  <div class="box4-grid">
-    <a class="prod-card" href="#air-purifier">
-      <img src="images/hero-mobile.png" alt="Hawaa Air Purifier">
-    </a>
-    <a class="prod-card" href="#filter">
-      <img src="images/filter-stage3-mobile.png" alt="Replacement Filter">
-    </a>
-  </div>
-</div>
 </section>
+
 
 
   <!-- Product Hero Section -->
