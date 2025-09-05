@@ -13,7 +13,7 @@
   <!-- Section Styles -->
   <link rel="stylesheet" href="css/announcement-bar.css">
   <link rel="stylesheet" href="css/header.css">
-  <link rel="stylesheet" href="css/rotating-text.css">
+  <link rel="stylesheet" href="css/hero-index.css">
   <link rel="stylesheet" href="css/Bento-AQI.css">
   <link rel="stylesheet" href="css/product-hero.css">
   <link rel="stylesheet" href="css/product-card-slider.css">
@@ -104,26 +104,18 @@
     </div>
   </div>
 
-  <!-- Rotating Text Section -->
-  <section class="rotating-text-section">
-    <div class="page-width">
-      <div class="rotating-text-container">
-        <h2 class="rotating-heading">
-          <span id="rotating-text-container">
-            <span class="rotating-text active" data-index="0">Allergy Relief</span>
-            <span class="rotating-text" data-index="1">Asthma-Safe Homes</span>
-            <span class="rotating-text" data-index="2">Babies &amp; Kids</span>
-            <span class="rotating-text" data-index="3">Pet-Friendly Spaces</span>
-            <span class="rotating-text" data-index="4">Sleep Without Sneezing</span>
-          </span>
-        </h2>
-        <div class="static-text-container">
-          <div class="static-text-main">Because every breath matters</div>
-          <div class="static-text-supporting">Clean air starts here</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Hero Index Section -->
+<section class="hero-index" id="heroIndex">
+  <!-- Demo video (replace src with your own file later) -->
+  <video class="hero-media" autoplay muted loop playsinline>
+    <source src="images/3D-Product-Animation.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Demo image fallback (replace src with your own image) -->
+  <img src="images/demo-image.jpg" alt="Hero placeholder" class="hero-media fallback">
+</section>
+
 
   <!-- Bento AQI Section -->
 <section id="bento-aqi">
@@ -883,7 +875,7 @@
   <!-- Scripts -->
   <script src="js/announcement-bar.js"></script>           <!-- Announcement bar -->
   <script src="js/header.js" defer></script>  <!-- Header -->
-  <script src="js/rotating-text.js" defer></script> <!-- Rotating Text -->
+  <script src="js/hero-index.js" defer></script>
   <script src="js/Bento-AQI.js"></script>      <!-- Bento AQI -->
   <script>window.AQICN_TOKEN="d51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d";</script>
   <script src="js/product-hero.js"></script>      <!-- Product Hero -->

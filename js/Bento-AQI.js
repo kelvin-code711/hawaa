@@ -1,14 +1,15 @@
 /* =========================
-   Bento AQI — JS (2025-08-27)
+   Bento AQI — JS (2025-08-29)
    - Bounds-aware dropdown (Leaflet/Google Maps)
    - India-only stations
-   - City-not-in-station toast
+   - Toast when typed city has no CPCB station
    - Dropdown shows names only (no AQI)
-   - NEW: Box 2 shows "Nearest station: <name>" when applicable
+   - Nearest-station UI/logic REMOVED (per request)
 ========================= */
 (() => {
   const MAX_AQI = 500;
   const WHO_24H = { pm25: 15, pm10: 45 };
+  const AQICN_TOKEN = 'd51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d';
 
   // ------- Helpers -------
   const qs  = (sel, root = document) => root.querySelector(sel);
@@ -79,9 +80,7 @@
     hazard:'This air is poison — like living inside a chimney.'
   };
 
-  // ------- Live AQI helpers (AQICN, CPCB/NAQI source) -------
-  const AQICN_TOKEN = 'd51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d';
-
+  // ------- AQICN fetchers -------
   async function fetchAQICNByCity(city){
     const url = `https://api.waqi.info/feed/${encodeURIComponent(city)}/?token=${AQICN_TOKEN}`;
     const resp = await fetch(url, { cache: 'no-store' });
@@ -117,7 +116,7 @@
     };
   }
 
-  // ------- Type-ahead (AQICN /search) -------
+  // ------- Type-ahead (/search) -------
   let suggestionWrap = null;
   let selectedUid = null;
   let lastSuggestQuery = '';
@@ -293,7 +292,7 @@
     let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
   }
 
-  // --- Top-of-page toast (CSS already in Bento-AQI.css) ---
+  // --- Toast (for city-not-in-list & general notices) ---
   let aqiToastTimer = null;
   function getToastHost(){
     let host = document.getElementById('aqi-toast-host');
@@ -317,41 +316,6 @@
       el.classList.remove('is-visible');
       el.addEventListener('transitionend', () => el.remove(), { once: true });
     }, timeout);
-  }
-  function warnNoStationIfMismatch(typed, stationLabel, usedUid){
-    const q = (typed || '').trim().toLowerCase();
-    if (!q) return;
-    if (usedUid) return; // explicit station chosen
-    const tokens = q.split(/\s+/).filter(Boolean);
-    const s = (stationLabel || '').toLowerCase();
-    const allPresent = tokens.every(tok => s.includes(tok));
-    if (!allPresent){
-      showToast(`No CPCB station found in <strong>${properCase(typed)}</strong>. Showing nearest station: <strong>${stationLabel || '—'}</strong>.`, 5000);
-    }
-  }
-
-  // ------- NEW: Nearest station note in Box 2 -------
-  function ensureNearestNote(){
-    if (!box2 || !resultState) return null;
-    let el = qs('.nearest-note', box2);
-    if (!el){
-      el = document.createElement('div');
-      el.className = 'nearest-note';
-      // minimal inline styling to avoid CSS changes
-      el.style.fontSize = '12px';
-      el.style.color = 'var(--text-subtle)';
-      el.style.marginTop = '2px';
-      el.style.textAlign = 'center';
-      resultState.appendChild(el);
-    }
-    return el;
-  }
-  function setNearestNote(text){
-    const el = ensureNearestNote();
-    if (!el) return;
-    if (!text){ el.style.display = 'none'; el.textContent = ''; return; }
-    el.innerHTML = text;
-    el.style.display = 'block';
   }
 
   // ------- Init -------
@@ -385,7 +349,7 @@
     setTimeout(() => { positionLaneAboveTitle(); retargetLaneParticles(); }, 60);
   });
 
-  // ------- UPDATED: Live city search / UID aware + pre-check + nearest note -------
+  // ------- Live city search (nearest-station logic removed) -------
   window.getAqi = async () => {
     const typed = (cityInput?.value || '').trim();
     if (!typed) { bumpInput(cityInput); return; }
@@ -395,29 +359,26 @@
     setLoading('Fetching latest air data…');
     hideSuggest();
 
-    // Pre-check if typed city exists in CPCB/AQICN station list
-    let typedInList = true;
+    // Pre-check: if typed city has no CPCB/AQICN station in India, show a toast (no station available)
     try {
-      const list = await searchStations(typed);
+      const precheckList = await searchStations(typed);
       const qlc = typed.toLowerCase();
-      typedInList = list.some(it => it.name.toLowerCase().includes(qlc));
+      const typedInList = precheckList.some(it => it.name.toLowerCase().includes(qlc));
       if (!typedInList) {
-        showToast(`No CPCB station available in <strong>${properCase(typed)}</strong>. Showing nearest station.`, 5000);
+        showToast(`No CPCB station available in <strong>${properCase(typed)}</strong>.`, 5000);
       }
     } catch { /* ignore pre-check errors */ }
 
     try {
       const payload = selectedUid ? await fetchAQICNByUid(selectedUid)
                                   : await fetchAQICNByCity(typed);
-
       const stationName = payload?.data?.city?.name || '';
       const stationUid  = payload?.data?.idx ?? null;
 
       handleAqiPayload(payload, {
         typedQuery: typed,
         stationName,
-        stationUid,
-        mismatch: !typedInList
+        stationUid
       });
     } catch (err) {
       console.warn('[AQI city/uid fetch failed, fallback to demo]', err);
@@ -425,7 +386,7 @@
       setTimeout(() =>
         handleAqiPayload(
           makeDemoPayload(typed, { labelOverride: properCase(typed) }),
-          { typedQuery: typed, stationName: properCase(typed), stationUid: null, mismatch: true }
+          { typedQuery: typed, stationName: properCase(typed), stationUid: null }
         ), 300);
     } finally {
       selectedUid = null;
@@ -464,14 +425,13 @@
         const { latitude, longitude } = pos.coords || {};
         const payload = await fetchAQICNByGeo(latitude, longitude);
         const stationName = payload?.data?.city?.name || '';
-        handleAqiPayload(payload, { typedQuery:'', stationName, stationUid: payload?.data?.idx ?? null, mismatch:false, fromGeo:true });
+        handleAqiPayload(payload, { typedQuery:'', stationName, stationUid: payload?.data?.idx ?? null });
       } catch (err) {
         console.warn('[AQI geo fetch failed]', err);
         noData();
       }
     }, (err) => {
       console.warn('Geolocation error', err);
-      // Per requirement: show "no station/data found" instead of permission denied
       noData();
     }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
   }
@@ -506,12 +466,12 @@
   }
 
   // ------- Render / State -------
-  function handleAqiPayload(json, meta = { typedQuery:'', stationName:'', stationUid:null, mismatch:false, fromGeo:false }){
+  function handleAqiPayload(json, meta = { typedQuery:'', stationName:'', stationUid:null }){
     const d = json?.data || {};
     const aqi  = Number(d.aqi ?? NaN);
     const pm25 = safeNum(d?.iaqi?.pm25?.v);
     const pm10 = safeNum(d?.iaqi?.pm10?.v);
-    const stationLabel = d?.city?.name || meta.stationName || '';
+    const stationLabel = meta.stationName || d?.city?.name || '';
 
     setPM(pm25El, pm25, 'pm25');
     setPM(pm10El, pm10, 'pm10');
@@ -520,23 +480,6 @@
     if (pm10UnitEl) pm10UnitEl.textContent = 'µg/m³';
 
     setAqi(aqi, stationLabel);
-
-    // Box 2: show nearest station note when needed
-    let showNearest = false;
-    if (meta.fromGeo) {
-      showNearest = true; // locating always uses a nearby station
-    } else if (meta.typedQuery) {
-      const mismatchFlag = meta.mismatch || !stationLabel.toLowerCase().includes(meta.typedQuery.toLowerCase());
-      showNearest = mismatchFlag;
-    }
-    if (showNearest && stationLabel) {
-      setNearestNote(`Nearest station: <strong>${stationLabel}</strong>`);
-    } else {
-      setNearestNote('');
-    }
-
-    // Also keep the toast behavior
-    if (meta.typedQuery) warnNoStationIfMismatch(meta.typedQuery, stationLabel, meta.stationUid);
 
     showResult();
     setBox2MobileHidden(false);
@@ -659,7 +602,7 @@
 
     box3.classList.remove('state-good','state-moderate','state-usg','state-unhealthy','state-very','state-hazard');
     if (!useDefault){
-      box3.classList.add(isGood ? 'state-good' : isModerate ? 'state-moderate' : isUSG ? 'state-usg' : isUnh ? 'state-unhealthy' : isVery ? 'state-very' : 'state-hazard');
+      box3.classList.add(isGood ? 'state-good' : isModerate ? 'state-moderate' : isUSG ? 'state-usg' : isUnh ? 'state-unhealthy' : isVery ? 'state-very' : 'is-hazard');
     }
   }
 

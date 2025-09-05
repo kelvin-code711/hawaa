@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hawaa - Air Purifier</title>
 
-  <!-- CSS -->
+  <!-- Header CSS (navbar styles & logo sizing) -->
+  <link rel="stylesheet" href="css/header.css" />
+
+  <!-- Page CSS -->
   <link rel="stylesheet" href="css/buy-product.css" />
+
+  <!-- Fonts -->
   <link rel="preload" href="fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/Outfit-Medium.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin />
@@ -14,194 +19,232 @@
 <body>
   <!-- Section 1 - Combined Header and Product -->
   <section class="section-1">
-    <!-- Header -->
-  <header class="hawaa-header" id="hawaa-header">
-    <div class="header-container">
-      <a href="index.html" class="header-logo">
-        <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
-      </a>
-      <div class="header-actions">
-        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <div class="hamburger-icon"><span></span><span></span><span></span></div>
-        </button>
-      </div>
-    </div>
-  </header>
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </button>
-          <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-          </button>
-          <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-      </div>
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">EXPLORE</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="sections/filter-learn.html">Filter Technology</a></li>
-              <li><a href="/technology">Instalation Guide</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="nav-section">
-          <h3 class="section-title">ABOUT HAWAA</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="blog.html">Blog</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- Product Section -->
     <div class="buy-product-section">
       <div class="product-container">
-        <div class="product-gallery">
 
-          <!-- Main image wrapper (positioning context) -->
-          <div class="main-image">
-            <img
-              src="images/product-main.jpg"
-              alt="Hawaa Air Purifier"
-              id="main-product-image"
-            >
-
-            <!-- Thumbnails now inside .main-image -->
-            <div class="thumbnail-container">
-              <button class="thumbnail" data-image="images/thumbnail-1.jpg">
-                <img src="images/thumbnail-1.jpg" alt="Product Thumbnail 1">
-              </button>
-              <button class="thumbnail" data-image="images/thumbnail-2.jpg">
-                <img src="images/thumbnail-2.jpg" alt="Product Thumbnail 2">
-              </button>
-              <button class="thumbnail" data-image="images/thumbnail-3.jpg">
-                <img src="images/thumbnail-3.jpg" alt="Product Thumbnail 3">
+        <!-- Header INSIDE the product container (transparent, no shadow) -->
+        <header class="hawaa-header" id="hawaa-header">
+          <div class="header-container">
+            <a href="index.html" class="header-logo">
+              <img src="images/logo.svg" alt="Hawaa" />
+            </a>
+            <div class="header-actions">
+              <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+                <div class="hamburger-icon"><span></span><span></span><span></span></div>
               </button>
             </div>
           </div>
+        </header>
 
-        </div>
-        <div class="product-details">
-          <h1 class="product-title">Smart Air Purifier with HEPA Filter</h1>
-          <div class="product-rating">
-            <div class="stars">★★★★★</div>
-            <span class="review-count">94 reviews</span>
-          </div>
-          
-          <p class="product-description">
-            Our advanced air purifier removes 99.97% of airborne particles including dust, pollen, and pollutants. 
-            Features smart sensors and quiet operation, perfect for homes and offices.
-          </p>
-          
-          <div class="purchase-options">
-            <div class="option-tabs">
-              <button class="option-tab active" data-option="one-time">One Time Purchase</button>
-              <button class="option-tab" data-option="subscription">Subscription</button>
-            </div>
-            
-            <div class="option-content one-time active">
-              <div class="price">₹4,999</div>
-              <p class="option-description">Includes air purifier with one HEPA filter</p>
-              <button class="add-to-cart">Add to Cart</button>
-            </div>
-            
-            <div class="option-content subscription">
-              <div class="price">₹4,599 <span class="original-price">₹4,999</span> <span class="discount">(8% OFF)</span></div>
-              <div class="subscription-options">
-                <select class="subscription-dropdown">
-                  <option value="4">Filter shipped every 4 months (₹899/month)</option>
-                  <option value="5">Filter shipped every 5 months (₹899/month)</option>
-                </select>
-              </div>
-              <p class="option-description">Air purifier + automatic filter replacements</p>
-              <button class="add-to-cart">Subscribe Now</button>
-            </div>
-          </div>
-
-          <!-- NEW: Accordion dropdowns below the buttons -->
-          <div class="product-accordions">
-            <div class="accordion-item">
-              <button class="accordion-header" type="button">
-                <span>Specifications</span>
-                <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                  <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <ul>
-                  <li>Coverage up to 400 sq ft</li>
-                  <li>CADR: 300 m³/h</li>
-                  <li>Noise: 25–50 dB</li>
-                  <li>Filter type: True HEPA H13 + Carbon</li>
-                </ul>
+        <!-- Mobile Navigation (single instance) -->
+        <div class="mobile-nav" id="mobile-nav">
+          <div class="nav-overlay" id="nav-overlay"></div>
+          <div class="nav-panel">
+            <div class="nav-header">
+              <h2 class="nav-title">Menu</h2>
+              <div class="nav-icons">
+                <button class="nav-icon" aria-label="Account">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </button>
+                <button class="nav-icon" aria-label="Cart">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                </button>
+                <button class="nav-close" id="nav-close" aria-label="Close menu">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
               </div>
             </div>
-
-            <div class="accordion-item">
-              <button class="accordion-header" type="button">
-                <span>What's in the Box</span>
-                <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                  <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <ul>
-                  <li>Air purifier unit</li>
-                  <li>Pre-installed HEPA + carbon filter</li>
-                  <li>Power adapter</li>
-                  <li>User manual</li>
-                </ul>
+            <div class="nav-content">
+              <div class="nav-section">
+                <h3 class="section-title">EXPLORE</h3>
+                <div class="nav-links-wrapper">
+                  <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sections/filter-learn.html">Filter Technology</a></li>
+                    <li><a href="/technology">Installation Guide</a></li>
+                  </ul>
+                </div>
               </div>
-            </div>
-
-            <div class="accordion-item">
-              <button class="accordion-header" type="button">
-                <span>How to Use</span>
-                <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                  <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <ol>
-                  <li>Plug in &amp; power on</li>
-                  <li>Choose fan speed</li>
-                  <li>Replace filter every 4–6 months</li>
-                </ol>
-              </div>
-            </div>
-
-            <div class="accordion-item">
-              <button class="accordion-header" type="button">
-                <span>Warranty &amp; Support</span>
-                <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                  <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p>
-                  1-year limited warranty. For support, visit
-                  <a href="https://www.hawaa.in/support" target="_blank">www.hawaa.in/support</a>.
-                </p>
+              <div class="nav-section">
+                <h3 class="section-title">ABOUT HAWAA</h3>
+                <div class="nav-links-wrapper">
+                  <ul class="nav-links">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Row with gallery + details -->
+        <div class="product-content">
+          <div class="product-gallery">
+            <div class="main-image">
+              <img
+                src="images/product-main.jpg"
+                alt="Hawaa Air Purifier"
+                id="main-product-image"
+              />
+              <div class="thumbnail-container">
+                <button class="thumbnail" data-image="images/thumbnail-1.jpg">
+                  <img src="images/thumbnail-1.jpg" alt="Product Thumbnail 1" />
+                </button>
+                <button class="thumbnail" data-image="images/thumbnail-2.jpg">
+                  <img src="images/thumbnail-2.jpg" alt="Product Thumbnail 2" />
+                </button>
+                <button class="thumbnail" data-image="images/thumbnail-3.jpg">
+                  <img src="images/thumbnail-3.jpg" alt="Product Thumbnail 3" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-details">
+            <h1 class="product-title">Smart Air Purifier with HEPA Filter</h1>
+            <div class="product-rating">
+              <div class="stars">★★★★★</div>
+              <span class="review-count">94 reviews</span>
+            </div>
+
+            <p class="product-description">
+              Our advanced air purifier removes 99.97% of airborne particles including dust, pollen, and pollutants.
+              Features smart sensors and quiet operation, perfect for homes and offices.
+            </p>
+
+            <!-- Purchase (matches screenshot) -->
+<div class="purchase">
+
+  <!-- Frequency -->
+  <h3 class="purchase-title">Frequency</h3>
+  <div class="freq">
+    <button class="freq-card active" data-freq="subscribe" aria-pressed="true">
+      <span class="freq-title">Subscribe and save</span>
+      <span class="freq-sub">Save up to 17%</span>
+      <span class="freq-check" aria-hidden="true"></span>
+    </button>
+
+    <button class="freq-card" data-freq="onetime" aria-pressed="false">
+      <span class="freq-title">One-time purchase</span>
+      <span class="freq-sub">₹4,999/ea</span>
+      <span class="freq-check" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- Select your plan (shown only for subscribe) -->
+  <div class="plan" id="plan-group">
+    <h4 class="plan-title">Select your plan</h4>
+    <p class="plan-sub">Pause or cancel whenever you’d like.</p>
+
+    <button class="plan-select" id="plan-select" type="button">
+      <span class="plan-value" id="plan-value">1 filter every 4 months</span>
+      <span class="plan-pricing">
+        <s class="strike">₹4,999</s>
+        <strong class="current">₹4,599/ea</strong>
+      </span>
+      <span class="chev" aria-hidden="true"></span>
+    </button>
+
+    <!-- simple dropdown -->
+    <div class="plan-menu" id="plan-menu" role="listbox" aria-hidden="true">
+      <button role="option" data-months="4" data-price="4599" class="plan-opt active">
+        <span>1 filter every 4 months</span>
+        <span class="opt-price">₹4,599/ea</span>
+      </button>
+      <button role="option" data-months="5" data-price="4599" class="plan-opt">
+        <span>1 filter every 5 months</span>
+        <span class="opt-price">₹4,599/ea</span>
+      </button>
+    </div>
+
+    <p class="plan-savings" id="plan-savings">A 1-filter subscription saves you ₹4,800/yr</p>
+  </div>
+
+  <!-- CTA -->
+  <button class="cta-add" id="cta-add">Add to cart</button>
+</div>
+
+            <div class="product-accordions">
+              <div class="accordion-item">
+                <button class="accordion-header" type="button">
+                  <span>Specifications</span>
+                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <div class="accordion-content">
+                  <ul>
+                    <li>Coverage up to 400 sq ft</li>
+                    <li>CADR: 300 m³/h</li>
+                    <li>Noise: 25–50 dB</li>
+                    <li>Filter type: True HEPA H13 + Carbon</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-header" type="button">
+                  <span>What's in the Box</span>
+                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <div class="accordion-content">
+                  <ul>
+                    <li>Air purifier unit</li>
+                    <li>Pre-installed HEPA + carbon filter</li>
+                    <li>Power adapter</li>
+                    <li>User manual</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-header" type="button">
+                  <span>How to Use</span>
+                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <div class="accordion-content">
+                  <ol>
+                    <li>Plug in &amp; power on</li>
+                    <li>Choose fan speed</li>
+                    <li>Replace filter every 4–6 months</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-header" type="button">
+                  <span>Warranty &amp; Support</span>
+                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <div class="accordion-content">
+                  <p>
+                    1-year limited warranty. For support, visit
+                    <a href="https://www.hawaa.in/support" target="_blank">www.hawaa.in/support</a>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.product-content -->
+
       </div>
     </div>
   </section>
@@ -211,7 +254,6 @@
     <div class="reviews-container">
       <h2 class="reviews-title">Reviews</h2>
 
-      <!-- Summary Row -->
       <div class="reviews-summary">
         <div class="total-reviews">
           <div class="count">94</div>
@@ -226,7 +268,6 @@
 
       <hr class="reviews-divider" />
 
-      <!-- Filter + Sort Controls -->
       <div class="reviews-controls">
         <div class="filter">
           <label for="rating-filter">Rating</label>
@@ -245,12 +286,11 @@
         </div>
       </div>
 
-      <!-- Three Reviews -->
       <div class="reviews-list">
         <div class="review-item">
           <div class="review-stars">★★★★★</div>
           <p class="review-text">
-            I am typically not a moisturizer type of person, but since getting the Smart Air Purifier…  
+            I am typically not a moisturizer type of person, but since getting the Smart Air Purifier…
             Can’t wait to get more!
           </p>
           <div class="review-meta">
@@ -275,7 +315,7 @@
         <div class="review-item">
           <div class="review-stars">★★★★★</div>
           <p class="review-text">
-            HIMS Smart Air Purifier is very light, purifies and refreshes the air well…  
+            HIMS Smart Air Purifier is very light, purifies and refreshes the air well…
             I recommend trying it!
           </p>
           <div class="review-meta">
@@ -286,7 +326,6 @@
         </div>
       </div>
 
-      <!-- Pagination -->
       <div class="reviews-pagination">
         <button class="page-btn prev" aria-label="Previous page">&larr;</button>
         <span class="page-info">1 / 32</span>
@@ -295,69 +334,8 @@
     </div>
   </section>
 
-
-  <!-- Mobile Menu (outside the wrapper) -->
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </button>
-
-          <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-          </button>
-
-          <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">EXPLORE</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="/">Home</a></li>
-              <li><a href="/products">Products</a></li>
-              <li><a href="/technology">Technology</a></li>
-              <li><a href="/quiz">Take a Quiz</a></li>
-              <li><a href="/aqi">AQI Checker</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="nav-section">
-          <h3 class="section-title">ABOUT HAWAA</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="/how-it-works">How It Works</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="blog.html">Blog</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- JavaScript -->
+  <script src="../js/header.js"></script>
   <script src="js/buy-product.js"></script>
 </body>
 </html>

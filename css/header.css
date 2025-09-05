@@ -179,3 +179,22 @@ body.menu-open{ overflow:hidden; }
   .hamburger-btn,
   .nav-links a{ transition:none !important; }
 }
+
+/* ================================
+   Mobile Nav Panel (Gap + Radius)
+=================================== */
+@media (max-width: 767px){
+  .mobile-nav .nav-panel{
+    width: calc(100% - 120px) !important; /* leave 16px gap on the left */
+    right: 0;
+    left: auto;
+    margin-left: 16px; /* push panel right so left edge is visible */
+
+    /* Rounded corners on the left side */
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    overflow: hidden; /* keep inner content respecting radius */
+  }
+}
