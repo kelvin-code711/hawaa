@@ -1,7 +1,9 @@
 /* =========================
    Bento AQI — JS (single box) + WAQI Station Typeahead
    — dropdown works, image stays still, smooth result transitions
-   — NEW: ring + number animate together from 0 to target
+   — ring + number animate together from 0 to target
+   — MOBILE: no placeholders/loading; section expands only when result appears,
+             and auto-scrolls into view to show full result
    ========================= */
 (() => {
   const MAX_AQI = 500;
@@ -13,6 +15,8 @@
   const rnd = (a,b) => Math.round(a + Math.random()*(b-a));
   const safeNum = (v) => { const n = Number(v); return Number.isFinite(n) ? Math.round(n) : NaN; };
   const properCase = (s) => !s ? s : s.toLowerCase().split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+
+  const isMobile = () => window.matchMedia('(max-width: 980px)').matches;
 
   // inputs/actions
   const cityInput = qs('#cityInput');
@@ -207,9 +211,17 @@
 
   /* ---------- Wire up ---------- */
   document.addEventListener('DOMContentLoaded', () => {
-    // prime smooth-state visibility
-    [emptyState, loadingState, resultState].forEach(el => el && el.classList.remove('is-visible'));
-    setEmpty('Enter a city to see the AQI.');
+    // Desktop keeps empty state; Mobile shows nothing until results.
+    if (isMobile()){
+      [emptyState, loadingState, resultState].forEach(el => {
+        if (!el) return;
+        el.classList.remove('is-visible');
+        el.style.display = 'none';
+      });
+    } else {
+      [emptyState, loadingState, resultState].forEach(el => el && el.classList.remove('is-visible'));
+      setEmpty('Enter a city to see the AQI.');
+    }
 
     searchBtn?.addEventListener('click', getAqi);
     cityInput?.addEventListener('input', onType);
@@ -218,20 +230,19 @@
     locateBtn?.addEventListener('click', onLocateMe);
   });
 
-  // Search by typed city — unchanged
+  // Search by typed city
   window.getAqi = async () => {
     const typed = (cityInput?.value || '').trim();
     if (!typed){ bump(cityInput); return; }
 
     setLoading('Fetching latest air data…');
-    // Reset ring/number visually so animation always starts from 0
     resetAqiVisuals();
     try{
       const d = await fetchByCity(typed);
       render(d.aqi, d.pm25, d.pm10, d.city || properCase(typed));
     } catch (e){
       console.warn('[AQI fetch failed, demo]', e);
-      setLoading('Live source unavailable — showing demo…');
+      if (!isMobile()) setLoading('Live source unavailable — showing demo…');
       const demo = DEMO[properCase(typed)];
       const aqi  = demo ? clamp(demo.aqi + rnd(-6,8), 5, 400) : clamp(rnd(20,240), 5, 400);
       const pm25 = demo ? clamp(demo.pm25 + rnd(-4,6), 2, 250) : clamp(Math.round(aqi*(0.38+Math.random()*0.16)),3,250);
@@ -272,7 +283,7 @@
     statusTxt && (statusTxt.textContent = statusText(aqi, label));
     setCategory(container, aqi);
 
-    // Show result canvas first (so animation is visible on it)
+    // Show result
     showResult();
 
     // Animate ring + number together from 0 → target
@@ -303,12 +314,10 @@
         aqiAnimId = requestAnimationFrame(tick);
       } else {
         aqiAnimId = null;
-        // snap to exact target in case of rounding
         ringEl.style.setProperty('--pct', String(endPct));
         scoreNum.textContent = String(target);
       }
     };
-    // ensure we really start from 0 each time
     ringEl.style.setProperty('--pct', '0');
     scoreNum.textContent = '0';
     aqiAnimId = requestAnimationFrame(tick);
@@ -354,17 +363,44 @@
 
   /* ---------- Smooth state helpers ---------- */
   function setEmpty(msg=''){
+    if (isMobile()) return; // mobile: never show placeholders
     if (qs('.empty-hint')) qs('.empty-hint').textContent = msg || 'Enter a city to see the AQI.';
     showOnly(emptyState);
   }
   function setLoading(msg=''){
+    if (isMobile()) return; // mobile: skip loading state entirely
     if (qs('.loading-copy')) qs('.loading-copy').innerHTML = msg || 'Fetching latest air data…';
     showOnly(loadingState);
   }
   function showResult(){
     showOnly(resultState);
   }
+
+  // MOBILE: reveal only result, expand section, and scroll into view
   function showOnly(target){
+    if (isMobile()){
+      if (target === resultState){
+        resultState.style.display = '';
+        resultState.classList.add('is-visible');
+
+        // Remove any container limits to allow full expansion
+        const unlock = (el) => { if(!el) return; el.style.height='auto'; el.style.maxHeight='none'; el.style.overflow='visible'; };
+        unlock(container);
+        unlock(container?.querySelector('.bento-merged'));
+        unlock(container?.querySelector('.left-inner'));
+        unlock(container?.querySelector('.aqi-states'));
+
+        // Scroll the section into view so the full result is visible
+        setTimeout(() => {
+          container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+      }
+      if (emptyState){ emptyState.classList.remove('is-visible'); emptyState.style.display='none'; }
+      if (loadingState){ loadingState.classList.remove('is-visible'); loadingState.style.display='none'; }
+      return;
+    }
+
+    // Desktop (original smooth fade system)
     [emptyState, loadingState, resultState].forEach(el=>{
       if (!el) return;
       if (el === target){

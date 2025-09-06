@@ -8,6 +8,7 @@
   --surface:#ffffff;
   --soft:#f7f8fa;                /* soft card */
   --tint:#f5f7fb;                /* minimalist section background */
+  --visual-max-w: none;          /* max-width for right image (e.g., 560px or none) */
 
   /* AQI palette */
   --good:#34c759; --moderate:#ffd60a; --usg:#ff8c00;
@@ -48,14 +49,35 @@
   grid-auto-rows:auto;
   gap:10px;
 }
-.search-input{ position:relative; } /* needed for dropdown */
+
+/* Input with inset arrow */
+.search-input{ position:relative; }
 .search-input input{
   width:100%; padding:12px 16px;
+  padding-right:44px; /* space for inside arrow button */
   border:none; border-radius:12px;
   background:var(--soft); font-size:15px; color:var(--ink-1);
   box-shadow:0 1px 0 rgba(0,0,0,.03);
 }
 .search-input input::placeholder{ color:var(--muted); font-weight:300; }
+
+/* Arrow button INSIDE the input (no outlines/strokes) */
+.search-input .search-btn{
+  position:absolute;
+  right:10px; top:50%; transform:translateY(-50%);
+  border:none; background:transparent;
+  padding:0; margin:0; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:24px; height:24px;
+}
+.search-input .search-btn svg{
+  stroke:var(--ink-1);
+  width:20px; height:20px;
+}
+.search-input .search-btn:focus,
+.search-input .search-btn:hover{
+  outline:none; background:none;
+}
 
 /* Typeahead dropdown */
 .typeahead{
@@ -76,25 +98,20 @@
 .typeahead__meta{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .typeahead__aqi{ font-size:12px; padding:4px 8px; border-radius:999px; background:#eef1f5; color:var(--ink-1); }
 
-/* Buttons row */
+/* Buttons row (only Locate) */
 .actions{ display:flex; gap:8px; justify-content:center; }
-#locateBtn.locate-btn,
-.search-btn{
+#locateBtn.locate-btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   padding:12px 16px; border-radius:12px;
   border:1px solid rgba(0,0,0,.08); background:#fff; color:var(--ink-1);
   font-size:14px; cursor:pointer; transition:background .2s ease, transform .06s ease;
 }
-#locateBtn.locate-btn:hover,
-.search-btn:hover{ background:#f0f2f4; }
-.search-btn:active{ transform:scale(.98); }
+#locateBtn.locate-btn:hover{ background:#f0f2f4; }
 
-/* ---------- States / Result (no layout shift) ---------- */
-/* Reserve a fixed stage and absolutely layer each state.
-   Swaps now only change opacity/translate, not layout. */
+/* ---------- States / Result (desktop = reserved stage, no layout shift) ---------- */
 .aqi-states{
   position:relative;
-  min-height:380px;  /* room for ring + score + tiles */
+  min-height:380px;  /* room for ring + score + tiles on desktop */
 }
 .aqi-states > .aqi-empty,
 .aqi-states > .aqi-loading,
@@ -161,32 +178,62 @@
 .bento-merged__right img{
   width:100%; height:auto; display:block; object-fit:cover;
   object-position: var(--image-x, 50%) 50%;
+  max-width: var(--visual-max-w);
 }
 
 /* Focus bump */
 .input-bump{ outline:2px solid #ff6666; outline-offset:2px; }
 
-/* Responsive: hide image on mobile */
+/* ---------- Mobile overrides (≤980px) ---------- */
 @media (max-width:980px){
   .bento-merged{ grid-template-columns:1fr; }
   .bento-merged__right{ display:none; }
-}
 
-/* Wide screens: keep content narrow & centered */
-@media (min-width:1280px){
-  .left-inner{ --content-w: 620px; }
+  /* Ensure section auto-expands and nothing clips */
+  #bento-aqi,
+  #bento-aqi .bento-merged,
+  #bento-aqi .left-inner,
+  #bento-aqi .aqi-states{
+    height:auto !important;
+    max-height:none !important;
+    overflow:visible !important;
+  }
+
+  /* Put states back in normal flow on mobile and remove reserved height */
+  .aqi-states{
+    position:static !important;
+    min-height:0 !important;
+    padding-bottom:8px;
+  }
+  .aqi-states > *{
+    position:static !important;
+    transform:none !important;
+    opacity:1 !important;
+  }
+
+  /* Hide placeholders/loading entirely on mobile */
+  .aqi-states > .aqi-empty,
+  .aqi-states > .aqi-loading{
+    display:none !important;
+  }
+
+  /* Result is hidden until JS marks it visible */
+  .aqi-states > .aqi-result{
+    display:none;
+  }
+  .aqi-states > .aqi-result.is-visible{
+    display:grid;               /* expands naturally */
+  }
 }
 
 /* --- Prevent mobile zoom on input focus (iOS needs >=16px) --- */
 @media (max-width: 768px){
   #bento-aqi .search-input input,
-  #bento-aqi .actions .search-btn,
-  #bento-aqi #locateBtn.locate-btn{
+  #bento-aqi .actions .locate-btn{
     font-size:16px;
     line-height:1.25;
   }
-  #bento-aqi .actions .search-btn,
-  #bento-aqi #locateBtn.locate-btn{
+  #bento-aqi .actions .locate-btn{
     min-height:44px;
   }
 }
