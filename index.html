@@ -104,16 +104,22 @@
     </div>
   </div>
 
-  <!-- Hero Index Section -->
-<section class="hero-index" id="heroIndex">
-  <!-- Demo video (replace src with your own file later) -->
-  <video class="hero-media" autoplay muted loop playsinline>
-    <source src="images/3D-Product-Animation.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+<!-- Hero Top Bar -->
+<div class="hero-topbar">
+  <h1 class="ht-title">Hawaa</h1>
+  <p class="ht-subtitle">Breathe the difference.</p>
+</div>
 
-  <!-- Demo image fallback (replace src with your own image) -->
-  <img src="images/image-blog.jpg" alt="Hero placeholder" class="hero-media fallback">
+<!-- Hero Index Section -->
+<section class="hero-index" id="heroIndex">
+  <video id="heroVideo" class="hero-media"
+       autoplay muted playsinline webkit-playsinline loop preload="auto"
+       poster="images/image-blog.jpg">
+  <source src="images/3D-Product-Animation.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+  <img src="images/image-blog.jpg" alt="Hero placeholder" class="hero-fallback">
 </section>
 
 

@@ -1,6 +1,7 @@
 /* =========================
    Bento AQI — JS (single box) + WAQI Station Typeahead
    — dropdown works, image stays still, smooth result transitions
+   — NEW: ring + number animate together from 0 to target
    ========================= */
 (() => {
   const MAX_AQI = 500;
@@ -43,7 +44,7 @@
   const pm25UnitEl = qs('[data-js="pm25-unit"]');
   const pm10UnitEl = qs('[data-js="pm10-unit"]');
 
-  // ring (CSS conic)
+  // ring + score
   const ringEl   = qs('.ring');
   const scoreNum = qs('.result-score .num');
   const scoreLbl = qs('.result-score .label');
@@ -223,6 +224,8 @@
     if (!typed){ bump(cityInput); return; }
 
     setLoading('Fetching latest air data…');
+    // Reset ring/number visually so animation always starts from 0
+    resetAqiVisuals();
     try{
       const d = await fetchByCity(typed);
       render(d.aqi, d.pm25, d.pm10, d.city || properCase(typed));
@@ -239,6 +242,7 @@
 
   function onLocateMe(){
     setLoading('Getting location & fetching air data…');
+    resetAqiVisuals();
     if (!navigator.geolocation){ setEmpty('Location unavailable. Try searching a city.'); return; }
     navigator.geolocation.getCurrentPosition(async pos => {
       try {
@@ -250,20 +254,64 @@
   }
 
   /* ---------- Render ---------- */
+  let aqiAnimId = null; // requestAnimationFrame id for ring/number sync
+
+  function resetAqiVisuals(){
+    if (aqiAnimId) cancelAnimationFrame(aqiAnimId);
+    if (ringEl) ringEl.style.setProperty('--pct', '0');
+    if (scoreNum) scoreNum.textContent = '0';
+  }
+
   function render(aqi, pm25, pm10, label){
+    // PM tiles (no animation requested)
     setPM(pm25El, pm25, 'pm25'); pm25UnitEl && (pm25UnitEl.textContent='µg/m³');
     setPM(pm10El, pm10, 'pm10'); pm10UnitEl && (pm10UnitEl.textContent='µg/m³');
 
-    scoreNum && (scoreNum.textContent = Number.isFinite(aqi) ? String(aqi) : '—');
+    // Labels (number value will animate separately)
     scoreLbl && (scoreLbl.textContent = 'AQI');
     statusTxt && (statusTxt.textContent = statusText(aqi, label));
-
-    if (ringEl){
-      const norm = Number.isFinite(aqi) ? clamp(aqi,0,MAX_AQI)/MAX_AQI : 0;
-      ringEl.style.setProperty('--pct', String(Math.round(norm*100)));
-    }
     setCategory(container, aqi);
+
+    // Show result canvas first (so animation is visible on it)
     showResult();
+
+    // Animate ring + number together from 0 → target
+    animateAQI(Number.isFinite(aqi) ? clamp(aqi, 0, MAX_AQI) : 0);
+  }
+
+  function animateAQI(target){
+    if (!ringEl || !scoreNum){ return; }
+    const duration = 900; // ms
+    const start = performance.now();
+    const endPct = Math.round((target / MAX_AQI) * 100);
+
+    if (aqiAnimId) cancelAnimationFrame(aqiAnimId);
+
+    const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const e = ease(t);
+
+      const currAqi = Math.round(target * e);
+      const currPct = Math.round(endPct * e);
+
+      ringEl.style.setProperty('--pct', String(currPct));
+      scoreNum.textContent = String(currAqi);
+
+      if (t < 1){
+        aqiAnimId = requestAnimationFrame(tick);
+      } else {
+        aqiAnimId = null;
+        // snap to exact target in case of rounding
+        ringEl.style.setProperty('--pct', String(endPct));
+        scoreNum.textContent = String(target);
+      }
+    };
+    // ensure we really start from 0 each time
+    ringEl.style.setProperty('--pct', '0');
+    scoreNum.textContent = '0';
+    aqiAnimId = requestAnimationFrame(tick);
   }
 
   function setPM(el, v, kind){
