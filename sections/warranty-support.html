@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warranty & Support</title>
+
+  <!-- Fonts: Outfit + Material Symbols Rounded -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/warranty-support.css" />
+</head>
+<body>
+  <!-- Top rail with segmented toggle -->
+  <header class="rail">
+    <div class="wrap rail__inner">
+      <div class="rail__title">Warranty & Support</div>
+      <nav class="segmented" aria-label="Primary">
+        <button id="tab-support"  class="seg active" aria-controls="support">Support</button>
+        <button id="tab-warranty" class="seg"        aria-controls="warranty">Warranty</button>
+      </nav>
+    </div>
+  </header>
+
+      <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap breadcrumb__inner">
+      <a href="../index.html" class="breadcrumb__link">Home</a>
+      <span class="breadcrumb__sep">›</span>
+      <span class="breadcrumb__current">Warranty & Support</span>
+    </div>
+  </nav>
+
+  <main>
+    <!-- SUPPORT (default) -->
+    <section id="support" class="panel">
+      <!-- Hero (Support only) -->
+      <section class="hero" style="--hero-image:url('../images/support-hero.jpg')">
+        <div class="hero__inner hero__inner--textOnly">
+          <div class="hero__copy">
+            <h1 class="hero__title">Get the help you need.</h1>
+            <p class="hero__sub">
+              Tell us what’s happening and we’ll offer the best solution.
+              Connect by phone or email — <strong>no chatbots</strong>, real people only.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="sr-only">Support topics</h2>
+      <section class="grid grid--topics">
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">smartphone</span>
+            Mobile App Not Working
+          </h3>
+          <p class="cell__desc">App crashing, freezing, or not opening.</p>
+          <a class="btn btn--text" href="guide-app.html">Start app support</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">wifi</span>
+            Wi-Fi Connectivity Issues
+          </h3>
+          <p class="cell__desc">Purifier not connecting or frequent disconnections.</p>
+          <a class="btn btn--text" href="guide-wifi.html">Fix Wi-Fi issues</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">filter_alt</span>
+            Filter Reset / Replacement
+          </h3>
+          <p class="cell__desc">Reset the filter timer or get replacement guidance.</p>
+          <a class="btn btn--text" href="guide-filter.html">Reset/replace filter</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">motion_sensor_active</span>
+            Motion Detection / Auto Mode
+          </h3>
+          <p class="cell__desc">Sensor not working as expected.</p>
+          <a class="btn btn--text" href="guide-motion.html">Fix motion/auto</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">monitoring</span>
+            Air Quality Reading Inaccurate
+          </h3>
+          <p class="cell__desc">AQI values not updating or showing unusual numbers.</p>
+          <a class="btn btn--text" href="guide-aqi.html">Fix AQI readings</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">water_drop</span>
+            Unusual Smell
+          </h3>
+          <p class="cell__desc">Odor coming from purifier after running.</p>
+          <a class="btn btn--text" href="guide-smell.html">Resolve smell issue</a>
+        </article>
+
+        <article class="cell">
+          <h3 class="cell__title">
+            <span class="msr" aria-hidden="true">help</span>
+            Other Support Request
+          </h3>
+          <p class="cell__desc">Not listed? Tell us what’s happening.</p>
+          <a class="btn btn--text" href="guide-other.html">Start other request</a>
+        </article>
+      </section>
+
+      <section class="pledge" aria-label="Human support statement">
+        <p>💙 We value your time. <strong>No AI chatbots.</strong> Every request is answered by our team within <strong>24 hours</strong> (10:00–19:00, 7 days).</p>
+      </section>
+
+      <!-- Call now (Support footer) -->
+      <section class="callnow">
+        <a class="btn btn--call" href="tel:+91XXXXXXXXXX">
+          <span class="msr" aria-hidden="true">call</span>
+          Call now
+        </a>
+        <p class="small">Hours: 10:00–19:00, 7 days</p>
+      </section>
+    </section>
+
+    <!-- WARRANTY (no hero; no refunds) -->
+    <section id="warranty" class="panel hidden" aria-labelledby="warranty-head">
+      <h2 id="warranty-head" class="w-h1">Warranty Service</h2>
+      <p class="w-lede">
+        Need help with a product under warranty? Choose <strong>Replacement</strong> or <strong>Repair under warranty</strong> after we locate your order.
+      </p>
+
+      <ul class="w-bullets">
+        <li>Keep a valid proof of purchase (receipt or e-invoice).</li>
+        <li>Have your serial number handy if available.</li>
+      </ul>
+
+      <form id="fetch-form" class="w-form" novalidate>
+        <div class="w-grid2">
+          <div class="w-row">
+            <label for="f-email">Email <span class="req">*</span></label>
+            <input id="f-email" type="email" required />
+          </div>
+          <div class="w-row">
+            <label for="f-order">Order Number <span class="req">*</span></label>
+            <input id="f-order" type="text" required />
+          </div>
+        </div>
+        <div class="w-actions">
+          <button class="btn" type="submit">
+            <span class="msr" aria-hidden="true">find_in_page</span>
+            Fetch my order
+          </button>
+          <button class="btn btn--ghost" type="button" id="f-cancel">Cancel</button>
+        </div>
+        <p class="hint">We’ll locate your order and then open the warranty form.</p>
+      </form>
+
+      <form id="details-form" class="w-form hidden" novalidate>
+        <div class="w-grid2">
+          <div class="w-row"><label for="d-name">Full name</label><input id="d-name" type="text" /></div>
+          <div class="w-row"><label for="d-phone">Phone</label><input id="d-phone" type="tel" /></div>
+        </div>
+
+        <div class="w-grid2">
+          <div class="w-row"><label for="d-product">Product</label><input id="d-product" type="text" readonly /></div>
+          <div class="w-row"><label for="d-serial">Serial</label><input id="d-serial" type="text" /></div>
+        </div>
+
+        <div class="w-row">
+          <label for="d-reason">Reason</label>
+          <select id="d-reason" required>
+            <option disabled selected>Select a reason</option>
+            <option>Mobile App Not Working</option>
+            <option>Wi-Fi Connectivity Issues</option>
+            <option>Filter Reset / Replacement</option>
+            <option>Motion Detection / Auto Mode</option>
+            <option>Air Quality Reading Inaccurate</option>
+            <option>Unusual Smell</option>
+            <option>Wrong item received</option>
+            <option>Damaged on arrival</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="w-row">
+          <label for="d-desc">Describe the issue</label>
+          <textarea id="d-desc" rows="5"></textarea>
+        </div>
+
+        <div class="w-grid2">
+          <div class="w-row">
+            <label for="d-resolution">Preferred resolution</label>
+            <select id="d-resolution" required>
+              <option disabled selected>Select</option>
+              <option>Replacement</option>
+              <option>Repair under warranty</option>
+            </select>
+          </div>
+          <div class="w-row">
+            <label for="d-photos">Photos / video (optional)</label>
+            <input id="d-photos" type="file" multiple />
+          </div>
+        </div>
+
+        <div class="w-grid2">
+          <div class="w-row">
+            <label for="d-address">Pickup address</label>
+            <textarea id="d-address" rows="3"></textarea>
+          </div>
+          <div class="w-row">
+            <label for="d-invoice">Invoice (optional)</label>
+            <input id="d-invoice" type="file" />
+          </div>
+        </div>
+
+        <div class="w-actions">
+          <button class="btn" type="submit">
+            <span class="msr" aria-hidden="true">outgoing_mail</span>
+            Submit warranty request
+          </button>
+          <button class="btn btn--ghost" type="button" id="d-back">Back</button>
+        </div>
+        <p class="hint">We’ll confirm by email within 24 hours.</p>
+      </form>
+
+      <!-- Call now (Warranty footer) -->
+      <section class="callnow">
+        <a class="btn btn--call" href="tel:+91XXXXXXXXXX">
+          <span class="msr" aria-hidden="true">call</span>
+          Call now
+        </a>
+        <p class="small">Hours: 10:00–19:00, 7 days</p>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="../js/warranty-support.js"></script>
+</body>
+</html>
