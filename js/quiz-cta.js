@@ -1,4 +1,7 @@
-/* quiz-cta.js — robust, class-disabled, auto-advance, with email step */
+/* quiz-cta.js — fixed-size modal, sticky nav, no auto-advance
+   ✅ Robust retake: starting/retaking always shows Q1 with clean state
+   ✅ Firebase untouched (no changes to your submit/storage code hooks)
+*/
 
 console.log("🚀 Quiz CTA script loading...");
 
@@ -7,10 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Elements
   const startQuizBtn = document.getElementById("startQuizBtn");
-  const quizModal   = document.getElementById("airQualityQuizModal");
-  const closeBtn    = document.querySelector(".quiz-close");
-  const navOverlay  = document.querySelector(".quiz-modal-overlay");
-  const progressBar = document.querySelector(".quiz-progress-bar");
+  const quizModal    = document.getElementById("airQualityQuizModal");
+  const closeBtn     = document.querySelector(".quiz-close");
+  const modalOverlay = document.querySelector(".quiz-modal-overlay");
+  const progressBar  = document.querySelector(".quiz-progress-bar");
+  const modalBody    = quizModal?.querySelector(".quiz-modal-body");
 
   if (!quizModal) {
     console.error("❌ Required quiz modal (#airQualityQuizModal) missing.");
@@ -19,28 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // State
   let currentQuestion = 1; // 1..N
-  const totalQuestions = document.querySelectorAll(".quiz-question").length; // includes email step if present
+  const totalQuestions = quizModal.querySelectorAll(".quiz-question").length; // includes email step
   let answers = {};
 
   // ---------- Helpers ----------
-  function isValidEmail(str) {
-    // simple but effective enough for UI gating
-    return /\S+@\S+\.\S+/.test(String(str || "").trim());
-  }
+  const isValidEmail = (str) => /\S+@\S+\.\S+/.test(String(str || "").trim());
 
-  // class-based disabling so buttons stay visible
-  function setBtnDisabled(btn, disabled) {
+  const setBtnDisabled = (btn, disabled) => {
     if (!btn) return;
     btn.classList.toggle("is-disabled", !!disabled);
     btn.setAttribute("aria-disabled", disabled ? "true" : "false");
-  }
-  function isBtnDisabled(btn) {
-    return btn?.classList.contains("is-disabled");
-  }
+  };
+  const isBtnDisabled = (btn) => btn?.classList.contains("is-disabled");
 
   // Normalize any native [disabled] → class .is-disabled (keeps them visible)
   function normalizeDisabledAttributes() {
-    document.querySelectorAll(".quiz-btn[disabled]").forEach((btn) => {
+    quizModal.querySelectorAll(".quiz-btn[disabled]").forEach((btn) => {
       btn.removeAttribute("disabled");
       setBtnDisabled(btn, true);
     });
@@ -48,12 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateProgressBar() {
     if (!progressBar) return;
+    // progress shows completion of *previous* step
     const pct = ((currentQuestion - 1) / totalQuestions) * 100;
     progressBar.style.width = `${pct}%`;
   }
 
   function syncQuestionUI(n) {
-    const qEl = document.querySelector(`[data-question="${n}"]`);
+    const qEl = quizModal.querySelector(`[data-question="${n}"]`);
     if (!qEl) return;
 
     // Prev button: disabled only on Q1
@@ -70,53 +69,87 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("quizEmailInput")?.value || "";
       setBtnDisabled(primaryBtn, !isValidEmail(email));
     } else {
-      // If you ever add more screens, default to enabled
       setBtnDisabled(primaryBtn, false);
     }
   }
 
   function showQuestion(n) {
-    document.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
-    const qEl = document.querySelector(`[data-question="${n}"]`);
+    quizModal.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
+    const qEl = quizModal.querySelector(`[data-question="${n}"]`);
     if (qEl) {
-      currentQuestion = n;                 // 🔧 keep state in sync
+      currentQuestion = n;
       qEl.classList.add("active");
       updateProgressBar();
-      syncQuestionUI(n);                   // 🔧 buttons state per screen
+      syncQuestionUI(n);
+      // make sure the active question is visible if content is tall
+      qEl.scrollIntoView({ block: "start", behavior: "instant" in window ? "instant" : "auto" });
     }
   }
 
+  function hideResults() {
+    const results = document.getElementById("quizResults");
+    results?.classList.remove("active");
+  }
+
+  function clearSelections() {
+    quizModal.querySelectorAll(".quiz-option.selected").forEach(opt => opt.classList.remove("selected"));
+  }
+
+  function resetButtons() {
+    // reset all primary buttons except restart
+    quizModal.querySelectorAll(".quiz-btn-primary").forEach(btn => {
+      if (btn.id !== "restartBtn") setBtnDisabled(btn, true);
+    });
+    // ensure the first screen has prev disabled
+    const q1Prev = quizModal.querySelector('[data-question="1"] .quiz-btn-secondary');
+    setBtnDisabled(q1Prev, true);
+  }
+
+  function clearEmail() {
+    const emailInput = document.getElementById("quizEmailInput");
+    if (emailInput) {
+      emailInput.value = "";
+      // also re-run validation to keep Next disabled until valid
+      const nextBtn6 = document.getElementById("nextBtn6");
+      setBtnDisabled(nextBtn6, true);
+    }
+  }
+
+  function resetProgress() {
+    if (progressBar) progressBar.style.width = "0%";
+  }
+
+  function resetScroll() {
+    if (modalBody) modalBody.scrollTop = 0;
+  }
+
+  // 🔁 Full, visual reset used by both Start and Retake
   function resetQuiz() {
     currentQuestion = 1;
     answers = {};
 
-    // clear selections
-    document.querySelectorAll(".quiz-option").forEach(opt => opt.classList.remove("selected"));
-
-    // reset all primary buttons except restart
-    document.querySelectorAll(".quiz-btn-primary").forEach(btn => {
-      if (btn.id !== "restartBtn") setBtnDisabled(btn, true);
-    });
-
-    // email
-    const emailInput = document.getElementById("quizEmailInput");
-    if (emailInput) emailInput.value = "";
-
-    // hide results
-    document.getElementById("quizResults")?.classList.remove("active");
-
+    hideResults();
+    clearSelections();
+    resetButtons();
+    clearEmail();
+    resetProgress();
     showQuestion(1);
+    resetScroll();
+
+    console.log("🔄 Quiz reset to a fresh state.");
   }
 
   function openQuizModal() {
     quizModal.classList.add("active");
     document.body.style.overflow = "hidden";
-    resetQuiz();
+    resetQuiz(); // always start fresh on open
   }
 
   function closeQuizModal() {
     quizModal.classList.remove("active");
     document.body.style.overflow = "";
+    // optional: also reset when closing so next open is clean
+    resetQuiz();
   }
 
   // ---------- Scoring & Results ----------
@@ -138,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showAirQualityResults() {
     // hide questions
-    document.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
+    quizModal.querySelectorAll(".quiz-question").forEach(q => q.classList.remove("active"));
 
     // fill results
     const resultsSection   = document.getElementById("quizResults");
@@ -191,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- Navigation ----------
   function goToNextQuestion() {
     const nextIndex = currentQuestion + 1;
-    if (nextIndex <= totalQuestions && document.querySelector(`[data-question="${nextIndex}"]`)) {
+    if (nextIndex <= totalQuestions && quizModal.querySelector(`[data-question="${nextIndex}"]`)) {
       showQuestion(nextIndex);
     } else {
       showAirQualityResults();
@@ -205,33 +238,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------- Event bindings ----------
-  normalizeDisabledAttributes(); // 🔧 make disabled buttons visible from your HTML
+  normalizeDisabledAttributes(); // keep disabled buttons visible from your HTML
 
-  if (startQuizBtn) {
-    startQuizBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      openQuizModal();
-    });
-  } else {
-    // If modal is opened via other UI, at least prep it
-    resetQuiz();
-  }
+  // Open / Close
+  startQuizBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    openQuizModal();
+  });
 
   closeBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     closeQuizModal();
   });
 
-  navOverlay?.addEventListener("click", (e) => {
-    if (e.target === navOverlay) closeQuizModal();
+  modalOverlay?.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) closeQuizModal();
   });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && quizModal.classList.contains("active")) closeQuizModal();
   });
 
-  // Option select → record answer, enable Next, auto-advance
-  document.querySelectorAll(".quiz-option").forEach((option) => {
+  // Option select → record answer, enable Next (NO auto-advance)
+  quizModal.querySelectorAll(".quiz-option").forEach((option) => {
     option.addEventListener("click", () => {
       const qEl = option.closest(".quiz-question");
       if (!qEl) return;
@@ -247,48 +276,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextBtn = qEl.querySelector(".quiz-btn-primary");
       setBtnDisabled(nextBtn, false);
 
-      // make sure our state matches whatever is visible, then advance
+      // keep state; DO NOT auto-advance
       currentQuestion = qNum;
-
-      setTimeout(() => {
-        if (currentQuestion < totalQuestions) {
-          showQuestion(currentQuestion + 1);
-        } else {
-          showAirQualityResults();
-        }
-      }, 120);
+      syncQuestionUI(currentQuestion);
     });
   });
 
   // Email input (Q6)
+  const emailInput = document.getElementById("quizEmailInput");
   function handleEmailEnable() {
-    const emailInput = document.getElementById("quizEmailInput");
-    const nextBtn    = document.getElementById("nextBtn6");
+    const nextBtn = document.getElementById("nextBtn6");
     if (!emailInput || !nextBtn) return;
     setBtnDisabled(nextBtn, !isValidEmail(emailInput.value));
   }
-  const emailInput = document.getElementById("quizEmailInput");
   if (emailInput) {
     emailInput.addEventListener("input", handleEmailEnable);
     emailInput.addEventListener("keyup", handleEmailEnable);
   }
 
   // Next buttons
-  document.querySelectorAll(".quiz-btn-primary").forEach((btn) => {
+  quizModal.querySelectorAll(".quiz-btn-primary").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
 
       if (btn.id === "restartBtn") {
-        resetQuiz();
+        resetQuiz();   // 🔁 retake from scratch
         return;
       }
       if (isBtnDisabled(btn)) return; // visible but inert
 
       const qEl = btn.closest(".quiz-question");
-      if (!qEl) {
-        // If pressed from results CTA etc.
-        return;
-      }
+      if (!qEl) return; // if pressed from results CTA etc.
 
       const qNum = parseInt(qEl.dataset.question, 10);
       if (qNum >= 1 && qNum <= 5 && answers[qNum] == null) return; // require answer
@@ -306,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Previous buttons
-  document.querySelectorAll(".quiz-btn-secondary").forEach((btn) => {
+  quizModal.querySelectorAll(".quiz-btn-secondary").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       if (btn.id === "restartBtn") {
@@ -317,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Expose for integrations
+  // Expose for integrations (unchanged)
   window.showAirQualityResults = showAirQualityResults;
   window.getQuizAnswers       = () => ({ ...answers });
   window.calculateQuizScore   = calculateScore;
