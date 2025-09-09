@@ -27,15 +27,16 @@
 }
 
 /* ================================
-   Reset + click/touch highlights off
+   Reset + interaction polish
 =================================== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-width: 0; }
-*:focus, *:focus-visible { outline: none !important; }
+*:focus, *:focus-visible { outline: none; }
 a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 
 /* ================================
-   Header (sticky, one-size design)
+   Header
 =================================== */
 .hawaa-header{
   position: sticky; top: 0;
@@ -62,30 +63,55 @@ a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 }
 
 /* Actions */
-.header-actions{ display:flex; align-items:center; gap:16px; height:100%; }
+.header-actions{ display:flex; align-items:center; gap:12px; height:100%; }
 
-/* Hamburger */
-.hamburger-btn{
-  width:48px; height:48px; padding:12px;
-  display:flex; align-items:center; justify-content:center;
-  background:none; border:none; border-radius:8px; cursor:pointer;
-  transition: background-color .2s ease;
-  flex-shrink:0;
-}
-.hamburger-btn:hover{ background-color: rgba(0,0,0,.05); }
-.hamburger-btn:active{ background-color: rgba(0,0,0,.1); }
+/* ================================
+   Unified Icon Buttons
+=================================== */
+.nav-icon,
+.hamburger-btn,
+.nav-close{
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-.hamburger-icon{
-  width:24px; height:24px; display:flex; flex-direction:column; justify-content:space-between; position:relative;
-}
-.hamburger-icon span{
-  height:2px; width:100%; background:#1a1a1a; border-radius:1px;
-  transition: all .3s ease; transform-origin:center;
-}
-.hamburger-icon span:nth-child(1),
-.hamburger-icon span:nth-child(2){ margin-bottom:5px; }
+  background: none;
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 
-/* ============ Mobile Nav (overlay + right panel) ============ */
+  border-radius: 50%;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: background-color .2s ease, color .2s ease, transform .06s ease;
+}
+.nav-icon:hover,
+.hamburger-btn:hover,
+.nav-close:hover{
+  background-color: rgba(0,0,0,.06);
+}
+.nav-icon:active,
+.hamburger-btn:active,
+.nav-close:active{
+  background-color: rgba(0,0,0,.10);
+  transform: translateY(0.5px);
+}
+
+/* Normalize icon size inside buttons */
+.nav-icon .material-symbols-rounded,
+.hamburger-btn .material-symbols-rounded,
+.nav-close .material-symbols-rounded{
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* ================================
+   Mobile Nav (overlay + panel)
+=================================== */
 .mobile-nav{
   position:fixed; inset:0; z-index:1001;
   background: rgba(0,0,0,.5);
@@ -101,7 +127,6 @@ a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   background:#f8f9fa;
   transform: translateX(100%); transition: transform .3s ease;
   display:flex; flex-direction:column;
-  /* Only top-left & bottom-left rounded corners as requested */
   border-radius: 24px 0 0 24px;
 }
 .mobile-nav.active .nav-panel{ transform: translateX(0); }
@@ -112,21 +137,16 @@ a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   padding: 20px 24px; background:#fff; border-bottom:1px solid #eee;
 }
 .nav-title{
-  font-family:'Outfit', sans-serif; font-weight:500;
+  font-weight:600;
   font-size: 28px; color:#1a1a1a;
 }
-.nav-icons{ display:flex; gap:16px; }
-.nav-icon, .nav-close{
-  background:none; border:none; padding:8px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.nav-icon svg, .nav-close svg{ width:20px; height:20px; stroke:#1a1a1a; stroke-width:2; }
+.nav-icons{ display:flex; gap:8px; }
 
 /* Nav content */
 .nav-content{ flex:1; overflow-y:auto; padding:16px 0; }
 .nav-section{ margin-bottom:16px; background:#fff; padding:20px; border-radius:20px; }
 .section-title{
-  font-family:'Outfit', sans-serif; font-weight:500; font-size:12px;
+  font-weight:600; font-size:12px;
   text-transform:uppercase; letter-spacing:.1em; color:#6b7280; margin-bottom:12px;
 }
 .nav-links{ list-style:none; }
@@ -134,28 +154,17 @@ a, button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .nav-links a{
   display:flex; align-items:center; justify-content:space-between;
   padding:12px 0; color:#1a1a1a; text-decoration:none;
-  font-family:'Outfit', sans-serif; font-weight:500; font-size:18px;
+  font-weight:500; font-size:18px;
   transition: color .2s ease;
 }
-.nav-links a:hover{ color:#3b82f6; }
-.nav-links a::after{
-  content:''; width:16px; height:16px; opacity:.6; transition:opacity .2s ease;
-  background-size:contain;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
-}
-.nav-links a:hover::after{ opacity:1; }
+.nav-links a:hover{ color:#287392; }
+.nav-links a .material-symbols-rounded{ font-size:20px; color:#1a1a1a; opacity:.6; transition:opacity .2s; }
+.nav-links a:hover .material-symbols-rounded{ opacity:1; }
 
-/* Menu-open (X animation) */
+/* State */
 body.menu-open{ overflow:hidden; }
-.menu-open .hamburger-icon span:nth-child(1){ transform: translateY(11px) rotate(45deg); }
-.menu-open .hamburger-icon span:nth-child(2){ opacity:0; transform: scale(0); }
-.menu-open .hamburger-icon span:nth-child(3){ transform: translateY(-11px) rotate(-45deg); }
 
-/* ================================
-   Minimal, merged breakpoints
-=================================== */
-
-/* ≥768px : roomier paddings, slightly larger text/assets */
+/* Breakpoints */
 @media (min-width:768px){
   .header-container{ padding:0 24px; }
   .nav-title{ font-size:32px; }
@@ -163,38 +172,63 @@ body.menu-open{ overflow:hidden; }
   .nav-header{ padding:24px; }
   .nav-panel{ max-width:480px; }
 }
-
-/* ≥1200px : desktop refinements */
 @media (min-width:1200px){
   .header-container{ padding:0 32px; }
   .header-logo img{ height:24px; }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce){
   .hawaa-header,
-  .hamburger-icon span,
   .mobile-nav,
   .nav-panel,
+  .nav-links a,
+  .nav-icon,
   .hamburger-btn,
-  .nav-links a{ transition:none !important; }
+  .nav-close{ transition:none !important; }
 }
-
-/* ================================
-   Mobile Nav Panel (Gap + Radius)
-=================================== */
 @media (max-width: 767px){
   .mobile-nav .nav-panel{
-    width: calc(100% - 120px) !important; /* leave 16px gap on the left */
-    right: 0;
-    left: auto;
-    margin-left: 16px; /* push panel right so left edge is visible */
-
-    /* Rounded corners on the left side */
+    width: calc(100% - 120px) !important;
+    right: 0; left: auto;
+    margin-left: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    overflow: hidden; /* keep inner content respecting radius */
+    overflow: hidden;
   }
 }
+
+/* ============================================================
+   MATERIAL SYMBOLS ROUNDED — unified system
+============================================================ */
+:root{
+  --msr-size:20px;
+  --msr-color:currentColor;
+  --msr-wght:400;   /* default weight */
+  --msr-fill:0;     /* outline */
+  --msr-grad:-25;   /* requested grade */
+  --msr-opsz:20;    /* optical size */
+}
+.material-symbols-rounded{
+  font-family: 'Material Symbols Rounded' !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: var(--msr-size) !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  vertical-align: -0.2em !important;
+  color: var(--msr-color) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variation-settings:
+    'FILL' var(--msr-fill),
+    'wght' var(--msr-wght),
+    'GRAD' var(--msr-grad),
+    'opsz' var(--msr-opsz) !important;
+}
+/* Optional helpers */
+.msr-16{ --msr-size:16px; --msr-opsz:20; }
+.msr-20{ --msr-size:20px; --msr-opsz:20; }
+.msr-24{ --msr-size:24px; --msr-opsz:24; }
+.msr-28{ --msr-size:28px; --msr-opsz:24; }
+.msr-32{ --msr-size:32px; --msr-opsz:24; }

@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-  initAppleSlider('hawaa-product-slider');
+  initHawaaSlider('hawaa-product-slider');
 });
 
-function initAppleSlider(sectionId) {
+function initHawaaSlider(sectionId) {
   const slider = document.getElementById(sectionId);
   if (!slider) return;
   
   // Core elements
-  const track = slider.querySelector('.apple-slider__track');
-  const container = slider.querySelector('.apple-slider__container');
-  const prevBtn = slider.querySelector('.apple-slider__arrow--prev');
-  const nextBtn = slider.querySelector('.apple-slider__arrow--next');
-  const dotsContainer = slider.querySelector('.apple-slider__dots');
+  const track = slider.querySelector('.hawaa-slider__track');
+  const container = slider.querySelector('.hawaa-slider__container');
+  const prevBtn = slider.querySelector('.hawaa-slider__arrow--prev');
+  const nextBtn = slider.querySelector('.hawaa-slider__arrow--next');
+  const dotsContainer = slider.querySelector('.hawaa-slider__dots');
   
   // Configuration options
   const autoplay = true;
@@ -19,7 +19,7 @@ function initAppleSlider(sectionId) {
   const transitionSpeed = 0.7;
   
   // Get original slides
-  const originalSlides = Array.from(slider.querySelectorAll('.apple-slider__slide'));
+  const originalSlides = Array.from(slider.querySelectorAll('.hawaa-slider__slide'));
   const slideCount = originalSlides.length;
   
   // Early exit if no slides
@@ -57,7 +57,7 @@ function initAppleSlider(sectionId) {
       }
     }
     
-    return Array.from(track.querySelectorAll('.apple-slider__slide'));
+    return Array.from(track.querySelectorAll('.hawaa-slider__slide'));
   }
   
   // Set up slides
@@ -66,13 +66,13 @@ function initAppleSlider(sectionId) {
   // Create dots for navigation
   originalSlides.forEach(function(_, idx) {
     const dot = document.createElement('button');
-    dot.className = 'apple-slider__dot';
+    dot.className = 'hawaa-slider__dot';
     dot.setAttribute('aria-label', 'Go to slide ' + (idx + 1));
     dot.dataset.index = idx;
     dotsContainer.appendChild(dot);
   });
   
-  const dots = Array.from(dotsContainer.querySelectorAll('.apple-slider__dot'));
+  const dots = Array.from(dotsContainer.querySelectorAll('.hawaa-slider__dot'));
   
   // State variables
   let currentIndex = slideCount * 2; // Start with first original slide

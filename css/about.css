@@ -229,3 +229,61 @@ body{
   .card-headline{ margin-bottom: 6px; }
   .card-image-wrapper{ border-radius: 20px; }
 }
+
+/* ============================================================
+   MATERIAL SYMBOLS ROUNDED — Cross-platform icon utilities
+   (Requires the HTML to include the Google Fonts stylesheet)
+   Example usage: <span class="msr">wifi</span>
+   Optional modifiers: msr--fill, msr--thin, msr--bold, msr-16/20/24/32
+============================================================ */
+:root{
+  --msr-size:20px;
+  --msr-color:#5b5f67;
+  --msr-wght:500;   /* 300..700 supported */
+  --msr-fill:0;     /* 0 = outline, 1 = filled */
+  --msr-grad:0;
+  --msr-opsz:24;    /* optical size 20..48 */
+}
+
+.msr{
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: normal;
+  font-size: var(--msr-size);
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  vertical-align: -0.2em;
+  color: var(--msr-color);
+
+  /* Smooth + consistent rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* Variable font axes */
+  font-variation-settings:
+    "FILL" var(--msr-fill),
+    "wght" var(--msr-wght),
+    "GRAD" var(--msr-grad),
+    "opsz" var(--msr-opsz);
+}
+
+/* Size helpers */
+.msr-16{ --msr-size:16px; --msr-opsz:20; }
+.msr-20{ --msr-size:20px; --msr-opsz:24; }
+.msr-24{ --msr-size:24px; --msr-opsz:24; }
+.msr-28{ --msr-size:28px; --msr-opsz:24; }
+.msr-32{ --msr-size:32px; --msr-opsz:24; }
+
+/* Weight / style helpers */
+.msr--thin { --msr-wght:300; }
+.msr--bold { --msr-wght:700; }
+.msr--fill { --msr-fill:1;  }   /* filled glyphs */
+.msr--outline { --msr-fill:0; } /* outline glyphs */
+
+/* Color helper (override via inline style or class) */
+.msr-muted { --msr-color:#5b5f67; }
+.msr-ink   { --msr-color:#111;   }
+.msr-accent{ --msr-color:#287392; }

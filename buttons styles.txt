@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unified Buttons</title>
+  <style>
+    :root {
+      --blue-200:#B5E1EC;
+      --blue-300:#82CADE;
+      --blue-400:#48ABC8;
+      --blue-500:#2DBFAD;
+      --blue-950:#132A39; /* Default */
+    }
+
+    body {
+      background:#f5f7fa;
+      font-family: Segoe UI, sans-serif;
+      display:flex;
+      flex-direction:column;
+      gap:1.5rem;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    button {
+      all: unset;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:150px;
+      height:3rem; /* consistent height */
+      padding:0 2rem;
+      border-radius:9999px; /* consistent pill radius */
+      font-size:1rem;
+      font-weight:600;
+      letter-spacing:-0.02em;
+      transition:all 0.3s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Ripple layers (for primary/secondary) */
+    .button-inner,
+    .button-inner-hover,
+    .button-inner-static {
+      pointer-events:none;
+      display:block;
+    }
+    .button-inner { position: relative; }
+    .button-inner-hover {
+      position: absolute;
+      top:0; left:0;
+      opacity:0;
+      transform:translateY(70%);
+    }
+    .button-bg {
+      overflow:hidden;
+      border-radius:inherit;
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+    }
+    .button-bg-layers {
+      position:absolute;
+      left:50%;
+      transform:translate(-50%);
+      top:-60%;
+      aspect-ratio:1/1;
+      width:max(200%,10rem);
+    }
+    .button-bg-layer {
+      border-radius:9999px;
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      transform:scale(0);
+    }
+    .-purple   { background-color: var(--blue-300); }
+    .-turquoise{ background-color: var(--blue-400); }
+    .-yellow   { background-color: var(--blue-200); }
+
+    /* Primary */
+    .button--primary {
+      background:var(--blue-950);
+      color:#fff;
+      border:none;
+    }
+    .button--primary .button-bg { background:var(--blue-950); }
+
+    /* Secondary */
+    .button--secondary {
+      background:transparent;
+      color:var(--blue-950);
+      border:2px solid var(--blue-950);
+    }
+    .button--secondary .button-bg { background:transparent; }
+    .button--secondary:hover{ border-color:var(--blue-500); }
+
+    /* Hover Animations */
+    .button:hover .button-inner-static {
+      opacity:0;
+      transform:translateY(-70%);
+      transition:transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+    }
+    .button:hover .button-inner-hover {
+      opacity:1;
+      transform:translateY(0);
+      transition:transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .button:hover .button-bg-layer {
+      transition:transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+    }
+    .button:hover .button-bg-layer-1 { transform:scale(1); }
+    .button:hover .button-bg-layer-2 { transform:scale(1); transition-delay:.1s; }
+    .button:hover .button-bg-layer-3 { transform:scale(1); transition-delay:.2s; }
+
+    /* Icon + Text Buttons */
+    .button-icon svg {
+      width:1.3em;
+      height:1.3em;
+      margin-left:0.5rem; /* icon on right */
+      transition:all 0.3s ease;
+    }
+    .button-icon:hover svg { transform:translateX(5px); }
+    .button-icon--primary {
+      background:var(--blue-950);
+      color:#fff;
+      border:none;
+    }
+    .button-icon--primary:hover { background:var(--blue-500); }
+    .button-icon--secondary {
+      background:transparent;
+      color:var(--blue-950);
+      border:2px solid var(--blue-950);
+    }
+    .button-icon--secondary:hover {
+      background:var(--blue-200);
+      border-color:var(--blue-500);
+      color:var(--blue-950);
+    }
+
+    /* Tertiary Button */
+    .button-tertiary {
+      border:2px solid var(--blue-950);
+      background:transparent;
+      color:var(--blue-950);
+    }
+    .button-tertiary::after {
+      content:"";
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      border-radius:inherit;
+      background:radial-gradient(circle, rgba(45,191,173,0.25) 0%, rgba(19,42,57,0) 70%);
+      transform:scale(0);
+      transition:transform 0.5s ease;
+    }
+    .button-tertiary:hover::after { transform:scale(4); }
+    .button-tertiary:hover {
+      border-color:var(--blue-500);
+      background:var(--blue-200);
+    }
+
+    /* Icon-only Buttons */
+    .icon-only {
+      all: unset;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      background:var(--blue-950);
+      color:#fff;
+      transition:all 0.3s ease;
+    }
+    .icon-only svg {
+      width:22px;
+      height:22px;
+      pointer-events:none;
+    }
+    .icon-only:hover { background:var(--blue-500); }
+
+    .icon-only--secondary {
+      background:transparent;
+      border:2px solid var(--blue-950);
+      color:var(--blue-950);
+    }
+    .icon-only--secondary:hover {
+      background:var(--blue-200);
+      border-color:var(--blue-500);
+      color:var(--blue-950);
+    }
+
+    /* Responsive */
+    @media (max-width:768px){
+      button { min-width:120px; font-size:0.95rem; padding:0 1.5rem; }
+    }
+    @media (max-width:480px){
+      button { min-width:100px; font-size:0.9rem; padding:0 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Primary -->
+  <button class="button button--primary">
+    <span class="button-bg">
+      <span class="button-bg-layers">
+        <span class="button-bg-layer button-bg-layer-1 -purple"></span>
+        <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
+        <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
+      </span>
+    </span>
+    <span class="button-inner">
+      <span class="button-inner-static">Primary</span>
+      <span class="button-inner-hover">Primary</span>
+    </span>
+  </button>
+
+  <!-- Secondary -->
+  <button class="button button--secondary">
+    <span class="button-bg">
+      <span class="button-bg-layers">
+        <span class="button-bg-layer button-bg-layer-1 -purple"></span>
+        <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
+        <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
+      </span>
+    </span>
+    <span class="button-inner">
+      <span class="button-inner-static">Secondary</span>
+      <span class="button-inner-hover">Secondary</span>
+    </span>
+  </button>
+
+  <!-- Icon + Text Primary -->
+  <button class="button button-icon button-icon--primary">
+    <span>Explore</span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/>
+    </svg>
+  </button>
+
+  <!-- Icon + Text Secondary -->
+  <button class="button button-icon button-icon--secondary">
+    <span>Learn More</span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/>
+    </svg>
+  </button>
+
+  <!-- Tertiary -->
+  <button class="button button-tertiary">Tertiary</button>
+
+  <!-- Icon-only Primary -->
+  <button class="icon-only" aria-label="Play">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+  </button>
+
+  <!-- Icon-only Secondary -->
+  <button class="icon-only icon-only--secondary" aria-label="Close">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+      <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+</body>
+</html>
