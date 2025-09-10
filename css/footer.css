@@ -6,6 +6,12 @@
   --card-bg: #12232d;
   --card-radius: 16px;
   --underline-speed: 0.45s;
+  /* Button styles variables */
+  --blue-200: #B5E1EC;
+  --blue-300: #82CADE;
+  --blue-400: #48ABC8;
+  --blue-500: #2DBFAD;
+  --blue-950: #132A39;
 }
 
 body {
@@ -200,7 +206,7 @@ body {
   margin-top: 2px;
 }
 
-/* Social 3D row */
+/* Social 3D row - Updated with unified button styles */
 .social-row {
   margin-top: 28px;
   display: flex;
@@ -209,35 +215,34 @@ body {
   flex-wrap: wrap;
 }
 
+/* Updated social button styles to match primary icon button */
 .social-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  all: unset;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #191f25;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue-950);
   color: #fff;
-  box-shadow: 
-    0 10px 20px rgba(0, 0, 0, 0.45),
-    0 2px 4px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.35);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  transition: all 0.3s ease;
+}
+
+.social-btn svg {
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .social-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 14px 24px rgba(0, 0, 0, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -2px 8px rgba(0, 0, 0, 0.4);
-  text-decoration: none;
+  background: var(--blue-500);
 }
 
-.social-btn:active {
-  transform: translateY(0);
+.social-btn:hover svg {
+  transform: translateX(5px);
 }
 
 /* Giant bottom typography */
@@ -414,5 +419,9 @@ body {
   
   .accordion-trigger .chev {
     transition: none;
+  }
+  
+  .social-btn:hover svg {
+    transform: none;
   }
 }

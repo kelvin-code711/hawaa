@@ -15,6 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalOverlay = document.querySelector(".quiz-modal-overlay");
   const progressBar  = document.querySelector(".quiz-progress-bar");
   const modalBody    = quizModal?.querySelector(".quiz-modal-body");
+  
+  // Navigation elements
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const resultsBtn = document.getElementById("resultsBtn");
+  const restartBtn = document.getElementById("restartBtn");
 
   if (!quizModal) {
     console.error("❌ Required quiz modal (#airQualityQuizModal) missing.");
@@ -31,18 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const setBtnDisabled = (btn, disabled) => {
     if (!btn) return;
+    btn.disabled = disabled;
     btn.classList.toggle("is-disabled", !!disabled);
     btn.setAttribute("aria-disabled", disabled ? "true" : "false");
   };
-  const isBtnDisabled = (btn) => btn?.classList.contains("is-disabled");
 
-  // Normalize any native [disabled] → class .is-disabled (keeps them visible)
-  function normalizeDisabledAttributes() {
-    quizModal.querySelectorAll(".quiz-btn[disabled]").forEach((btn) => {
-      btn.removeAttribute("disabled");
-      setBtnDisabled(btn, true);
-    });
-  }
+  const isBtnDisabled = (btn) => btn?.classList.contains("is-disabled");
 
   function updateProgressBar() {
     if (!progressBar) return;
@@ -51,25 +51,28 @@ document.addEventListener("DOMContentLoaded", () => {
     progressBar.style.width = `${pct}%`;
   }
 
-  function syncQuestionUI(n) {
-    const qEl = quizModal.querySelector(`[data-question="${n}"]`);
-    if (!qEl) return;
-
+  function updateNavigation() {
     // Prev button: disabled only on Q1
-    const prevBtn = qEl.querySelector(".quiz-btn-secondary");
-    setBtnDisabled(prevBtn, n === 1);
-
-    // Primary (Next / See results) button:
-    const primaryBtn = qEl.querySelector(".quiz-btn-primary");
-    if (!primaryBtn) return;
-
-    if (n >= 1 && n <= 5) {
-      setBtnDisabled(primaryBtn, answers[n] == null);
-    } else if (n === 6) {
+    setBtnDisabled(prevBtn, currentQuestion === 1);
+    
+    // Next/Results buttons
+    if (currentQuestion >= 1 && currentQuestion <= 5) {
+      setBtnDisabled(nextBtn, answers[currentQuestion] == null);
+      nextBtn.style.display = "flex";
+      resultsBtn.style.display = "none";
+      restartBtn.style.display = "none";
+    } else if (currentQuestion === 6) {
       const email = document.getElementById("quizEmailInput")?.value || "";
-      setBtnDisabled(primaryBtn, !isValidEmail(email));
+      setBtnDisabled(nextBtn, !isValidEmail(email));
+      nextBtn.style.display = "flex";
+      resultsBtn.style.display = "none";
+      restartBtn.style.display = "none";
     } else {
-      setBtnDisabled(primaryBtn, false);
+      // Results screen
+      nextBtn.style.display = "none";
+      resultsBtn.style.display = "none";
+      restartBtn.style.display = "flex";
+      setBtnDisabled(restartBtn, false);
     }
   }
 
@@ -80,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentQuestion = n;
       qEl.classList.add("active");
       updateProgressBar();
-      syncQuestionUI(n);
+      updateNavigation();
       // make sure the active question is visible if content is tall
       qEl.scrollIntoView({ block: "start", behavior: "instant" in window ? "instant" : "auto" });
     }
@@ -95,23 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
     quizModal.querySelectorAll(".quiz-option.selected").forEach(opt => opt.classList.remove("selected"));
   }
 
-  function resetButtons() {
-    // reset all primary buttons except restart
-    quizModal.querySelectorAll(".quiz-btn-primary").forEach(btn => {
-      if (btn.id !== "restartBtn") setBtnDisabled(btn, true);
-    });
-    // ensure the first screen has prev disabled
-    const q1Prev = quizModal.querySelector('[data-question="1"] .quiz-btn-secondary');
-    setBtnDisabled(q1Prev, true);
-  }
-
   function clearEmail() {
     const emailInput = document.getElementById("quizEmailInput");
     if (emailInput) {
       emailInput.value = "";
-      // also re-run validation to keep Next disabled until valid
-      const nextBtn6 = document.getElementById("nextBtn6");
-      setBtnDisabled(nextBtn6, true);
     }
   }
 
@@ -130,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     hideResults();
     clearSelections();
-    resetButtons();
     clearEmail();
     resetProgress();
     showQuestion(1);
@@ -219,6 +208,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resultsSection.classList.add("active");
     if (progressBar) progressBar.style.width = "100%";
+    
+    // Update navigation for results screen
+    nextBtn.style.display = "none";
+    resultsBtn.style.display = "none";
+    restartBtn.style.display = "flex";
+    setBtnDisabled(restartBtn, false);
+    
+    // Firebase integration - call your existing Firebase function here
+    if (typeof submitQuizResults === 'function') {
+      const email = document.getElementById("quizEmailInput")?.value || "";
+      submitQuizResults(answers, email, score, title, recommendation);
+    }
   }
 
   // ---------- Navigation ----------
@@ -238,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------- Event bindings ----------
-  normalizeDisabledAttributes(); // keep disabled buttons visible from your HTML
 
   // Open / Close
   startQuizBtn?.addEventListener("click", (e) => {
@@ -272,67 +272,43 @@ document.addEventListener("DOMContentLoaded", () => {
       const qNum = parseInt(qEl.dataset.question, 10);
       answers[qNum] = option.dataset.value;
 
-      // enable primary button for this screen
-      const nextBtn = qEl.querySelector(".quiz-btn-primary");
-      setBtnDisabled(nextBtn, false);
-
-      // keep state; DO NOT auto-advance
-      currentQuestion = qNum;
-      syncQuestionUI(currentQuestion);
+      // enable next button
+      updateNavigation();
     });
   });
 
   // Email input (Q6)
   const emailInput = document.getElementById("quizEmailInput");
   function handleEmailEnable() {
-    const nextBtn = document.getElementById("nextBtn6");
-    if (!emailInput || !nextBtn) return;
-    setBtnDisabled(nextBtn, !isValidEmail(emailInput.value));
+    updateNavigation();
   }
   if (emailInput) {
     emailInput.addEventListener("input", handleEmailEnable);
     emailInput.addEventListener("keyup", handleEmailEnable);
   }
 
-  // Next buttons
-  quizModal.querySelectorAll(".quiz-btn-primary").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      if (btn.id === "restartBtn") {
-        resetQuiz();   // 🔁 retake from scratch
-        return;
-      }
-      if (isBtnDisabled(btn)) return; // visible but inert
-
-      const qEl = btn.closest(".quiz-question");
-      if (!qEl) return; // if pressed from results CTA etc.
-
-      const qNum = parseInt(qEl.dataset.question, 10);
-      if (qNum >= 1 && qNum <= 5 && answers[qNum] == null) return; // require answer
-      if (qNum === 6) {
-        const ok = isValidEmail(document.getElementById("quizEmailInput")?.value);
-        if (!ok) return;
-      }
-
-      if (qNum >= totalQuestions) {
-        showAirQualityResults();
-      } else {
-        goToNextQuestion();
-      }
-    });
+  // Navigation buttons
+  prevBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isBtnDisabled(prevBtn)) return;
+    goToPreviousQuestion();
   });
 
-  // Previous buttons
-  quizModal.querySelectorAll(".quiz-btn-secondary").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (btn.id === "restartBtn") {
-        resetQuiz();
-      } else {
-        goToPreviousQuestion();
-      }
-    });
+  nextBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isBtnDisabled(nextBtn)) return;
+    goToNextQuestion();
+  });
+
+  resultsBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isBtnDisabled(resultsBtn)) return;
+    showAirQualityResults();
+  });
+
+  restartBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    resetQuiz();
   });
 
   // Expose for integrations (unchanged)

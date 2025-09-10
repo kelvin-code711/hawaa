@@ -39,32 +39,131 @@
   padding: 0 40px;
 }
 
-/* CTA Button */
+/* ---------- CTA Button (Updated to match primary button style) ---------- */
 .hf-cta {
+  all: unset;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 28px;
-  background: #189AB4;
-  color: #ffffff;
-  font-family: 'Outfit', sans-serif;
+  min-width: 150px;
+  height: 3rem; /* consistent height */
+  padding: 0 2rem;
+  border-radius: 9999px; /* pill shape */
+  font-size: 1rem;
   font-weight: 600;
-  border-radius: 50px;
-  text-decoration: none;
-  margin-bottom: 20px;
+  letter-spacing: -0.02em;
   transition: all 0.3s ease;
-  font-size: 1.5rem;
-  min-height: 48px;
-  border: 1px solid #189AB4;
-}
-
-.hf-cta:hover {
-  background: #0d7e96;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  background: #132A39; /* primary surface */
   color: #ffffff;
+  border: none;
+  margin-bottom: 20px;
+  text-decoration: none;
 }
 
+/* Button inner content with static and hover text */
+.hf-cta .button-inner {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  display: block;
+}
+
+.hf-cta .button-inner-static,
+.hf-cta .button-inner-hover {
+  display: block;
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+}
+
+.hf-cta .button-inner-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: translateY(70%);
+}
+
+/* Background + ripple layers container */
+.hf-cta .button-bg {
+  overflow: hidden;
+  border-radius: inherit;
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
+  z-index: 1;
+  background: #132A39; /* keep base fill consistent */
+}
+
+.hf-cta .button-bg-layers {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: -60%;
+  aspect-ratio: 1/1;
+  width: max(200%, 10rem);
+}
+
+.hf-cta .button-bg-layer {
+  border-radius: 9999px;
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
+  transform: scale(0);
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
+  opacity: 0.35;
+}
+
+.hf-cta .button-bg-layer-1 { 
+  background-color: #82CADE;  /* var(--blue-300) */
+}
+
+.hf-cta .button-bg-layer-2 { 
+  background-color: #48ABC8;  /* var(--blue-400) */
+}
+
+.hf-cta .button-bg-layer-3 { 
+  background-color: #B5E1EC;  /* var(--blue-200) */
+}
+
+/* Hover effects */
+.hf-cta:hover .button-inner-static {
+  opacity: 0;
+  transform: translateY(-70%);
+}
+
+.hf-cta:hover .button-inner-hover {
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.hf-cta:hover .button-bg-layer-1 { 
+  transform: scale(1); 
+}
+
+.hf-cta:hover .button-bg-layer-2 { 
+  transform: scale(1); 
+  transition-delay: 0.1s; 
+}
+
+.hf-cta:hover .button-bg-layer-3 { 
+  transform: scale(1); 
+  transition-delay: 0.2s; 
+}
+
+/* Focus-visible for accessibility */
+.hf-cta:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.9);
+  outline-offset: 2px;
+}
+
+/* Caption */
 .hf-caption {
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
@@ -142,29 +241,14 @@
 }
 
 /* Remove hover effects from cards */
-.hf-card {
-  transition: none;
-}
-
-.hf-card:hover {
-  transform: none;
-}
+.hf-card { transition: none; }
+.hf-card:hover { transform: none; }
 
 /* Tablet responsiveness */
 @media (max-width: 1024px) {
-  .hepa-filter-hero {
-    padding: 56px 0 64px;
-  }
-  
-  .hf-card-grid {
-    gap: 18px;
-    padding: 0 32px;
-  }
-  
-  .hf-title,
-  .hf-sub {
-    padding: 0 32px;
-  }
+  .hepa-filter-hero { padding: 56px 0 64px; }
+  .hf-card-grid { gap: 18px; padding: 0 32px; }
+  .hf-title, .hf-sub { padding: 0 32px; }
 }
 
 /* Mobile responsiveness - Tablet to Mobile transition */
@@ -191,13 +275,14 @@
     align-items: center;
   }
 
-  .hf-card-container {
-    max-width: 100%;
-    margin-bottom: 0;
-  }
+  .hf-card-container { max-width: 100%; margin-bottom: 0; }
+  .hf-card { padding-bottom: 90%; }
 
-  .hf-card {
-    padding-bottom: 90%;
+  /* CTA size tuning for mobile transition */
+  .hf-cta {
+    height: 2.75rem;
+    padding: 0 1.5rem;
+    font-size: 1.05rem;
   }
 }
 
@@ -229,26 +314,20 @@
     align-items: center;
   }
 
-  .hf-card-container {
-    max-width: 100%;
-    margin-bottom: 0;
-  }
-
+  .hf-card-container { max-width: 100%; margin-bottom: 0; }
   .hf-card {
     padding-bottom: 0; /* Remove percentage-based height */
     height: 400px; /* Fixed height: 400px */
     width: 100%;
   }
 
-  .hf-card .placeholder-content {
-    font-size: 1.2rem;
-    padding: 15px;
-  }
+  .hf-card .placeholder-content { font-size: 1.2rem; padding: 15px; }
 
+  /* CTA for this breakpoint */
   .hf-cta {
-    padding: 12px 24px;
-    font-size: 1.3rem;
-    min-height: 44px;
+    height: 2.75rem;
+    padding: 0 1.4rem;
+    font-size: 1.05rem;
   }
 
   .hf-caption {
@@ -276,20 +355,14 @@
     margin: 0 auto 28px;
   }
 
-  .hf-card-grid {
-    gap: 8px; /* Spacing between images: 8px */
-    padding: 0 16px;
-  }
+  .hf-card-grid { gap: 8px; padding: 0 16px; }
+  .hf-card { height: 400px; padding-bottom: 0; }
 
-  .hf-card {
-    padding-bottom: 0; /* Remove percentage-based height */
-    height: 400px; /* Fixed height: 400px */
-  }
-
+  /* Slightly more compact CTA on very small screens */
   .hf-cta {
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    min-height: 40px;
+    height: 2.5rem;
+    padding: 0 1.25rem;
+    font-size: 1rem;
   }
 
   .hf-caption {
@@ -300,12 +373,6 @@
 
 /* Extra small devices */
 @media (max-width: 360px) {
-  .hf-title,
-  .hf-sub {
-    padding: 0 12px;
-  }
-  
-  .hf-card-grid {
-    padding: 0 12px;
-  }
+  .hf-title, .hf-sub { padding: 0 12px; }
+  .hf-card-grid { padding: 0 12px; }
 }
