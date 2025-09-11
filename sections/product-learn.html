@@ -6,10 +6,13 @@
     <title>Hawaa - Breathe Pure. Effortlessly.</title>
     <link rel="stylesheet" href="../css/header.css" />
     <link rel="stylesheet" href="../css/product-learn.css">
-
+    
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
     <link rel="preload" href="../images/3D-Product-Animation-optimized.mp4" as="video">
-<link rel="preload" href="../css/product-learn.css" as="style">
-<link rel="preload" href="../js/product-learn.js" as="script">
+    <link rel="preload" href="../css/product-learn.css" as="style">
+    <link rel="preload" href="../js/product-learn.js" as="script">
 </head>
 <body>
     <!-- Header -->
@@ -20,57 +23,85 @@
       </a>
       <div class="header-actions">
         <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <div class="hamburger-icon"><span></span><span></span><span></span></div>
+          <span class="material-symbols-rounded icon-28">menu</span>
         </button>
       </div>
     </div>
   </header>
-  <div class="mobile-nav" id="mobile-nav">
-    <div class="nav-overlay" id="nav-overlay"></div>
-    <div class="nav-panel">
-      <div class="nav-header">
-        <h2 class="nav-title">Menu</h2>
-        <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </button>
-          <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-          </button>
-          <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
+
+  <!-- Mobile Nav -->
+<div class="mobile-nav" id="mobile-nav">
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <div class="nav-panel">
+    <div class="nav-header">
+      <h2 class="nav-title">Menu</h2>
+      <div class="nav-icons">
+        <button class="nav-icon" aria-label="Account">
+          <span class="material-symbols-rounded">account_circle</span>
+        </button>
+        <button class="nav-icon" aria-label="Cart">
+          <span class="material-symbols-rounded">shopping_cart</span>
+        </button>
+        <button class="nav-close" id="nav-close" aria-label="Close menu">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-content">
+      <div class="nav-section">
+        <h3 class="section-title">EXPLORE</h3>
+        <div class="nav-links-wrapper">
+          <ul class="nav-links">
+            <li>
+              <a href="index.html">
+                Home <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/filter-learn.html">
+                Filter Technology <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/installation-guide.html">
+                Installation Guide <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="nav-content">
-        <div class="nav-section">
-          <h3 class="section-title">EXPLORE</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="../sections/filter-learn.html">Filter Technology</a></li>
-              <li><a href="/technology">Instalation Guide</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="nav-section">
-          <h3 class="section-title">ABOUT HAWAA</h3>
-          <div class="nav-links-wrapper">
-            <ul class="nav-links">
-              <li><a href="../about.html">About Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="../blog.html">Blog</a></li>
-            </ul>
-          </div>
+
+      <div class="nav-section">
+        <h3 class="section-title">ABOUT HAWAA</h3>
+        <div class="nav-links-wrapper">
+          <ul class="nav-links">
+            <li>
+              <a href="about.html">
+                About Us <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/faq-page.html">
+                FAQ <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="blog.html">
+                Blog <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
+</div>
 
     <!-- Hero Section -->
 <section class="hero-section">
   <!-- Image Background -->
-  <img class="hero-image" src="../images/hero-learn-more.png" alt="Clean Air Product">
+  <img class="hero-image" src="../images/living-room.png" alt="Clean Air Product">
 
   <div class="hero-content">
     <div class="hero-text">
@@ -84,7 +115,7 @@
           <h3 class="product-name">Hawaa Pure 500</h3>
           <p class="product-price">₹24,900.00*</p>
         </div>
-        <button class="buy-button">Buy</button>
+        <button class="buy-button button-tertiary">Buy</button>
       </div>
     </div>
   </div>
@@ -168,24 +199,20 @@
       <!-- Slide 4: two images -->
       <div class="slide">
         <div class="two-items">
-          <img src="../images/closer2a.png" alt="Slide 4A">
-          <img src="../images/closer2b.png" alt="Slide 4B">
+          <img src="../images/closer4a.png" alt="Slide 4A">
+          <img src="../images/closer4b.png" alt="Slide 4B">
         </div>
       </div>
     </div>
 
     <!-- fixed Prev/Next buttons -->
     <div class="closer-look-controls">
-      <button class="nav-btn prev-btn" aria-label="Previous slide">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button class="nav-btn next-btn" aria-label="Next slide">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+      <button class="nav-btn prev-btn icon-only--secondary" aria-label="Previous slide">
+        <span class="material-symbols-rounded">chevron_left</span>
+      </button>
+      <button class="nav-btn next-btn icon-only--secondary" aria-label="Next slide">
+        <span class="material-symbols-rounded">chevron_right</span>
+      </button>
     </div>
   </div>
 </section>
@@ -222,7 +249,7 @@
     <div class="performance-content">
       <h2 class="performance-headline">Purification performance</h2>
       <p class="performance-description">
-        The Hawaa C150’s 3-stage filtration system quietly and efficiently cleans spaces up to 334 sq.ft., refreshing your room five times per hour—removing pollutants, allergens, and odours for air you can truly feel.
+        The Hawaa C150's 3-stage filtration system quietly and efficiently cleans spaces up to 334 sq.ft., refreshing your room five times per hour—removing pollutants, allergens, and odours for air you can truly feel.
       </p>
     </div>
   </div>
@@ -250,7 +277,7 @@
       <div class="tile-text">
         <h3>Smart Controls. At Your Fingertips.</h3>
         <p>Real-time air quality. Instant response. Full control.</p>
-        <p>Hawaa Champion’s built-in precision laser sensor continuously measures PM2.5, instantly adjusting airflow to keep you breathing easy. Use the Hawaa app to schedule, adjust, and monitor air quality anywhere, anytime. Compatible with Alexa & Google Assistant.</p>
+        <p>Hawaa Champion's built-in precision laser sensor continuously measures PM2.5, instantly adjusting airflow to keep you breathing easy. Use the Hawaa app to schedule, adjust, and monitor air quality anywhere, anytime. Compatible with Alexa & Google Assistant.</p>
       </div>
       <div class="tile-visual">
         <img src="../images/highlight2.png"
@@ -262,8 +289,8 @@
     <div class="tile-card">
       <div class="tile-text">
         <h3>Engineered for Indian Homes.</h3>
-        <p>From everyday dust to festive smoke, designed to handle India’s toughest air.</p>
-        <p>With robust filtration and durable ABS construction tailored for India’s air quality challenges, the Hawaa Champion ensures reliable performance even during peak pollution seasons.</p>
+        <p>From everyday dust to festive smoke, designed to handle India's toughest air.</p>
+        <p>With robust filtration and durable ABS construction tailored for India's air quality challenges, the Hawaa Champion ensures reliable performance even during peak pollution seasons.</p>
       </div>
       <div class="tile-visual">
         <img src="../images/highlight3.png"
@@ -285,9 +312,6 @@
     </div>
   </div>
 </section>
-
-
-
 
     <script src="../js/product-learn.js"></script>
     <script src="../js/header.js"></script>

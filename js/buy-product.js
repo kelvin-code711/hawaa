@@ -1,9 +1,10 @@
+// buy-product.js — Transparent iframe drawer + single blurred overlay
+
 document.addEventListener('DOMContentLoaded', () => {
   // ======================================================
-  // Helpers (cart + DOM)
+  // Helpers
   // ======================================================
   const CART_KEY = 'hawaa_cart';
-
   const $  = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
@@ -13,32 +14,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.round(parseFloat(m[0].replace(/,/g, '')));
   };
 
-  const inr = new Intl.NumberFormat('en-IN', {
-    style:'currency', currency:'INR', maximumFractionDigits:0
-  });
+  const inr = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
 
-  const loadCart = () => {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-    catch { return []; }
-  };
-
-  const saveCart = (arr) => {
-    try { localStorage.setItem(CART_KEY, JSON.stringify(arr)); } catch {}
-  };
+  const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; } };
+  const saveCart = (arr) => { try { localStorage.setItem(CART_KEY, JSON.stringify(arr)); } catch {} };
 
   const addToCart = (item) => {
     const cart = loadCart();
-    const idx = cart.findIndex(x =>
-      (x.title || '')   === (item.title || '') &&
-      (x.variant || '') === (item.variant || '')
-    );
+    const idx = cart.findIndex(x => (x.title||'')=== (item.title||'') && (x.variant||'') === (item.variant||''));
     if (idx >= 0) {
       cart[idx].qty   = Math.max(1, Number(cart[idx].qty || 1)) + (item.qty || 1);
       cart[idx].price = Number(item.price || cart[idx].price || 0);
       if (item.img) cart[idx].img = item.img;
     } else {
       cart.push({
-        id: item.id || Math.random().toString(36).slice(2, 10),
+        id: item.id || Math.random().toString(36).slice(2,10),
         title: item.title,
         price: Number(item.price || 0),
         img: item.img,
@@ -49,216 +39,153 @@ document.addEventListener('DOMContentLoaded', () => {
     saveCart(cart);
   };
 
-  const readProductMeta = () => {
-    const title = $('.product-title')?.textContent?.trim() || 'Hawaa Air Purifier';
-    const img   = $('#main-product-image')?.getAttribute('src') || 'images/product-main.jpg';
-    return { title, img };
-  };
+  const readProductMeta = () => ({
+    title: $('.product-title')?.textContent?.trim() || 'Hawaa Air Purifier',
+    img:   $('#main-product-image')?.getAttribute('src') || 'images/product-main.jpg'
+  });
 
   // ======================================================
-  // Frequency / Plan UI state
+  // Cached elements
   // ======================================================
-  const freqCards  = $$('.freq-card');
+  const freqWrap   = $('.freq');
   const planGroup  = $('#plan-group');
   const planSelect = $('#plan-select');
   const planMenu   = $('#plan-menu');
   const planValue  = $('#plan-value');
   const planSavings= $('#plan-savings');
-
-  // default INR text for one-time card (if not present)
   const onetimeSub = document.querySelector('.freq-card[data-freq="onetime"] .freq-sub');
-  if (onetimeSub) onetimeSub.textContent = `${inr.format(4999)}/ea`;
 
-  // frequency toggle
-  freqCards.forEach(btn => {
-    btn.addEventListener('click', () => {
-      freqCards.forEach(b => {
-        b.classList.toggle('active', b === btn);
-        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-      });
-      const isSub = btn.dataset.freq === 'subscribe';
-      if (planGroup) planGroup.style.display = isSub ? '' : 'none';
+  // default INR text for one-time (if empty)
+  if (onetimeSub && !/\d/.test(onetimeSub.textContent)) onetimeSub.textContent = `${inr.format(4999)}/ea`;
+
+  // ======================================================
+  // Frequency toggle (delegated)
+  // ======================================================
+  function setActiveFrequency(btn){
+    if (!btn) return;
+    const cards = $$('.freq-card', freqWrap);
+    for (const b of cards){
+      const isActive = b === btn;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      const icon = b.querySelector('.freq-check');
+      if (icon) icon.textContent = isActive ? 'check_circle' : 'radio_button_unchecked';
+    }
+    const isSub = btn.dataset.freq === 'subscribe';
+    if (planGroup) planGroup.style.display = isSub ? '' : 'none';
+  }
+
+  if (freqWrap){
+    freqWrap.addEventListener('click', (e) => {
+      const btn = e.target.closest('.freq-card');
+      if (!btn || !freqWrap.contains(btn)) return;
+      setActiveFrequency(btn);
     });
+    // initial state (respect pre-marked .active or default to first)
+    setActiveFrequency($('.freq-card.active', freqWrap) || $('.freq-card', freqWrap));
+  }
+
+  // ======================================================
+  // Plan dropdown (delegated + aria hygiene)
+  // ======================================================
+  function openMenu(open){
+    if (!planMenu || !planSelect) return;
+    planMenu.classList.toggle('open', open);
+    planSelect.classList.toggle('is-open', open);
+    planMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+
+  if (planSelect){
+    planSelect.addEventListener('click', () => openMenu(!planMenu.classList.contains('open')));
+  }
+
+  if (planMenu){
+    planMenu.addEventListener('click', (e) => {
+      const opt = e.target.closest('.plan-opt');
+      if (!opt) return;
+
+      // activate chosen option
+      $$('.plan-opt', planMenu).forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+
+      const months = opt.getAttribute('data-months') || '4';
+      const price  = Number(opt.getAttribute('data-price') || 4599);
+
+      if (planValue) planValue.textContent = `1 filter every ${months} months`;
+
+      const strikeEl  = document.querySelector('.plan-pricing .strike');
+      const currentEl = document.querySelector('.plan-pricing .current');
+      if (strikeEl)  strikeEl.textContent  = inr.format(4999);
+      if (currentEl) currentEl.textContent = `${inr.format(price)}/ea`;
+
+      if (planSavings) planSavings.textContent = `A 1-filter subscription saves you ${inr.format(4800)}/yr`;
+
+      openMenu(false);
+      planSelect.focus();
+    });
+  }
+
+  // Close menu on outside click (single global listener)
+  document.addEventListener('click', (e) => {
+    if (!planSelect || !planMenu) return;
+    if (!planSelect.contains(e.target) && !planMenu.contains(e.target)) openMenu(false);
   });
 
-  // dropdown open/close + options
-  if (planSelect && planMenu) {
-    planSelect.addEventListener('click', () => {
-      planMenu.classList.toggle('open');
-      planSelect.classList.toggle('is-open', planMenu.classList.contains('open'));
-    });
+  // Keyboard support with minimal work
+  document.addEventListener('keydown', (e) => {
+    if (!planMenu?.classList.contains('open')) return;
+    if (e.key === 'Escape') { openMenu(false); planSelect?.focus(); return; }
 
-    planMenu.querySelectorAll('.plan-opt').forEach(opt => {
-      opt.addEventListener('click', () => {
-        planMenu.querySelectorAll('.plan-opt').forEach(o => o.classList.remove('active'));
-        opt.classList.add('active');
+    const opts = $$('.plan-opt', planMenu);
+    if (!opts.length) return;
 
-        const months = opt.getAttribute('data-months');
-        const price  = Number(opt.getAttribute('data-price') || 4599);
-
-        planValue.textContent = `1 filter every ${months} months`;
-
-        const strikeEl  = document.querySelector('.plan-pricing .strike');
-        const currentEl = document.querySelector('.plan-pricing .current');
-        if (strikeEl)  strikeEl.textContent  = inr.format(4999);
-        if (currentEl) currentEl.textContent = `${inr.format(price)}/ea`;
-
-        if (planSavings) planSavings.textContent = `A 1-filter subscription saves you ${inr.format(4800)}/yr`;
-
-        planMenu.classList.remove('open');
-        planSelect.classList.remove('is-open');
-        planSelect.focus();
-      });
-    });
-
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (!planSelect.contains(e.target) && !planMenu.contains(e.target)) {
-        planMenu.classList.remove('open');
-        planSelect.classList.remove('is-open');
-      }
-    });
-
-    // Close on ESC + keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        planMenu.classList.remove('open');
-        planSelect.classList.remove('is-open');
-        planSelect.focus();
-      }
-      if (planMenu.classList.contains('open')) {
-        const opts = [...planMenu.querySelectorAll('.plan-opt')];
-        const i = opts.findIndex(o => o === document.activeElement);
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          (opts[i + 1] || opts[0]).focus();
-        }
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          (opts[i - 1] || opts[opts.length - 1]).focus();
-        }
-        if (e.key === 'Enter' && document.activeElement?.classList.contains('plan-opt')) {
-          document.activeElement.click();
-        }
-      }
-    });
-  }
-
-  // Determine selected pricing/variant for cart
-  const readActiveOption = () => {
-    const activeFreq = $('.freq-card.active');
-    const isSub = activeFreq ? activeFreq.dataset.freq === 'subscribe' : false;
-
-    if (!isSub) {
-      const p = moneyToNumberINR(onetimeSub?.textContent || '₹4,999');
-      return { price: p, variant: 'One-time purchase' };
+    const i = opts.findIndex(o => o === document.activeElement);
+    if (e.key === 'ArrowDown'){ e.preventDefault(); (opts[i+1] || opts[0]).focus(); }
+    if (e.key === 'ArrowUp'){   e.preventDefault(); (opts[i-1] || opts[opts.length-1]).focus(); }
+    if (e.key === 'Enter' && document.activeElement?.classList.contains('plan-opt')){
+      document.activeElement.click();
     }
-
-    const activeOpt = $('.plan-opt.active');
-    const months = activeOpt?.getAttribute('data-months') || '4';
-    const price  = Number(activeOpt?.getAttribute('data-price') || 4599);
-    const variant = `Subscription • Filter every ${months} months`;
-
-    return { price, variant };
-  };
+  });
 
   // ======================================================
-  // Checkout drawer
+  // Image gallery (delegated)
   // ======================================================
-  function openCheckoutDrawer() {
-    document.querySelectorAll('#hawaa-checkout-overlay').forEach(n => n.remove());
-    document.querySelectorAll('style[data-hawaa="checkout"]').forEach(s => s.remove());
-
-    const overlay = document.createElement('div');
-    overlay.id = 'hawaa-checkout-overlay';
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
-    overlay.innerHTML = `
-      <div class="hawaa-overlay-backdrop"></div>
-      <div class="hawaa-drawer">
-        <iframe class="hawaa-drawer-frame" title="Checkout" src="sections/checkout.html" referrerpolicy="no-referrer"></iframe>
-      </div>
-    `;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-hawaa', 'checkout');
-    style.textContent = `
-      #hawaa-checkout-overlay{position:fixed;inset:0;z-index:9999;display:grid;grid-template-columns:1fr auto}
-      .hawaa-overlay-backdrop{background:rgba(2,6,23,.38)}
-      .hawaa-drawer{
-        width:560px;max-width:96vw;height:100vh;background:#fff;border-left:1px solid #e5e7eb;
-        box-shadow:-8px 0 24px rgba(2,6,23,.12);
-        transform:translateX(100%);transition:transform .25s ease
-      }
-      .hawaa-drawer-frame{width:100%;height:100%;border:0;display:block;background:#fff}
-      body.hawaa-no-scroll{overflow:hidden}
-      @media (max-width:600px){ .hawaa-drawer{width:94vw} }
-    `;
-
-    document.body.appendChild(style);
-    document.body.appendChild(overlay);
-    document.body.classList.add('hawaa-no-scroll');
-
-    requestAnimationFrame(() => {
-      overlay.querySelector('.hawaa-drawer').style.transform = 'translateX(0)';
-    });
-
-    function closeDrawerImmediately(){
-      document.body.classList.remove('hawaa-no-scroll');
-      overlay.remove();
-      style.remove();
-      window.removeEventListener('keydown', onKeydown);
-      window.removeEventListener('message', onMsg);
-    }
-
-    overlay.querySelector('.hawaa-overlay-backdrop')
-      .addEventListener('click', closeDrawerImmediately);
-
-    function onMsg(e){
-      if (e && e.data && e.data.type === 'hawaa:closeCheckout'){
-        closeDrawerImmediately();
-      }
-    }
-    window.addEventListener('message', onMsg);
-
-    function onKeydown(ev){
-      if (ev.key === 'Escape') closeDrawerImmediately();
-    }
-    window.addEventListener('keydown', onKeydown);
-  }
-
-  // ======================================================
-  // Image gallery
-  // ======================================================
-  const thumbnails    = document.querySelectorAll('.thumbnail');
-  const mainImageElem = document.getElementById('main-product-image');
+  const mainImageElem = $('#main-product-image');
+  const thumbWrap     = mainImageElem?.closest('.main-image');
   const defaultSrc    = mainImageElem ? mainImageElem.src : '';
 
-  thumbnails.forEach(thumb => {
-    thumb.addEventListener('click', () => {
+  if (thumbWrap){
+    thumbWrap.addEventListener('click', (e) => {
+      const thumb = e.target.closest('.thumbnail');
+      if (!thumb) return;
+
       const newSrc = thumb.dataset.image;
       const oldSrc = mainImageElem.src;
 
+      // fade swap
       mainImageElem.style.opacity = '0';
       setTimeout(() => {
         mainImageElem.src = newSrc;
         mainImageElem.style.opacity = '1';
 
+        // swap thumb image to the old main image for quick toggling effect
         thumb.dataset.image = oldSrc;
-        const img = thumb.querySelector('img');
-        if (img) img.src = oldSrc;
+        const img = thumb.querySelector('img'); if (img) img.src = oldSrc;
 
-        thumbnails.forEach(t => t.classList.remove('active'));
+        $$('.thumbnail', thumbWrap).forEach(t => t.classList.remove('active'));
         if (newSrc !== defaultSrc) thumb.classList.add('active');
       }, 300);
     });
-  });
+  }
 
   // ======================================================
-  // Accordions
+  // Accordions (delegated)
   // ======================================================
-  document.querySelectorAll('.accordion-header').forEach(header => {
-    header.addEventListener('click', () => {
+  const accRoot = $('.product-accordions');
+  if (accRoot){
+    accRoot.addEventListener('click', (e) => {
+      const header = e.target.closest('.accordion-header');
+      if (!header) return;
       const item    = header.parentElement;
       const content = header.nextElementSibling;
       const open    = item.classList.contains('active');
@@ -271,18 +198,99 @@ document.addEventListener('DOMContentLoaded', () => {
         content.style.maxHeight = content.scrollHeight + 'px';
       }
     });
-  });
+  }
 
   // ======================================================
-  // Add to Cart
+  // Selected option for cart
   // ======================================================
-  function handleAdd(){
+  function readActiveOption(){
+    const activeFreq = $('.freq-card.active', freqWrap);
+    const isSub = activeFreq ? activeFreq.dataset.freq === 'subscribe' : false;
+
+    if (!isSub) {
+      const p = moneyToNumberINR(onetimeSub?.textContent || '₹4,999');
+      return { price: p, variant: 'One-time purchase' };
+    }
+
+    const activeOpt = $('.plan-opt.active', planMenu);
+    const months = activeOpt?.getAttribute('data-months') || '4';
+    const price  = Number(activeOpt?.getAttribute('data-price') || 4599);
+    return { price, variant: `Subscription • Filter every ${months} months` };
+  }
+
+  // ======================================================
+  // Checkout drawer — add ONE blurred overlay under iframe
+  // ======================================================
+  function openCheckoutDrawer(){
+    // Clean any previous nodes/listeners
+    document.getElementById('hawaa-checkout-frame')?.remove();
+    document.getElementById('hawaa-blur-layer')?.remove();
+
+    // Create blur layer (single, transparent, blurred)
+    const blur = document.createElement('div');
+    blur.id = 'hawaa-blur-layer';
+    Object.assign(blur.style, {
+      position: 'fixed',
+      inset: '0',
+      zIndex: '2147483644',
+      background: 'rgba(2, 6, 23, 0.28)', // subtle tint
+      backdropFilter: 'blur(3px) saturate(120%)',
+      WebkitBackdropFilter: 'blur(3px) saturate(120%)'
+    });
+
+    // Clicking blur closes the drawer
+    blur.addEventListener('click', closeDrawer);
+
+    // Create right-docked iframe (stays above blur)
+    const iframe = document.createElement('iframe');
+    iframe.id = 'hawaa-checkout-frame';
+    iframe.title = 'Cart';
+    iframe.src = 'sections/checkout.html';
+    Object.assign(iframe.style, {
+      position: 'fixed',
+      top: '0',
+      right: '0',
+      width: 'min(100vw, 408px)',  // should match drawer width
+      height: '100vh',
+      border: '0',
+      background: 'transparent',
+      zIndex: '2147483645'         // above blur layer
+    });
+    iframe.setAttribute('allowtransparency', 'true');
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('referrerpolicy', 'no-referrer');
+
+    // Close handlers
+    function onMsg(e){
+      if (e?.data?.type === 'hawaa:closeCheckout') closeDrawer();
+    }
+    function onEsc(ev){
+      if (ev.key === 'Escape') closeDrawer();
+    }
+    function closeDrawer(){
+      iframe.remove();
+      blur.remove();
+      window.removeEventListener('message', onMsg);
+      document.removeEventListener('keydown', onEsc);
+    }
+
+    window.addEventListener('message', onMsg);
+    document.addEventListener('keydown', onEsc);
+
+    // Add to DOM (blur first, then iframe)
+    document.body.appendChild(blur);
+    document.body.appendChild(iframe);
+  }
+
+  // ======================================================
+  // Add to cart (delegated to page)
+  // ======================================================
+  document.addEventListener('click', (e) => {
+    const addBtn = e.target.closest('.add-to-cart, .cta-add');
+    if (!addBtn) return;
     const { title, img }     = readProductMeta();
     const { price, variant } = readActiveOption();
-    addToCart({ title, img, price, variant, qty: 1 });
+    addToCart({ title, img, price, variant, qty:1 });
     openCheckoutDrawer();
-  }
-  document.querySelectorAll('.add-to-cart, .cta-add').forEach(btn => {
-    btn.addEventListener('click', handleAdd);
   });
 });

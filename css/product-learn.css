@@ -196,21 +196,41 @@ body {
   color: #fff;
 }
 
+/* Buy Button → Apply tertiary style */
 .buy-button {
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 1rem;
+  all: unset;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #132A39;
+  background: transparent;
+  color: #132A39;
   transition: all 0.3s ease;
-  white-space: nowrap;
 }
-
+.buy-button::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(45,191,173,0.25) 0%, rgba(19,42,57,0) 70%);
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+.buy-button:hover::after { transform: scale(4); }
 .buy-button:hover {
-  background: rgba(255, 255, 255, 0.9);
+  border-color: #2DBFAD;
+  background: #B5E1EC;
 }
 
 /* Feature Overview Section */
@@ -272,7 +292,7 @@ body {
   opacity: 1;
 }
 
-/* Dot Nav (sticky within the section) */
+/* Dot Nav */
 #feature-overview .dot-nav {
   position: sticky;
   bottom: 16px;
@@ -311,6 +331,7 @@ body {
   background-color: #29292a;
 }
 
+/* Closer Look Section */
 .closer-look-section {
   padding: 40px 0;
 }
@@ -320,14 +341,10 @@ body {
   padding-left: calc((100vw - 1160px) / 2);
   margin-bottom: 16px;
 }
-
-/* wrapper to hold scrolling & controls */
 .closer-look-wrapper {
   position: relative;
   overflow: visible;
 }
-
-/* scrollable grid + snap */
 .closer-look-container {
   display: grid;
   grid-auto-flow: column;
@@ -340,8 +357,6 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
-
-/* each slide centers on snap */
 .slide {
   width: 1160px;
   height: 680px;
@@ -357,8 +372,6 @@ body {
   height: 100%;
   object-fit: cover;
 }
-
-/* two-image layout */
 .two-items {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -373,7 +386,7 @@ body {
   border-radius: 24px;
 }
 
-/* fixed Prev/Next */
+/* Closer Look Controls → Apply secondary icon-only style */
 .closer-look-controls {
   bottom: 10px;
   margin-top: 24px;
@@ -383,22 +396,29 @@ body {
   justify-content: right;
   z-index: 10;
 }
-
 .closer-look-controls button {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid #132A39;
+  color: #132A39;
   transition: all 0.3s ease;
 }
-
+.closer-look-controls button:hover {
+  background: #B5E1EC;
+  border-color: #2DBFAD;
+  color: #132A39;
+}
 .closer-look-controls svg {
-  display: block;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
 }
 
 /* Circles Section */

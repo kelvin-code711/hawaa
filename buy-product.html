@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hawaa - Air Purifier</title>
 
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
   <!-- Header CSS (navbar styles & logo sizing) -->
   <link rel="stylesheet" href="css/header.css" />
 
@@ -22,72 +25,88 @@
     <div class="buy-product-section">
       <div class="product-container">
 
-        <!-- Header INSIDE the product container (transparent, no shadow) -->
-        <header class="hawaa-header" id="hawaa-header">
-          <div class="header-container">
-            <a href="index.html" class="header-logo">
-              <img src="images/logo.svg" alt="Hawaa" />
-            </a>
-            <div class="header-actions">
-              <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-                <div class="hamburger-icon"><span></span><span></span><span></span></div>
-              </button>
-            </div>
-          </div>
-        </header>
+        <!-- Header -->
+  <header class="hawaa-header" id="hawaa-header">
+    <div class="header-container">
+      <a href="index.html" class="header-logo">
+        <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
+      </a>
+      <div class="header-actions">
+        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+          <span class="material-symbols-rounded icon-28">menu</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-        <!-- Mobile Navigation (single instance) -->
-        <div class="mobile-nav" id="mobile-nav">
-          <div class="nav-overlay" id="nav-overlay"></div>
-          <div class="nav-panel">
-            <div class="nav-header">
-              <h2 class="nav-title">Menu</h2>
-              <div class="nav-icons">
-                <button class="nav-icon" aria-label="Account">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                </button>
-                <button class="nav-icon" aria-label="Cart">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                </button>
-                <button class="nav-close" id="nav-close" aria-label="Close menu">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="nav-content">
-              <div class="nav-section">
-                <h3 class="section-title">EXPLORE</h3>
-                <div class="nav-links-wrapper">
-                  <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="sections/filter-learn.html">Filter Technology</a></li>
-                    <li><a href="/technology">Installation Guide</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="nav-section">
-                <h3 class="section-title">ABOUT HAWAA</h3>
-                <div class="nav-links-wrapper">
-                  <ul class="nav-links">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="/faq">FAQ</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+  <!-- Mobile Nav -->
+<div class="mobile-nav" id="mobile-nav">
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <div class="nav-panel">
+    <div class="nav-header">
+      <h2 class="nav-title">Menu</h2>
+      <div class="nav-icons">
+        <button class="nav-icon" aria-label="Account">
+          <span class="material-symbols-rounded">account_circle</span>
+        </button>
+        <button class="nav-icon" aria-label="Cart">
+          <span class="material-symbols-rounded">shopping_cart</span>
+        </button>
+        <button class="nav-close" id="nav-close" aria-label="Close menu">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-content">
+      <div class="nav-section">
+        <h3 class="section-title">EXPLORE</h3>
+        <div class="nav-links-wrapper">
+          <ul class="nav-links">
+            <li>
+              <a href="index.html">
+                Home <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/filter-learn.html">
+                Filter Technology <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/installation-guide.html">
+                Installation Guide <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <div class="nav-section">
+        <h3 class="section-title">ABOUT HAWAA</h3>
+        <div class="nav-links-wrapper">
+          <ul class="nav-links">
+            <li>
+              <a href="about.html">
+                About Us <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="sections/faq-page.html">
+                FAQ <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+            <li>
+              <a href="blog.html">
+                Blog <span class="material-symbols-rounded">chevron_right</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- Row with gallery + details -->
         <div class="product-content">
@@ -133,20 +152,20 @@
     <button class="freq-card active" data-freq="subscribe" aria-pressed="true">
       <span class="freq-title">Subscribe and save</span>
       <span class="freq-sub">Save up to 17%</span>
-      <span class="freq-check" aria-hidden="true"></span>
+      <span class="freq-check material-symbols-rounded" aria-hidden="true">check_circle</span>
     </button>
 
     <button class="freq-card" data-freq="onetime" aria-pressed="false">
       <span class="freq-title">One-time purchase</span>
       <span class="freq-sub">₹4,999/ea</span>
-      <span class="freq-check" aria-hidden="true"></span>
+      <span class="freq-check material-symbols-rounded" aria-hidden="true">radio_button_unchecked</span>
     </button>
   </div>
 
   <!-- Select your plan (shown only for subscribe) -->
   <div class="plan" id="plan-group">
     <h4 class="plan-title">Select your plan</h4>
-    <p class="plan-sub">Pause or cancel whenever you’d like.</p>
+    <p class="plan-sub">Pause or cancel whenever you'd like.</p>
 
     <button class="plan-select" id="plan-select" type="button">
       <span class="plan-value" id="plan-value">1 filter every 4 months</span>
@@ -154,7 +173,7 @@
         <s class="strike">₹4,999</s>
         <strong class="current">₹4,599/ea</strong>
       </span>
-      <span class="chev" aria-hidden="true"></span>
+      <span class="chev material-symbols-rounded">expand_more</span>
     </button>
 
     <!-- simple dropdown -->
@@ -173,16 +192,26 @@
   </div>
 
   <!-- CTA -->
-  <button class="cta-add" id="cta-add">Add to cart</button>
+  <button class="cta-add button button--primary" id="cta-add">
+    <span class="button-bg">
+      <span class="button-bg-layers">
+        <span class="button-bg-layer button-bg-layer-1 -purple"></span>
+        <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
+        <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
+      </span>
+    </span>
+    <span class="button-inner">
+      <span class="button-inner-static">Add to cart</span>
+      <span class="button-inner-hover">Add to cart</span>
+    </span>
+  </button>
 </div>
 
             <div class="product-accordions">
               <div class="accordion-item">
                 <button class="accordion-header" type="button">
                   <span>Specifications</span>
-                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <span class="material-symbols-rounded icon">expand_more</span>
                 </button>
                 <div class="accordion-content">
                   <ul>
@@ -197,9 +226,7 @@
               <div class="accordion-item">
                 <button class="accordion-header" type="button">
                   <span>What's in the Box</span>
-                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <span class="material-symbols-rounded icon">expand_more</span>
                 </button>
                 <div class="accordion-content">
                   <ul>
@@ -214,9 +241,7 @@
               <div class="accordion-item">
                 <button class="accordion-header" type="button">
                   <span>How to Use</span>
-                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <span class="material-symbols-rounded icon">expand_more</span>
                 </button>
                 <div class="accordion-content">
                   <ol>
@@ -230,9 +255,7 @@
               <div class="accordion-item">
                 <button class="accordion-header" type="button">
                   <span>Warranty &amp; Support</span>
-                  <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
-                    <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <span class="material-symbols-rounded icon">expand_more</span>
                 </button>
                 <div class="accordion-content">
                   <p>
@@ -291,7 +314,7 @@
           <div class="review-stars">★★★★★</div>
           <p class="review-text">
             I am typically not a moisturizer type of person, but since getting the Smart Air Purifier…
-            Can’t wait to get more!
+            Can't wait to get more!
           </p>
           <div class="review-meta">
             <span class="reviewer">Joel L.</span>
@@ -327,15 +350,19 @@
       </div>
 
       <div class="reviews-pagination">
-        <button class="page-btn prev" aria-label="Previous page">&larr;</button>
+        <button class="page-btn prev" aria-label="Previous page">
+          <span class="material-symbols-rounded">arrow_back</span>
+        </button>
         <span class="page-info">1 / 32</span>
-        <button class="page-btn next" aria-label="Next page">&rarr;</button>
+        <button class="page-btn next" aria-label="Next page">
+          <span class="material-symbols-rounded">arrow_forward</span>
+        </button>
       </div>
     </div>
   </section>
 
   <!-- JavaScript -->
-  <script src="../js/header.js"></script>
+  <script src="js/header.js"></script>
   <script src="js/buy-product.js"></script>
 </body>
 </html>
