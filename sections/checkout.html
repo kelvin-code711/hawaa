@@ -9,66 +9,167 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Correct Material Symbols -->
+
+  <!-- Material Symbols -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="../css/checkout.css" />
+  <link rel="stylesheet" href="../css/checkout.css?v=6" />
 
   <meta name="color-scheme" content="light dark">
-  <style>
-    html, body { background: transparent !important; }
-  </style>
+  <style>html, body { background: transparent !important; }</style>
 </head>
 <body>
   <aside id="cart-drawer" class="cd-drawer" role="dialog" aria-modal="false" aria-labelledby="cart-title">
     <header class="cd-head">
+      <!-- Title for CART step -->
       <h2 id="cart-title">Your cart</h2>
-      <button class="cd-icon-btn cd-close" aria-label="Close cart">
+
+      <!-- Back to Cart (info step only) -->
+      <div id="info-header" class="cd-infohead" hidden>
+        <button type="button" class="cd-backlink" id="back-to-cart">
+          <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
+          Back to cart
+        </button>
+      </div>
+
+      <button class="cd-icon-btn cd-close" aria-label="Close cart" id="close-btn">
         <span class="material-symbols-rounded" aria-hidden="true">close</span>
       </button>
     </header>
 
     <div class="cd-body" id="cart-scroll">
-      <ul class="cd-items" id="cart-items" aria-live="polite"></ul>
+      <!-- STEP 1: CART VIEW -->
+      <div id="view-cart" class="view active" data-step="cart">
+        <ul class="cd-items" id="cart-items" aria-live="polite"></ul>
 
-      <div class="cd-empty" id="cart-empty" hidden>
-        <div class="cd-empty-icon">
-          <span class="material-symbols-rounded" aria-hidden="true">shopping_bag</span>
+        <div class="cd-empty" id="cart-empty" hidden>
+          <div class="cd-empty-icon">
+            <span class="material-symbols-rounded" aria-hidden="true">shopping_bag</span>
+          </div>
+          <h3>Your cart is empty</h3>
+          <p>Add items to get started.</p>
+          <button class="cd-ghost-btn cd-continue" type="button" id="continue-shopping">
+            <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+            Continue shopping
+          </button>
         </div>
-        <h3>Your cart is empty</h3>
-        <p>Add items to get started.</p>
-        <button class="cd-ghost-btn cd-continue" type="button">
-          <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
-          Continue shopping
-        </button>
+
+        <form class="cd-promo" id="promo-form" novalidate>
+          <label for="promo-input">Promo code</label>
+          <div class="cd-promo-row">
+            <input id="promo-input" name="code" placeholder="Enter code" autocomplete="off" />
+            <button class="cd-apply" type="submit">Apply</button>
+          </div>
+          <p class="cd-promo-msg" id="promo-msg"></p>
+        </form>
+
+        <section class="cd-summary">
+          <div class="cd-row"><span>Subtotal</span><strong id="sum-subtotal">₹0</strong></div>
+          <div class="cd-row"><span>Discount</span><strong id="sum-discount">– ₹0</strong></div>
+          <div class="cd-row"><span>Shipping</span><strong id="sum-shipping">₹80</strong></div>
+          <div class="cd-row cd-total"><span>Total</span><strong id="sum-total">₹0</strong></div>
+          <p class="cd-note">Taxes calculated at checkout.</p>
+        </section>
       </div>
 
-      <form class="cd-promo" id="promo-form">
-        <label for="promo-input">Promo code</label>
-        <div class="cd-promo-row">
-          <input id="promo-input" name="code" placeholder="Enter code" />
-          <button class="cd-apply" type="submit">Apply</button>
-        </div>
-        <p class="cd-promo-msg" id="promo-msg"></p>
-      </form>
+      <!-- STEP 2: INFO VIEW -->
+      <div id="view-info" class="view" data-step="info" hidden>
+        <div class="cd-accordions" id="info-accordions">
+          <!-- Customer Information (OPEN by default) -->
+          <section class="cd-acc cd-acc-customer">
+            <button class="cd-acc-head" type="button" aria-expanded="true" aria-controls="acc-customer">
+              <span class="cd-acc-title">Customer information</span>
+              <span class="material-symbols-rounded cd-acc-icon" aria-hidden="true">expand_less</span>
+            </button>
+            <div id="acc-customer" class="cd-acc-body open">
+              <div class="cd-grid">
+                <label class="cd-field">
+                  <span>Email</span>
+                  <input type="email" id="cust-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+                </label>
+                <label class="cd-field">
+                  <span>Phone</span>
+                  <input type="tel" id="cust-phone" name="phone" placeholder="+91 98765 43210" required autocomplete="tel" />
+                </label>
+              </div>
 
-      <section class="cd-summary">
-        <div class="cd-row"><span>Subtotal</span><strong id="sum-subtotal">₹0</strong></div>
-        <div class="cd-row"><span>Discount</span><strong id="sum-discount">– ₹0</strong></div>
-        <div class="cd-row"><span>Shipping</span><strong id="sum-shipping">₹80</strong></div>
-        <div class="cd-row cd-total"><span>Total</span><strong id="sum-total">₹0</strong></div>
-        <p class="cd-note">Taxes calculated at checkout.</p>
-      </section>
+              <!-- Save & Continue (below fields, right-aligned) -->
+              <div class="cd-actions-right">
+                <button type="button" class="cd-secondary-btn cd-save-continue" data-target="customer">
+                  Save &amp; Continue
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Shipping Address (CLOSED by default) -->
+          <section class="cd-acc cd-acc-shipping">
+            <button class="cd-acc-head" type="button" aria-expanded="false" aria-controls="acc-shipping">
+              <span class="cd-acc-title">Shipping address</span>
+              <span class="material-symbols-rounded cd-acc-icon" aria-hidden="true">expand_more</span>
+            </button>
+            <div id="acc-shipping" class="cd-acc-body">
+              <div class="cd-grid">
+                <label class="cd-field">
+                  <span>First name</span>
+                  <input type="text" id="ship-first" name="firstName" placeholder="First name" required autocomplete="given-name" />
+                </label>
+                <label class="cd-field">
+                  <span>Last name</span>
+                  <input type="text" id="ship-last" name="lastName" placeholder="Last name" required autocomplete="family-name" />
+                </label>
+                <label class="cd-field cd-col-2">
+                  <span>Address line 1</span>
+                  <input type="text" id="ship-line1" name="address1" placeholder="House no., street" required autocomplete="address-line1" />
+                </label>
+                <label class="cd-field cd-col-2">
+                  <span>Address line 2 (optional)</span>
+                  <input type="text" id="ship-line2" name="address2" placeholder="Apartment, suite, etc." autocomplete="address-line2" />
+                </label>
+                <label class="cd-field">
+                  <span>City</span>
+                  <input type="text" id="ship-city" name="city" placeholder="City" required autocomplete="address-level2" />
+                </label>
+                <label class="cd-field">
+                  <span>State</span>
+                  <input type="text" id="ship-state" name="state" placeholder="State" required autocomplete="address-level1" />
+                </label>
+                <label class="cd-field">
+                  <span>Pincode</span>
+                  <input type="text" id="ship-zip" name="postal" placeholder="e.g. 560001" required inputmode="numeric" autocomplete="postal-code" />
+                </label>
+                <label class="cd-field">
+                  <span>Country</span>
+                  <select id="ship-country" name="country" required autocomplete="country">
+                    <option value="IN" selected>India</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="DE">Germany</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Save & Continue (below fields, right-aligned) -->
+              <div class="cd-actions-right">
+                <button type="button" class="cd-secondary-btn cd-save-continue" data-target="shipping">
+                  Save &amp; Continue
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
 
-    <!-- Footer: total on the left, Next button on the right -->
+    <!-- Footer: total on the left, primary button on the right -->
     <footer class="cd-foot">
       <div class="cd-foot-total" aria-live="polite">
         <span class="cd-foot-label">Total</span>
         <strong class="cd-foot-amount" id="foot-total">₹0</strong>
       </div>
-      <button class="cd-primary-btn" id="next-btn" type="button">
+      <button class="cd-primary-btn" id="next-btn" type="button" data-state="cart">
         <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
         Next
       </button>

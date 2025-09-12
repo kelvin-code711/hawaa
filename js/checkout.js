@@ -1,251 +1,356 @@
-/* Cart drawer — background scroll lock, smoother slide, refined quantity UI, merged items, totals in footer */
+// checkout.js — preserves your UI, enforces Outfit, loads order from localStorage,
+// Save & Continue buttons below fields (right-aligned), no info icon,
+// BACK TO CART strictly hidden on Cart step, shown only on Info step.
 
-document.addEventListener('DOMContentLoaded', () => {
-  const LS_KEY = 'hawaa_cart';
+(function(){
+  const CART_KEY = 'hawaa_cart'; // same key as product page (order fetching)
+  const $  = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  const inr = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
 
-  // Elements
-  const drawer      = document.getElementById('cart-drawer');
-  const closeBtn    = drawer.querySelector('.cd-close');
-  const itemsEl     = document.getElementById('cart-items');
-  const emptyEl     = document.getElementById('cart-empty');
-  const promoForm   = document.getElementById('promo-form');
-  const promoInput  = document.getElementById('promo-input');
-  const promoMsg    = document.getElementById('promo-msg');
-  const sumSubtotal = document.getElementById('sum-subtotal');
-  const sumDiscount = document.getElementById('sum-discount');
-  const sumShipping = document.getElementById('sum-shipping');
-  const sumTotal    = document.getElementById('sum-total');
-  const footTotal   = document.getElementById('foot-total');   // footer amount (your layout)
-  const nextBtn     = document.getElementById('next-btn');     // "Next" button (your layout)
+  // DOM
+  const drawer      = $('#cart-drawer');
+  const listEl      = $('#cart-items');
+  const emptyEl     = $('#cart-empty');
+  const subtotalEl  = $('#sum-subtotal');
+  const discountEl  = $('#sum-discount');
+  const shippingEl  = $('#sum-shipping');
+  const totalEl     = $('#sum-total');
+  const footTotalEl = $('#foot-total');
+  const promoForm   = $('#promo-form');
+  const promoInput  = $('#promo-input');
+  const promoMsg    = $('#promo-msg');
+  const nextBtn     = $('#next-btn');
+  const closeBtn    = $('#close-btn');
+
+  const viewCart    = $('#view-cart');
+  const viewInfo    = $('#view-info');
+
+  // Header pieces
+  const cartTitle   = $('#cart-title');
+  const infoHeader  = $('#info-header');
+  const backToCart  = $('#back-to-cart');
+
+  // Accordions + fields
+  const accRoot     = $('#info-accordions');
+  const customerHead= document.querySelector('.cd-acc-customer .cd-acc-head');
+  const customerBody= $('#acc-customer');
+  const shippingHead= document.querySelector('.cd-acc-shipping .cd-acc-head');
+  const shippingBody= $('#acc-shipping');
+
+  const saveCustomerBtn = document.querySelector('.cd-acc-customer .cd-save-continue');
+  const saveShippingBtn = document.querySelector('.cd-acc-shipping .cd-save-continue');
 
   // State
-  let cart = [];
+  let cart     = [];
   let discount = 0;
-  let shipping = 80;
-  let lastFocus = null;
-  let lockedScrollY = 0;
+  const shippingFlat = 80;
+  let step = 'cart'; // 'cart' | 'info'
 
-  // Helpers
-  const currency = (n) => `₹${Math.max(0, Number(n) || 0).toLocaleString('en-IN')}`;
-  const loadLS = () => {
-    try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); }
+  // --- Storage helpers ---
+  const loadCart = () => {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
     catch { return []; }
   };
-  const saveLS = () => {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(cart)); } catch {}
+  const saveCart = (arr) => {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(arr)); } catch {}
   };
 
-  // Merge key so duplicate adds become one line with increased qty
-  const makeKey = (it) => {
-    const pid  = (it.productId || it.pid || '').toString().trim();
-    const sku  = (it.sku || '').toString().trim();
-    const varr = (it.variant || it.attrs || '').toString().trim();
-    const title= (it.name || it.title || it.productTitle || '').toString().trim();
-    const price= Number(it.price || 0);
-    const base = pid || sku || `${title}|${varr}`;
-    return `${base}|${price}`.toLowerCase();
-  };
+  // --- Totals ---
+  const calcSubtotal = () => cart.reduce((s, it) => s + (Number(it.price)||0) * (Number(it.qty)||1), 0);
 
-  function normalizeFromLS(arr) {
-    const list = Array.isArray(arr) ? arr : [];
-    const merged = new Map();
-    for (const raw of list) {
-      const key = makeKey(raw);
-      const norm = {
-        key,
-        id: key,
-        title: raw.name || raw.title || raw.productTitle || 'Item',
-        attrs: raw.variant || raw.attrs || raw.optionsText || '',
-        desc:  raw.description || raw.desc || '',
-        price: Number(raw.price || 0),
-        qty:   Math.max(1, Number(raw.qty || raw.quantity || 1)),
-        img:   raw.img || raw.image || ''
-      };
-      if (merged.has(key)) {
-        const m = merged.get(key);
-        m.qty = Math.min(99, m.qty + norm.qty);
-        merged.set(key, m);
-      } else {
-        merged.set(key, norm);
-      }
+  function renderTotals(){
+    const sub = calcSubtotal();
+    const ship = cart.length ? shippingFlat : 0;
+    const tot = Math.max(0, sub - discount) + ship;
+
+    subtotalEl.textContent  = inr.format(sub);
+    discountEl.textContent  = discount ? `– ${inr.format(discount)}` : '– ₹0';
+    shippingEl.textContent  = inr.format(ship);
+    totalEl.textContent     = inr.format(tot);
+    footTotalEl.textContent = inr.format(tot);
+  }
+
+  // --- Cart render ---
+  function renderCart(){
+    listEl.innerHTML = '';
+    if (!cart.length){
+      emptyEl.hidden = false;
+      renderTotals();
+      return;
     }
-    return Array.from(merged.values());
-  }
+    emptyEl.hidden = true;
 
-  /* ---------- Scroll lock helpers ---------- */
-  function lockScroll() {
-    // keep page from moving while drawer is open (desktop + iOS safe)
-    lockedScrollY = window.scrollY || window.pageYOffset || 0;
-    document.documentElement.classList.add('cd-noscroll');
-    document.body.classList.add('cd-noscroll');
-    // position:fixed trick avoids iOS background scroll-through
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${lockedScrollY}px`;
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
-  }
-  function unlockScroll() {
-    document.documentElement.classList.remove('cd-noscroll');
-    document.body.classList.remove('cd-noscroll');
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    window.scrollTo(0, lockedScrollY);
-  }
-
-  // Drawer open/close
-  function openDrawer() {
-    lastFocus = document.activeElement;
-    drawer.classList.add('is-open');
-    drawer.setAttribute('aria-modal', 'true');
-    lockScroll();
-    setTimeout(() => (drawer.querySelector('.cd-close') || drawer).focus(), 10);
-  }
-  function closeDrawer() {
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-modal', 'false');
-    unlockScroll();
-    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-    try { window.parent?.postMessage?.({ type: 'hawaa:closeCheckout' }, '*'); } catch {}
-  }
-
-  // Render
-  function render() {
-    const isEmpty = cart.length === 0;
-    emptyEl.hidden = !isEmpty;
-    itemsEl.innerHTML = '';
-
-    if (!isEmpty) {
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'cd-item';
-        li.dataset.id = item.id;
-        li.innerHTML = `
-          <div class="cd-thumb" aria-hidden="true">
-            ${item.img ? `<img src="${item.img}" alt="${item.title}">`
-                        : `<span class="material-symbols-rounded">widgets</span>`}
+    for (const item of cart){
+      const li = document.createElement('li');
+      li.className = 'cd-item';
+      li.innerHTML = `
+        <div class="cd-thumb"><img alt="" src="${item.img || ''}"></div>
+        <div class="cd-meta">
+          <h4 class="cd-title">${item.title || ''}</h4>
+          <div class="cd-attrs">${item.variant || ''}</div>
+          <div class="cd-qty" data-id="${item.id}">
+            <button type="button" class="qty-dec" data-glyph="−" aria-label="Decrease"></button>
+            <input class="qty-input" inputmode="numeric" value="${item.qty || 1}" aria-label="Quantity">
+            <button type="button" class="qty-inc" data-glyph="+" aria-label="Increase"></button>
           </div>
-          <div class="cd-meta">
-            <p class="cd-title">${item.title}</p>
-            ${item.attrs ? `<div class="cd-attrs">${item.attrs}</div>` : ''}
-            ${item.desc  ? `<div class="cd-desc">${item.desc}</div>`   : ''}
-            <div class="cd-qty" role="group" aria-label="Quantity">
-              <button class="cd-minus" aria-label="Decrease">
-                <span class="material-symbols-rounded">remove</span>
-              </button>
-              <input class="cd-q" inputmode="numeric" aria-label="Quantity value" value="${item.qty}" />
-              <button class="cd-plus" aria-label="Increase">
-                <span class="material-symbols-rounded">add</span>
-              </button>
-            </div>
-          </div>
-          <div class="cd-pricecol">
-            <div class="cd-line">${currency(item.price * item.qty)}</div>
-            <button class="cd-remove" type="button">
-              <span class="material-symbols-rounded" aria-hidden="true">delete</span>
-              Remove
-            </button>
-          </div>
-        `;
-        itemsEl.appendChild(li);
-      });
+        </div>
+        <div class="cd-pricecol">
+          <div class="cd-line">${inr.format(item.price || 0)}</div>
+          <button class="cd-remove" type="button" data-id="${item.id}">
+            <span class="material-symbols-rounded" aria-hidden="true">delete</span>
+            Remove
+          </button>
+        </div>
+      `;
+      listEl.appendChild(li);
     }
 
-    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    const d        = Math.min(discount, subtotal);
-    const total    = Math.max(0, subtotal - d + (cart.length ? shipping : 0));
-
-    sumSubtotal.textContent = currency(subtotal);
-    sumDiscount.textContent = d ? `– ${currency(d)}` : '– ₹0';
-    sumShipping.textContent = cart.length ? currency(shipping) : '₹0';
-    sumTotal.textContent    = currency(total);
-    if (footTotal) footTotal.textContent = currency(total);
-
-    if (nextBtn) nextBtn.disabled = cart.length === 0;
-
-    saveLS();
+    renderTotals();
   }
 
-  // Quantity / remove (delegation)
-  itemsEl.addEventListener('click', (e) => {
-    const row  = e.target.closest('.cd-item'); if (!row) return;
-    const id   = row.dataset.id;
-    const item = cart.find(i => i.id === id); if (!item) return;
+  // --- Step management ---
+  function setStep(next){
+    step = next;
 
-    if (e.target.closest('.cd-minus')) { item.qty = Math.max(1, item.qty - 1); render(); }
-    else if (e.target.closest('.cd-plus')) { item.qty = Math.min(99, item.qty + 1); render(); }
-    else if (e.target.closest('.cd-remove')) { cart = cart.filter(i => i.id !== id); render(); }
-  });
+    if (step === 'cart'){
+      // Views
+      viewCart.hidden = false; viewCart.classList.add('active');
+      viewInfo.hidden = true;  viewInfo.classList.remove('active');
 
-  itemsEl.addEventListener('input', (e) => {
-    if (!e.target.classList.contains('cd-q')) return;
-    const row  = e.target.closest('.cd-item'); if (!row) return;
-    const id   = row.dataset.id;
-    const item = cart.find(i => i.id === id); if (!item) return;
+      // Header: title visible, back button hidden (force)
+      cartTitle.hidden = false;
+      infoHeader.hidden = true;                // attribute
+      infoHeader.style.display = '';           // clear inline styles if any
+      // (CSS has .cd-infohead[hidden]{display:none!important} to hard-hide)
 
-    const raw = (e.target.value || '').replace(/[^\d]/g, '');
-    const v   = parseInt(raw || '1', 10);
-    item.qty  = Math.min(99, Math.max(1, isNaN(v) ? 1 : v));
-    e.target.value = String(item.qty);
-    render();
-  });
-
-  // Promo code
-  promoForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const code = (promoInput.value || '').trim().toUpperCase();
-    if (!code) { discount = 0; promoMsg.textContent = ''; render(); return; }
-    if (code === 'HAWAA10') {
-      const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      discount = Math.min(800, Math.round(subtotal * 0.10));
-      promoMsg.textContent = `Applied HAWAA10 — ${currency(discount)} off`;
-      promoMsg.style.color = 'var(--cd-success)';
+      // Footer button
+      nextBtn.dataset.state = 'cart';
+      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span> Next`;
     } else {
-      discount = 0;
-      promoMsg.textContent = 'Invalid code';
-      promoMsg.style.color = 'var(--cd-danger)';
+      // Views
+      viewCart.hidden = true;  viewCart.classList.remove('active');
+      viewInfo.hidden = false; viewInfo.classList.add('active');
+
+      // Header: title hidden, back button shown
+      cartTitle.hidden = true;
+      infoHeader.hidden = false;
+
+      // Footer button
+      nextBtn.dataset.state = 'info';
+      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">payment</span> Continue to pay`;
+
+      // Default accordion states
+      customerHead?.setAttribute('aria-expanded','true');
+      customerBody?.classList.add('open');
+      shippingHead?.setAttribute('aria-expanded','false');
+      shippingBody?.classList.remove('open');
     }
-    render();
-  });
 
-  // Close
-  closeBtn.addEventListener('click', closeDrawer);
-
-  // Esc + basic focus trap
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer.classList.contains('is-open')) { e.preventDefault(); closeDrawer(); return; }
-    if (e.key !== 'Tab' || !drawer.classList.contains('is-open')) return;
-    const focusables = drawer.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    if (!focusables.length) return;
-    const first = focusables[0], last = focusables[focusables.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  });
-
-  // React to storage changes (e.g., same item added again while open)
-  window.addEventListener('storage', (e) => {
-    if (e.key !== LS_KEY) return;
-    cart = normalizeFromLS(loadLS());
-    render();
-  });
-
-  // Init
-  cart = normalizeFromLS(loadLS());
-  render();
-  openDrawer();
-
-  // Optional: Continue shopping closes overlay
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.cd-continue')) closeDrawer();
-  });
-
-  // Next button stub
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      try { window.parent?.postMessage?.({ type: 'hawaa:checkoutNext' }, '*'); } catch {}
-    });
+    renderTotals();
+    // scroll to top of drawer body
+    $('#cart-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
   }
-});
+
+  // --- Quantity / Remove handlers (delegated) ---
+  listEl.addEventListener('click', (e) => {
+    const dec = e.target.closest('.qty-dec');
+    const inc = e.target.closest('.qty-inc');
+    const rem = e.target.closest('.cd-remove');
+
+    if (rem){
+      const id = rem.getAttribute('data-id');
+      cart = cart.filter(x => String(x.id) !== String(id));
+      saveCart(cart);
+      renderCart();
+      return;
+    }
+
+    const ctrl = dec || inc;
+    if (!ctrl) return;
+
+    const wrap = ctrl.closest('.cd-qty');
+    const id   = wrap?.getAttribute('data-id');
+    const input= wrap?.querySelector('.qty-input');
+    const item = cart.find(x => String(x.id) === String(id));
+    if (!item || !input) return;
+
+    let q = Number(input.value || 1);
+    if (dec) q = Math.max(1, q - 1);
+    if (inc) q = Math.max(1, q + 1);
+    input.value = q;
+    item.qty = q;
+    saveCart(cart);
+    renderTotals();
+  });
+
+  listEl.addEventListener('change', (e) => {
+    const input = e.target.closest('.qty-input');
+    if (!input) return;
+    const wrap = input.closest('.cd-qty');
+    const id   = wrap?.getAttribute('data-id');
+    const item = cart.find(x => String(x.id) === String(id));
+    if (!item) return;
+    let q = parseInt((input.value||'').replace(/\D+/g,'')) || 1;
+    q = Math.max(1, q);
+    input.value = q;
+    item.qty = q;
+    saveCart(cart);
+    renderTotals();
+  });
+
+  // --- Promo code demo ---
+  promoForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = (promoInput?.value || '').trim().toUpperCase();
+    const sub = calcSubtotal();
+
+    if (!code){
+      discount = 0; promoMsg.textContent = ''; renderTotals(); return;
+    }
+    if (code === 'SAVE10'){
+      discount = Math.round(sub * 0.10);
+      promoMsg.textContent = 'Applied 10% off.';
+    } else {
+      discount = 0; promoMsg.textContent = 'Invalid code.';
+    }
+    renderTotals();
+  });
+
+  // --- Validation helpers for Info step ---
+  function validateCustomer(){
+    const email = $('#cust-email');
+    const phone = $('#cust-phone');
+    let ok = true;
+
+    for (const el of [email, phone]){
+      const valid = el && el.value && String(el.value).trim().length > 0;
+      el.classList.toggle('cd-invalid', !valid);
+      if (!valid) ok = false;
+    }
+    return ok;
+  }
+
+  function validateShipping(){
+    const reqSel = ['#ship-first','#ship-last','#ship-line1','#ship-city','#ship-state','#ship-zip','#ship-country'];
+    let ok = true;
+    for (const sel of reqSel){
+      const el = $(sel);
+      const valid = el && el.value && String(el.value).trim().length > 0;
+      el.classList.toggle('cd-invalid', !valid);
+      if (!valid) ok = false;
+    }
+    return ok;
+  }
+
+  // --- Accordion header toggle (expand/collapse) ---
+  accRoot?.addEventListener('click', (e) => {
+    const head = e.target.closest('.cd-acc-head');
+    if (!head) return;
+
+    const expanded = head.getAttribute('aria-expanded') === 'true';
+    head.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+    const body = head.nextElementSibling;
+    if (body) body.classList.toggle('open', !expanded);
+  });
+
+  // --- Save & Continue buttons (below fields) ---
+  saveCustomerBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!validateCustomer()){
+      customerHead?.setAttribute('aria-expanded','true');
+      customerBody?.classList.add('open');
+      return;
+    }
+    // Close customer, open shipping
+    customerHead?.setAttribute('aria-expanded','false');
+    customerBody?.classList.remove('open');
+    shippingHead?.setAttribute('aria-expanded','true');
+    shippingBody?.classList.add('open');
+  });
+
+  saveShippingBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!validateShipping()){
+      shippingHead?.setAttribute('aria-expanded','true');
+      shippingBody?.classList.add('open');
+      return;
+    }
+    // Shipping saved — user will tap "Continue to pay"
+  });
+
+  // --- Footer primary button: Next → Continue to pay ---
+  nextBtn?.addEventListener('click', () => {
+    if (step === 'cart'){
+      if (!cart.length){ return; }
+      setStep('info');
+      return;
+    }
+
+    // On info step, ensure both groups valid before continuing to pay
+    const okCustomer = validateCustomer();
+    const okShipping = validateShipping();
+
+    if (!okCustomer){
+      customerHead?.setAttribute('aria-expanded','true');
+      customerBody?.classList.add('open');
+    }
+    if (!okShipping){
+      shippingHead?.setAttribute('aria-expanded','true');
+      shippingBody?.classList.add('open');
+    }
+    if (!(okCustomer && okShipping)) return;
+
+    // Build payload
+    const payload = {
+      email: $('#cust-email').value.trim(),
+      phone: $('#cust-phone').value.trim(),
+      shipping: {
+        firstName: $('#ship-first').value.trim(),
+        lastName:  $('#ship-last').value.trim(),
+        line1:     $('#ship-line1').value.trim(),
+        line2:     $('#ship-line2').value.trim(),
+        city:      $('#ship-city').value.trim(),
+        state:     $('#ship-state').value.trim(),
+        zip:       $('#ship-zip').value.trim(),
+        country:   $('#ship-country').value
+      },
+      totals: {
+        subtotal: calcSubtotal(),
+        discount,
+        shipping: cart.length ? 80 : 0
+      },
+      cart
+    };
+
+    // Notify parent page to proceed to payment step
+    try { window.parent.postMessage({ type:'hawaa:continueToPayment', data: payload }, '*'); } catch {}
+  });
+
+  // --- Header buttons ---
+  backToCart?.addEventListener('click', () => setStep('cart'));
+
+  closeBtn?.addEventListener('click', () => {
+    try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
+  });
+
+  $('#continue-shopping')?.addEventListener('click', () => {
+    try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
+  });
+
+  // --- Init ---
+  function init(){
+    cart = loadCart();  // order fetching retained
+    renderCart();
+
+    // FORCE initial state to Cart: show title, hide back button
+    cartTitle.hidden = false;
+    infoHeader.hidden = true;
+
+    setStep('cart');
+    requestAnimationFrame(() => drawer.classList.add('is-open'));
+  }
+  init();
+
+})();

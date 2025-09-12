@@ -247,15 +247,16 @@ document.addEventListener('DOMContentLoaded', () => {
     iframe.title = 'Cart';
     iframe.src = 'sections/checkout.html';
     Object.assign(iframe.style, {
-      position: 'fixed',
-      top: '0',
-      right: '0',
-      width: 'min(100vw, 408px)',  // should match drawer width
-      height: '100vh',
-      border: '0',
-      background: 'transparent',
-      zIndex: '2147483645'         // above blur layer
-    });
+  position: 'fixed',
+  top: '0',
+  right: '0',
+  // Responsive: phones/tablets full width, desktop 680px
+  width: window.matchMedia('(max-width: 768px)').matches ? '100vw' : '560px',
+  height: '100vh',
+  border: '0',
+  background: 'transparent',
+  zIndex: '2147483645'
+});
     iframe.setAttribute('allowtransparency', 'true');
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('referrerpolicy', 'no-referrer');
