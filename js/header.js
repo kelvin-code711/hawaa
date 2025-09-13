@@ -37,17 +37,17 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('scroll', function () {
     const currentScroll = window.pageYOffset;
     if (currentScroll <= 0) {
-      header.classList.remove('scroll-up');
-      header.classList.remove('scrolled');
+      header?.classList.remove('scroll-up');
+      header?.classList.remove('scrolled');
       return;
     }
-    header.classList.add('scrolled');
-    if (currentScroll > lastScroll && !header.classList.contains('scroll-down')) {
-      header.classList.remove('scroll-up');
-      header.classList.add('scroll-down');
-    } else if (currentScroll < lastScroll && header.classList.contains('scroll-down')) {
-      header.classList.remove('scroll-down');
-      header.classList.add('scroll-up');
+    header?.classList.add('scrolled');
+    if (currentScroll > lastScroll && !header?.classList.contains('scroll-down')) {
+      header?.classList.remove('scroll-up');
+      header?.classList.add('scroll-down');
+    } else if (currentScroll < lastScroll && header?.classList.contains('scroll-down')) {
+      header?.classList.remove('scroll-down');
+      header?.classList.add('scroll-up');
     }
     lastScroll = currentScroll;
   });
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const drawer = document.getElementById('authDrawer');
   const overlay = document.getElementById('drawerOverlay');
   const drawerTitle = document.getElementById('drawerTitle');
-  const closeBtn = document.getElementById('drawerCloseBtn');
   const welcomeHeading = document.getElementById('welcomeHeading');
 
   const loginForm = document.getElementById('loginForm');
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const authSuccessCopy = document.getElementById('authSuccessCopy');
   const authSuccessContinue = document.getElementById('authSuccessContinue');
 
-  // Form buttons
+  // Buttons (for disabling during async)
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   const signupSubmitBtn = document.getElementById('signupSubmitBtn');
   const headerLoginBtn = document.getElementById('headerLoginBtn');
@@ -92,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     headerLoginBtn: !!headerLoginBtn
   });
 
-  let otpMode = 'login';
+  let otpMode = 'login';              // 'login' | 'signup'
   let currentResendTimer = null;
 
   // -------------------------------
@@ -115,9 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.classList.add('hidden');
       }
     });
-    if (authSuccess) {
-      authSuccess.classList.add('hidden');
-    }
+    if (authSuccess) authSuccess.classList.add('hidden');
   }
 
   function showForm(which) {
@@ -139,9 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
       targetForm.style.display = 'flex';
       targetForm.classList.remove('hidden');
 
-      if (which === 'otp') {
-        setupOtpInputs();
-      }
+      if (which === 'otp') setupOtpInputs();
     }
   }
 
@@ -167,10 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (authSuccessTitle) authSuccessTitle.textContent = title;
     if (authSuccessCopy) authSuccessCopy.textContent = message;
-
-    if (authSuccess) {
-      authSuccess.classList.remove('hidden');
-    }
+    if (authSuccess) authSuccess.classList.remove('hidden');
   }
 
   function openAuthDrawer() {
@@ -179,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
       drawer.classList.add('open');
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
+      drawer.setAttribute('aria-hidden', 'false'); // important for a11y & reCAPTCHA
     }
   }
 
@@ -188,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
       document.body.style.overflow = '';
+      drawer.setAttribute('aria-hidden', 'true');
 
       if (currentResendTimer) {
         clearInterval(currentResendTimer);
@@ -208,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
     allInputs.forEach(input => {
       input.value = '';
       input.style.borderColor = '';
+      input.style.backgroundColor = '';
     });
   }
 
@@ -217,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inputs.forEach(inp => {
       inp.value = '';
       inp.style.borderColor = '';
+      inp.style.backgroundColor = '';
     });
     if (inputs[0]) inputs[0].focus();
   }
@@ -274,25 +270,26 @@ document.addEventListener('DOMContentLoaded', function() {
   function startResendTimer() {
     if (!resendBtn) return;
 
-    if (currentResendTimer) {
-      clearInterval(currentResendTimer);
-    }
+    if (currentResendTimer) clearInterval(currentResendTimer);
 
     let timeLeft = 30;
     resendBtn.disabled = true;
-    const resendTimerSpan = document.getElementById('resendTimer');
+    const original = 'Resend code';
 
-    resendBtn.innerHTML = `Resend in <span id="resendTimer">${timeLeft}</span>s`;
+    const updateLabel = () => {
+      resendBtn.innerHTML = `Resend in <span id="resendTimer">${timeLeft}</span>s`;
+    };
+    updateLabel();
 
     currentResendTimer = setInterval(() => {
       if (timeLeft > 0) {
-        if (resendTimerSpan) resendTimerSpan.textContent = timeLeft;
         timeLeft--;
+        updateLabel();
       } else {
         clearInterval(currentResendTimer);
         currentResendTimer = null;
         resendBtn.disabled = false;
-        resendBtn.innerHTML = 'Resend code';
+        resendBtn.innerHTML = original;
       }
     }, 1000);
   }
@@ -336,10 +333,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // Real OTP via Firebase Phone Auth (Web v9 compat)
+  // Real OTP via Firebase Phone Auth (Compat SDK)
   // ============================================================
   let recaptchaVerifier = null;
+  let recaptchaWidgetId = null;
   let confirmationResult = null;
+  let isSendingOtp = false; // debounce flag
 
   function getFullPhone() {
     const sourceId = (otpMode === 'signup') ? 'signupPhone' : 'loginPhone';
@@ -348,53 +347,95 @@ document.addEventListener('DOMContentLoaded', function() {
     return `+91${digits}`;
   }
 
-  function ensureRecaptcha() {
+  // PREWARM reCAPTCHA on load to avoid first-click delay
+  (async function prewarmRecaptcha() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase?.auth && !recaptchaVerifier) {
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+        recaptchaWidgetId = await recaptchaVerifier.render();
+        // console.log('reCAPTCHA ready', recaptchaWidgetId);
+      }
+    } catch (e) {
+      console.warn('reCAPTCHA prewarm deferred:', e?.message || e);
+    }
+  })();
+
+  // Create once and reuse; if broken, clear and recreate safely.
+  async function ensureRecaptcha() {
     if (typeof firebase === 'undefined' || !firebase?.auth) {
-      console.warn('Firebase not loaded. Include firebase-app-compat.js and firebase-auth-compat.js, and add <div id="recaptcha-container" style="display:none"></div> to the page.');
+      console.warn('Firebase not loaded. Include firebase-app-compat.js and firebase-auth-compat.js');
       return null;
     }
-    if (!recaptchaVerifier) {
+    // Reuse if already rendered
+    if (recaptchaVerifier && recaptchaWidgetId != null) return recaptchaVerifier;
+
+    try {
       recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
-      recaptchaVerifier.render().catch(console.warn);
+      recaptchaWidgetId = await recaptchaVerifier.render();
+      return recaptchaVerifier;
+    } catch (e) {
+      // If element already has a widget or got stale, clear and recreate once
+      try { await recaptchaVerifier?.clear(); } catch {}
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+      recaptchaWidgetId = await recaptchaVerifier.render();
+      return recaptchaVerifier;
     }
-    return recaptchaVerifier;
   }
 
+  // Show OTP UI immediately; send SMS in the background
   async function sendOtpReal() {
-    const verifier = ensureRecaptcha();
-    if (!verifier) {
-      // Fallback: keep UX moving to OTP screen for dev if Firebase is missing
-      goToOtp();
-      return;
-    }
+    if (isSendingOtp) return; // debounce
+    isSendingOtp = true;
+
+    // Disable the active submit button for UX
+    const activeBtn = (otpMode === 'signup') ? signupSubmitBtn : loginSubmitBtn;
+    if (activeBtn) activeBtn.disabled = true;
+
+    // 1) Immediate UX: show OTP screen now
+    setTitle('Verify OTP');
+    showWelcome(false);
+    showForm('otp');
+    startResendTimer();
+
     try {
+      const verifier = await ensureRecaptcha();
+      if (!verifier) throw new Error('reCAPTCHA not ready');
+
       const phoneNumber = getFullPhone();
       confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
-      // SMS sent -> show OTP
-      setTitle('Verify OTP');
-      showWelcome(false);
-      showForm('otp');
-      startResendTimer();
-      setTimeout(() => {
-        const firstOtpInput = otpForm && otpForm.querySelector('.otp');
-        if (firstOtpInput) firstOtpInput.focus();
-      }, 100);
+      // success: OTP UI already visible
     } catch (err) {
       console.error('Failed to send OTP:', err);
+      const code = err?.code || '';
+
+      if (code === 'auth/too-many-requests') {
+        alert('Too many OTP attempts. Please wait ~30–60 minutes and try again, or add a test phone in Firebase while developing.');
+      }
+
+      // Return to original form
+      if (otpMode === 'signup') {
+        setTitle('Create new account'); showWelcome(false); showForm('signup');
+      } else {
+        setTitle('Login'); showWelcome(true); showForm('login');
+      }
+
+      // Inline highlight
       const sourceId = (otpMode === 'signup') ? 'signupPhone' : 'loginPhone';
       const input = document.getElementById(sourceId);
       if (input) {
         input.style.borderColor = '#ff4444';
         input.style.backgroundColor = '#fff5f5';
-        setTimeout(() => {
-          input.style.borderColor = '';
-          input.style.backgroundColor = '';
-        }, 1500);
+        setTimeout(() => { input.style.borderColor = ''; input.style.backgroundColor = ''; }, 1200);
       }
-      try {
-        recaptchaVerifier?.clear();
-        recaptchaVerifier = null;
-      } catch (e) {}
+
+      // If reCAPTCHA got into a bad state, clear it so next try works
+      if (String(err).includes('already been rendered') || code === 'auth/internal-error') {
+        try { await recaptchaVerifier?.clear(); } catch {}
+        recaptchaVerifier = null; recaptchaWidgetId = null;
+      }
+    } finally {
+      isSendingOtp = false;
+      if (activeBtn) activeBtn.disabled = false;
     }
   }
 
@@ -402,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Event Listeners
   // -------------------------------
 
-  // Header login button
+  // Header login button → open drawer on Login view
   if (headerLoginBtn) {
     headerLoginBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -415,8 +456,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Close drawer
-  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
   if (overlay) overlay.addEventListener('click', closeDrawer);
+  const closeBtn = document.getElementById('drawerCloseBtn');
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
 
   // Switch forms
   if (toSignupLink) {
@@ -439,17 +481,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Login submission (button + form)
-  if (loginSubmitBtn) {
-    loginSubmitBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      const phone = document.getElementById('loginPhone');
-      if (!ensurePhone(phone)) return;
-      otpMode = 'login';
-      await sendOtpReal();
-    });
-  }
+  // -------------------------------
+  // CLEANED-UP SUBMIT HANDLERS (single source of truth)
+  // -------------------------------
 
+  // Login form submit (covers button click & Enter key)
   if (loginForm) {
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -460,32 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Signup submission (button + form)
-  if (signupSubmitBtn) {
-    signupSubmitBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      const nameInput = document.getElementById('signupName');
-      const phone = document.getElementById('signupPhone');
-
-      if (!nameInput || !nameInput.value.trim()) {
-        if (nameInput) {
-          nameInput.focus();
-          nameInput.style.borderColor = '#ff4444';
-          nameInput.style.backgroundColor = '#fff5f5';
-          setTimeout(() => {
-            nameInput.style.borderColor = '';
-            nameInput.style.backgroundColor = '';
-          }, 1500);
-        }
-        return;
-      }
-      if (!ensurePhone(phone)) return;
-
-      otpMode = 'signup';
-      await sendOtpReal();
-    });
-  }
-
+  // Signup form submit
   if (signupForm) {
     signupForm.addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -497,10 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
           nameInput.focus();
           nameInput.style.borderColor = '#ff4444';
           nameInput.style.backgroundColor = '#fff5f5';
-          setTimeout(() => {
-            nameInput.style.borderColor = '';
-            nameInput.style.backgroundColor = '';
-          }, 1500);
+          setTimeout(() => { nameInput.style.borderColor = ''; nameInput.style.backgroundColor = ''; }, 1500);
         }
         return;
       }
@@ -519,20 +527,18 @@ document.addEventListener('DOMContentLoaded', function() {
       const code = inputs.map(i => i.value).join('');
 
       if (!/^\d{6}$/.test(code)) {
-        console.log('Invalid OTP entered:', code);
         showOtpError();
         return;
       }
 
       try {
-        if (confirmationResult && typeof confirmationResult.confirm === 'function') {
-          const result = await confirmationResult.confirm(code);
-          console.log('OTP verified successfully:', result?.user?.uid);
-          showInlineSuccess(otpMode);
-        } else {
-          console.warn('No confirmationResult. Falling back to success for dev.');
-          showInlineSuccess(otpMode);
+        if (!confirmationResult || typeof confirmationResult.confirm !== 'function') {
+          alert('Your OTP session expired. Please resend the code.');
+          return;
         }
+        const result = await confirmationResult.confirm(code);
+        console.log('OTP verified successfully:', result?.user?.uid);
+        showInlineSuccess(otpMode);
       } catch (err) {
         console.error('OTP verify failed:', err);
         showOtpError();
@@ -547,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(currentResendTimer);
         currentResendTimer = null;
       }
-
       if (otpMode === 'signup') {
         setTitle('Create new account');
         showWelcome(false);
@@ -567,15 +572,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Resend OTP (real API)
+  // Resend OTP (real API) — resilient and fast
   if (resendBtn) {
     resendBtn.addEventListener('click', async function() {
       if (resendBtn.disabled) return;
+
+      clearOtpInputs();     // clear boxes
+      startResendTimer();   // restart timer immediately
       try {
-        clearOtpInputs();
-        await sendOtpReal();
+        const verifier = await ensureRecaptcha();
+        if (!verifier) throw new Error('reCAPTCHA not ready');
+
+        const phoneNumber = getFullPhone();
+        confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
+        // success: stay on OTP screen
       } catch (e) {
         console.error('Resend failed:', e);
+        // stop timer + restore button
+        if (currentResendTimer) { clearInterval(currentResendTimer); currentResendTimer = null; }
+        resendBtn.disabled = false;
+        resendBtn.innerHTML = 'Resend code';
+
+        // reset widget if stale
+        try { await recaptchaVerifier?.clear(); } catch {}
+        recaptchaVerifier = null; recaptchaWidgetId = null;
       }
     });
   }
@@ -591,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Add shake animation CSS if not already present
+  // Small inline CSS for shake/error if needed
   if (!document.querySelector('style[data-shake]')) {
     const style = document.createElement('style');
     style.setAttribute('data-shake', 'true');
@@ -602,16 +622,12 @@ document.addEventListener('DOMContentLoaded', function() {
         30%, 50%, 70% { transform: translateX(-4px); }
         40%, 60% { transform: translateX(4px); }
       }
-      
-      /* Enhanced error states */
-      .input:invalid,
-      .otp:invalid {
+
+      .input:invalid, .otp:invalid {
         border-color: #ff4444 !important;
         background-color: #fff5f5 !important;
       }
-      
-      .input:focus:invalid,
-      .otp:focus:invalid {
+      .input:focus:invalid, .otp:focus:invalid {
         box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1) !important;
       }
     `;
