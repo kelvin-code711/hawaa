@@ -141,140 +141,126 @@
   </div>
 </div>
 
-<!-- Drawer Overlay + Auth Drawer -->
-<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+<!-- Auth Drawer Overlay -->
+<div class="auth-overlay" id="authOverlay"></div>
 
-<aside class="auth-drawer" id="authDrawer" aria-hidden="true" aria-label="Authentication Drawer" role="dialog">
-  <!-- Top bar: close on the left, centered title, spacer on right -->
-  <div class="topbar topbar-centered">
-    <button class="nav-btn" id="drawerCloseBtn" aria-label="Close">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 1 0 5.7 7.11L10.59 12l-4.9 4.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.9a1 1 0 0 0 1.41-1.41L13.41 12l4.9-4.89a1 1 0 0 0-.01-1.4z" fill="currentColor"></path>
-      </svg>
+<!-- Auth Drawer -->
+<div class="auth-drawer" id="authDrawer">
+  <div class="auth-header">
+    <h2 id="authTitle">Login</h2>
+    <button class="close-btn" id="closeAuthBtn">
+      <span class="material-symbols-rounded">close</span>
     </button>
-    <h1 class="auth-title" id="drawerTitle">Login</h1>
-    <div class="topbar-spacer" aria-hidden="true"></div>
   </div>
-
-  <div class="auth-scroller">
-    <section class="auth-body">
-      <!-- heading visible only on login -->
-      <h2 class="welcome" id="welcomeHeading">Welcome back</h2>
-
-      <!-- LOGIN form -->
-      <form id="loginForm" class="form form-login" autocomplete="off" novalidate>
-        <div class="field">
-          <label for="loginPhone" class="visually-hidden">Mobile number</label>
+  
+  <div class="auth-body">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="auth-screen">
+      <h3>Welcome back</h3>
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="loginPhone">Mobile Number</label>
           <div class="phone-input">
-            <span class="code-prefix">+91</span>
-            <input id="loginPhone" type="tel" inputmode="tel" placeholder="Mobile number" maxlength="10" class="input" required />
+            <span class="country-code">+91</span>
+            <input 
+              type="tel" 
+              id="loginPhone" 
+              placeholder="Enter 10-digit mobile number"
+              maxlength="10"
+              pattern="[0-9]{10}"
+              required
+            />
           </div>
         </div>
-
-        <div class="aux-row">
-          <a href="#" id="loginHelpLink" class="help-link">Need help?</a>
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Log in</button>
-
-        <div class="divider" aria-hidden="true"><span>or</span></div>
-
-        <button type="button" class="btn btn-provider" id="googleLoginBtn" aria-label="Continue with Google">
-          <span class="provider-icon" aria-hidden="true">G</span>
-          Continue with Google
+        <button type="submit" class="primary-btn" id="sendLoginOtpBtn">
+          Send OTP
         </button>
-
-        <button type="button" class="btn btn-provider" id="appleLoginBtn" aria-label="Continue with Apple">
-          <span class="provider-icon" aria-hidden="true"></span>
-          Continue with Apple
-        </button>
-
-        <p class="switch-row">
-          First time here?
-          <a href="#" id="toSignupLink" class="switch-link">Create an account</a>
-        </p>
       </form>
+      <p class="auth-switch">
+        New user? 
+        <button type="button" class="link-btn" id="switchToSignup">Create account</button>
+      </p>
+    </div>
 
-      <!-- OTP (shared for login & signup) -->
-      <form id="otpForm" class="form form-otp hidden" autocomplete="off" novalidate>
-        <p class="otp-title">Enter the 6-digit code we sent</p>
-        <div class="otp-inputs" aria-label="One-time passcode">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
-          <input type="text" maxlength="1" inputmode="numeric" class="otp" />
+    <!-- Signup Screen -->
+    <div id="signupScreen" class="auth-screen" style="display: none;">
+      <h3>Create new account</h3>
+      <form id="signupForm">
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <input 
+            type="text" 
+            id="signupName" 
+            placeholder="Enter your full name"
+            required
+          />
         </div>
-
-        <div class="aux-row between">
-          <button type="button" class="link" id="editPhoneBtn">Edit number</button>
-          <button type="button" class="link muted" id="resendBtn" disabled>Resend in <span id="resendTimer">30</span>s</button>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Verify & Continue</button>
-      </form>
-
-      <!-- SIGN UP -->
-      <form id="signupForm" class="form form-signup hidden" autocomplete="off" novalidate>
-        <div class="field">
-          <label for="signupName" class="visually-hidden">Full name</label>
-          <input id="signupName" type="text" class="input" placeholder="Full name" required />
-        </div>
-
-        <div class="field">
-          <label for="signupPhone" class="visually-hidden">Mobile number</label>
+        <div class="input-group">
+          <label for="signupPhone">Mobile Number</label>
           <div class="phone-input">
-            <span class="code-prefix">+91</span>
-            <input id="signupPhone" type="tel" inputmode="tel" maxlength="10" class="input" placeholder="Mobile number" required />
+            <span class="country-code">+91</span>
+            <input 
+              type="tel" 
+              id="signupPhone" 
+              placeholder="Enter 10-digit mobile number"
+              maxlength="10"
+              pattern="[0-9]{10}"
+              required
+            />
           </div>
         </div>
-
-        <div class="field">
-          <label for="signupEmail" class="visually-hidden">Email (optional)</label>
-          <input id="signupEmail" type="email" class="input" placeholder="Email (optional)" />
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="signupSubmitBtn">Create account</button>
-
-        <div class="divider" aria-hidden="true"><span>or</span></div>
-
-        <button type="button" class="btn btn-provider" id="googleSignupBtn">
-          <span class="provider-icon" aria-hidden="true">G</span>
-          Continue with Google
+        <button type="submit" class="primary-btn" id="sendSignupOtpBtn">
+          Send OTP
         </button>
-
-        <button type="button" class="btn btn-provider" id="appleSignupBtn">
-          <span class="provider-icon" aria-hidden="true"></span>
-          Continue with Apple
-        </button>
-
-        <p class="switch-row">
-          Already have an account?
-          <a href="#" id="toLoginLink" class="switch-link">Log in</a>
-        </p>
       </form>
+      <p class="auth-switch">
+        Already have account? 
+        <button type="button" class="link-btn" id="switchToLogin">Login</button>
+      </p>
+    </div>
 
-      <!-- ✅ Inline Success Screen (shows inside the drawer) -->
-      <div id="authSuccess" class="auth-success hidden" role="status" aria-live="polite">
-        <div class="success-visual" aria-hidden="true">
-          <svg viewBox="0 0 120 120" class="success-rings">
-            <circle cx="60" cy="60" r="52" fill="rgba(16,185,129,0.12)"></circle>
-            <circle cx="60" cy="60" r="38" fill="rgba(16,185,129,0.20)"></circle>
-            <circle cx="60" cy="60" r="26" fill="rgba(16,185,129,1)"></circle>
-          </svg>
-          <svg viewBox="0 0 24 24" class="success-check" aria-hidden="true">
-            <path d="M9 16.2l-3.5-3.5a1 1 0 10-1.4 1.4l4.2 4.2a1 1 0 001.4 0L20 7.6a1 1 0 10-1.4-1.4L9 16.2z" fill="#fff"/>
-          </svg>
+    <!-- OTP Verification Screen -->
+    <div id="otpScreen" class="auth-screen" style="display: none;">
+      <h3>Verify OTP</h3>
+      <p class="otp-info">Enter the 6-digit code sent to <span id="otpPhoneDisplay"></span></p>
+      
+      <form id="otpForm">
+        <div class="otp-inputs">
+          <input type="text" maxlength="1" class="otp-digit" />
+          <input type="text" maxlength="1" class="otp-digit" />
+          <input type="text" maxlength="1" class="otp-digit" />
+          <input type="text" maxlength="1" class="otp-digit" />
+          <input type="text" maxlength="1" class="otp-digit" />
+          <input type="text" maxlength="1" class="otp-digit" />
         </div>
-        <h3 class="success-title" id="authSuccessTitle">Success</h3>
-        <p class="success-copy" id="authSuccessCopy">Your identity has been verified successfully</p>
-        <button class="btn btn-primary" id="authSuccessContinue">Continue</button>
+        
+        <button type="submit" class="primary-btn" id="verifyOtpBtn">
+          Verify OTP
+        </button>
+      </form>
+      
+      <div class="otp-actions">
+        <button type="button" class="link-btn" id="changePhoneBtn">Change number</button>
+        <button type="button" class="link-btn" id="resendOtpBtn" disabled>
+          Resend OTP (<span id="resendTimer">30</span>)
+        </button>
       </div>
-      <!-- /Inline Success Screen -->
-    </section>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="successScreen" class="auth-screen" style="display: none;">
+      <div class="success-content">
+        <div class="success-icon">✓</div>
+        <h3 id="successTitle">Login Successful!</h3>
+        <p id="successMessage">You have been successfully logged in.</p>
+        <button class="primary-btn" id="continueBtn">Continue</button>
+      </div>
+    </div>
   </div>
-</aside>
+</div>
+
+<!-- reCAPTCHA container -->
+<div id="recaptcha-container" style="position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;"></div>
 
   <!-- Hero Top Bar -->
   <div class="hero-topbar">
@@ -1095,6 +1081,7 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <!-- Your app scripts (header.js relies on firebase/auth above) -->
   <script src="js/header.js" defer></script>

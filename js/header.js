@@ -1,854 +1,898 @@
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Header.js: DOM loaded, initializing...');
+  console.log('Header Auth: Initializing...');
 
-  // -------------------------------
-  // Menubar (Mobile Nav) Logic
-  // -------------------------------
+  // Elements
   const header = document.getElementById('hawaa-header');
   const menuToggle = document.getElementById('menu-toggle');
   const mobileNav = document.getElementById('mobile-nav');
   const navClose = document.getElementById('nav-close');
   const navOverlay = document.getElementById('nav-overlay');
 
-  function toggleMenu() {
+  // Auth elements
+  const headerLoginBtn = document.getElementById('headerLoginBtn');
+  const authOverlay = document.getElementById('authOverlay');
+  const authDrawer = document.getElementById('authDrawer');
+  const closeAuthBtn = document.getElementById('closeAuthBtn');
+  const authTitle = document.getElementById('authTitle');
+
+  // Screens
+  const loginScreen = document.getElementById('loginScreen');
+  const signupScreen = document.getElementById('signupScreen');
+  const otpScreen = document.getElementById('otpScreen');
+  const successScreen = document.getElementById('successScreen');
+
+  // Forms and inputs
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const otpForm = document.getElementById('otpForm');
+  const loginPhone = document.getElementById('loginPhone');
+  const signupName = document.getElementById('signupName');
+  const signupPhone = document.getElementById('signupPhone');
+
+  // Optional (you’ll add these inputs later; safe if not present yet)
+  const signupEmail = document.getElementById('signupEmail');
+  const signupCity  = document.getElementById('signupCity');
+
+  const otpPhoneDisplay = document.getElementById('otpPhoneDisplay');
+  const otpDigits = document.querySelectorAll('.otp-digit');
+
+  // Buttons
+  const switchToSignup = document.getElementById('switchToSignup');
+  const switchToLogin = document.getElementById('switchToLogin');
+  const sendLoginOtpBtn = document.getElementById('sendLoginOtpBtn');
+  const sendSignupOtpBtn = document.getElementById('sendSignupOtpBtn');
+  const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+  const changePhoneBtn = document.getElementById('changePhoneBtn');
+  const resendOtpBtn = document.getElementById('resendOtpBtn');
+  const continueBtn = document.getElementById('continueBtn');
+  const resendTimer = document.getElementById('resendTimer');
+  const successTitle = document.getElementById('successTitle');
+  const successMessage = document.getElementById('successMessage');
+
+  // State
+  let currentMode = 'login'; // 'login' or 'signup'
+  let currentPhone = '';
+  let confirmationResult = null;
+  let recaptchaVerifier = null;
+  let resendTimerInterval = null;
+
+  // ===== Firestore (safe init; only if SDK is loaded) =====
+  let db = null;
+  try {
+    if (firebase && firebase.firestore) {
+      db = firebase.firestore();
+      console.log('Firestore ready');
+    } else {
+      console.warn('Firestore SDK not found; profile save will be skipped.');
+    }
+  } catch (e) {
+    console.warn('Firestore init error:', e);
+  }
+
+  // -------------------------------
+  // Mobile Navigation
+  // -------------------------------
+  function toggleMobileMenu() {
     document.body.classList.toggle('menu-open');
     if (mobileNav) mobileNav.classList.toggle('active');
   }
 
   if (menuToggle && navClose && navOverlay && mobileNav) {
-    menuToggle.addEventListener('click', toggleMenu);
-    navClose.addEventListener('click', toggleMenu);
-    navOverlay.addEventListener('click', toggleMenu);
+    menuToggle.addEventListener('click', toggleMobileMenu);
+    navClose.addEventListener('click', toggleMobileMenu);
+    navOverlay.addEventListener('click', toggleMobileMenu);
   }
 
-  const navLinks = document.querySelectorAll('.nav-links a');
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      if (mobileNav && mobileNav.classList.contains('active')) {
-        toggleMenu();
-      }
-    });
-  });
-
   // -------------------------------
-  // Scroll behavior
+  // Header Scroll Effect
   // -------------------------------
   let lastScroll = 0;
-  window.addEventListener('scroll', function () {
+  window.addEventListener('scroll', function() {
     const currentScroll = window.pageYOffset;
     if (currentScroll <= 0) {
-      header?.classList.remove('scroll-up');
       header?.classList.remove('scrolled');
       return;
     }
     header?.classList.add('scrolled');
-    if (currentScroll > lastScroll && !header?.classList.contains('scroll-down')) {
-      header?.classList.remove('scroll-up');
-      header?.classList.add('scroll-down');
-    } else if (currentScroll < lastScroll && header?.classList.contains('scroll-down')) {
-      header?.classList.remove('scroll-down');
-      header?.classList.add('scroll-up');
-    }
     lastScroll = currentScroll;
   });
 
   // -------------------------------
-  // Auth Drawer Elements
+  // Auth Drawer Functions
   // -------------------------------
-  const drawer = document.getElementById('authDrawer');
-  const overlay = document.getElementById('drawerOverlay');
-  const drawerTitle = document.getElementById('drawerTitle');
-  const welcomeHeading = document.getElementById('welcomeHeading');
-
-  const loginForm = document.getElementById('loginForm');
-  const signupForm = document.getElementById('signupForm');
-  const otpForm = document.getElementById('otpForm');
-
-  const toSignupLink = document.getElementById('toSignupLink');
-  const toLoginLink = document.getElementById('toLoginLink');
-  const editPhoneBtn = document.getElementById('editPhoneBtn');
-  const resendBtn = document.getElementById('resendBtn');
-
-  // Inline success screen
-  const authSuccess = document.getElementById('authSuccess');
-  const authSuccessTitle = document.getElementById('authSuccessTitle');
-  const authSuccessCopy = document.getElementById('authSuccessCopy');
-  const authSuccessContinue = document.getElementById('authSuccessContinue');
-
-  // Buttons (for disabling during async)
-  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-  const signupSubmitBtn = document.getElementById('signupSubmitBtn');
-  const headerLoginBtn = document.getElementById('headerLoginBtn');
-
-  console.log('Elements found:', {
-    drawer: !!drawer,
-    loginForm: !!loginForm,
-    signupForm: !!signupForm,
-    otpForm: !!otpForm,
-    authSuccess: !!authSuccess,
-    loginSubmitBtn: !!loginSubmitBtn,
-    signupSubmitBtn: !!signupSubmitBtn,
-    headerLoginBtn: !!headerLoginBtn
-  });
-
-  let otpMode = 'login';              // 'login' | 'signup'
-  let currentResendTimer = null;
-
-  // -------------------------------
-  // Helper Functions
-  // -------------------------------
-  function setTitle(text) {
-    if (drawerTitle) drawerTitle.textContent = text;
-  }
-
-  function showWelcome(show) {
-    if (welcomeHeading) {
-      welcomeHeading.style.display = show ? 'block' : 'none';
-    }
-  }
-
-  function hideAllAuthViews() {
-    [loginForm, signupForm, otpForm].forEach(form => {
-      if (form) {
-        form.style.display = 'none';
-        form.classList.add('hidden');
-      }
-    });
-    if (authSuccess) authSuccess.classList.add('hidden');
-  }
-
-  function showForm(which) {
-    console.log('Showing form:', which);
-    hideAllAuthViews();
-
-    let targetForm = null;
-    if (which === 'login') {
-      targetForm = loginForm;
-      otpMode = 'login';
-    } else if (which === 'signup') {
-      targetForm = signupForm;
-      otpMode = 'signup';
-    } else if (which === 'otp') {
-      targetForm = otpForm;
-    }
-
-    if (targetForm) {
-      targetForm.style.display = 'flex';
-      targetForm.classList.remove('hidden');
-
-      if (which === 'otp') setupOtpInputs();
-    }
-  }
-
-  function showInlineSuccess(type = 'login') {
-    console.log('Show inline success:', type);
-    hideAllAuthViews();
-    setTitle('Success');
-    showWelcome(false);
-
-    if (currentResendTimer) {
-      clearInterval(currentResendTimer);
-      currentResendTimer = null;
-    }
-
-    let title, message;
-    if (type === 'signup') {
-      title = 'Account Created Successfully!';
-      message = 'Your account has been created and verified. Welcome to Hawaa!';
-    } else {
-      title = 'Login Successful!';
-      message = 'You have been successfully logged in to your account.';
-    }
-
-    if (authSuccessTitle) authSuccessTitle.textContent = title;
-    if (authSuccessCopy) authSuccessCopy.textContent = message;
-    if (authSuccess) authSuccess.classList.remove('hidden');
-  }
-
   function openAuthDrawer() {
     console.log('Opening auth drawer');
-    if (drawer && overlay) {
-      drawer.classList.add('open');
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
-      drawer.setAttribute('aria-hidden', 'false'); // important for a11y & reCAPTCHA
-    }
+    authOverlay?.classList.add('active');
+    authDrawer?.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
-  function closeDrawer() {
-    console.log('Closing drawer');
-    if (drawer && overlay) {
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      document.body.style.overflow = '';
-      drawer.setAttribute('aria-hidden', 'true');
+  function closeAuthDrawer() {
+    console.log('Closing auth drawer');
+    authOverlay?.classList.remove('active');
+    authDrawer?.classList.remove('active');
+    document.body.style.overflow = '';
 
-      if (currentResendTimer) {
-        clearInterval(currentResendTimer);
-        currentResendTimer = null;
+    // Reset to login screen after closing
+    setTimeout(() => {
+      showScreen('login');
+      clearAllInputs();
+      clearErrors();
+      if (resendTimerInterval) {
+        clearInterval(resendTimerInterval);
+        resendTimerInterval = null;
       }
+    }, 300);
+  }
 
-      setTimeout(() => {
-        setTitle('Login');
-        showWelcome(true);
-        showForm('login');
-        clearAllInputs();
-      }, 300);
+  function showScreen(screen) {
+    console.log('Showing screen:', screen);
+
+    // Hide all screens
+    [loginScreen, signupScreen, otpScreen, successScreen].forEach(s => {
+      if (s) s.style.display = 'none';
+    });
+
+    // Show target screen and update title
+    switch (screen) {
+      case 'login':
+        if (loginScreen) loginScreen.style.display = 'block';
+        if (authTitle) authTitle.textContent = 'Login';
+        currentMode = 'login';
+        break;
+      case 'signup':
+        if (signupScreen) signupScreen.style.display = 'block';
+        if (authTitle) authTitle.textContent = 'Create Account';
+        currentMode = 'signup';
+        break;
+      case 'otp':
+        if (otpScreen) otpScreen.style.display = 'block';
+        if (authTitle) authTitle.textContent = 'Verify OTP';
+        break;
+      case 'success':
+        if (successScreen) successScreen.style.display = 'block';
+        if (authTitle) authTitle.textContent = 'Success';
+        break;
     }
   }
 
   function clearAllInputs() {
-    const allInputs = document.querySelectorAll('#authDrawer input');
-    allInputs.forEach(input => {
-      input.value = '';
-      input.style.borderColor = '';
-      input.style.backgroundColor = '';
+    [loginPhone, signupName, signupPhone, signupEmail, signupCity].forEach(input => {
+      if (input) {
+        input.value = '';
+        input.classList.remove('error');
+      }
     });
+    clearOtpInputs();
   }
 
   function clearOtpInputs() {
-    if (!otpForm) return;
-    const inputs = Array.from(otpForm.querySelectorAll('.otp'));
-    inputs.forEach(inp => {
-      inp.value = '';
-      inp.style.borderColor = '';
-      inp.style.backgroundColor = '';
-    });
-    if (inputs[0]) inputs[0].focus();
-  }
-
-  function showOtpError() {
-    if (!otpForm) return;
-
-    const inputs = Array.from(otpForm.querySelectorAll('.otp'));
-    inputs.forEach(inp => {
-      inp.style.borderColor = '#ff4444';
-      inp.style.backgroundColor = '#fff5f5';
-    });
-
-    otpForm.style.animation = 'shake 0.4s ease';
-
-    setTimeout(() => {
-      if (otpForm) otpForm.style.animation = '';
-      inputs.forEach(inp => {
-        inp.style.borderColor = '';
-        inp.style.backgroundColor = '';
-      });
-    }, 400);
-  }
-
-  function ensurePhone(input) {
-    if (!input) return false;
-    const digits = (input.value || '').replace(/\D/g, '');
-    if (digits.length === 10) return true;
-
-    input.focus();
-    input.style.borderColor = '#ff4444';
-    input.style.backgroundColor = '#fff5f5';
-    setTimeout(() => {
+    otpDigits.forEach(input => {
       if (input) {
-        input.style.borderColor = '';
-        input.style.backgroundColor = '';
+        input.value = '';
+        input.classList.remove('error');
       }
-    }, 1500);
-    return false;
-  }
-
-  function goToOtp() {
-    console.log('Going to OTP screen');
-    setTitle('Verify OTP');
-    showWelcome(false);
-    showForm('otp');
-    startResendTimer();
-
-    setTimeout(() => {
-      const firstOtpInput = otpForm && otpForm.querySelector('.otp');
-      if (firstOtpInput) firstOtpInput.focus();
-    }, 100);
-  }
-
-  function startResendTimer() {
-    if (!resendBtn) return;
-
-    if (currentResendTimer) clearInterval(currentResendTimer);
-
-    let timeLeft = 30;
-    resendBtn.disabled = true;
-    const original = 'Resend code';
-
-    const updateLabel = () => {
-      resendBtn.innerHTML = `Resend in <span id="resendTimer">${timeLeft}</span>s`;
-    };
-    updateLabel();
-
-    currentResendTimer = setInterval(() => {
-      if (timeLeft > 0) {
-        timeLeft--;
-        updateLabel();
-      } else {
-        clearInterval(currentResendTimer);
-        currentResendTimer = null;
-        resendBtn.disabled = false;
-        resendBtn.innerHTML = original;
-      }
-    }, 1000);
-  }
-
-  function setupOtpInputs() {
-    console.log('Setting up OTP inputs');
-    if (!otpForm) return;
-
-    const inputs = Array.from(otpForm.querySelectorAll('.otp'));
-    const submitBtn = otpForm.querySelector('button[type="submit"]');
-
-    inputs.forEach(inp => {
-      inp.value = '';
-      inp.style.borderColor = '';
-      inp.style.backgroundColor = '';
-    });
-
-    const updateSubmitState = () => {
-      const code = inputs.map(i => i.value).join('');
-      if (submitBtn) submitBtn.disabled = code.length !== 6;
-    };
-
-    updateSubmitState();
-
-    inputs.forEach((inp, idx) => {
-      inp.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '').slice(0, 1);
-        if (this.value && idx < inputs.length - 1) inputs[idx + 1].focus();
-        updateSubmitState();
-      });
-
-      inp.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' && !this.value && idx > 0) inputs[idx - 1].focus();
-      });
-
-      inp.addEventListener('focus', function() {
-        this.style.borderColor = '';
-        this.style.backgroundColor = '';
-      });
     });
   }
 
-  // ============================================================
-  // Enhanced Firebase Phone Auth with Better Error Handling
-  // ============================================================
-  let recaptchaVerifier = null;
-  let recaptchaWidgetId = null;
-  let confirmationResult = null;
-  let isSendingOtp = false; // debounce flag
+  function clearErrors() {
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(msg => msg.remove());
 
-  function getFullPhone() {
-    const sourceId = (otpMode === 'signup') ? 'signupPhone' : 'loginPhone';
-    const input = document.getElementById(sourceId);
-    const digits = (input?.value || '').replace(/\D/g, '');
-    return `+91${digits}`;
+    document.querySelectorAll('.error').forEach(el => {
+      el.classList.remove('error');
+    });
   }
 
-  // Fixed reCAPTCHA setup with better error handling
-  async function ensureRecaptcha() {
+  function showError(message, container) {
+    clearErrors();
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    container.appendChild(errorDiv);
+  }
+
+  // -------------------------------
+  // Phone Number Validation
+  // -------------------------------
+  function validatePhone(phone) {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length === 10 && /^[6-9]\d{9}$/.test(cleaned);
+  }
+
+  function formatPhoneForDisplay(phone) {
+    const cleaned = phone.replace(/\D/g, '');
+    return `+91 ${cleaned.slice(0, 5)} ${cleaned.slice(5)}`;
+  }
+
+  // -------------------------------
+  // Firebase reCAPTCHA Setup (Improved)
+  // -------------------------------
+  async function setupRecaptcha() {
     console.log('Setting up reCAPTCHA...');
-    
-    if (typeof firebase === 'undefined' || !firebase?.auth) {
-      console.error('Firebase not loaded. Check Firebase script inclusion.');
-      alert('Firebase authentication is not properly loaded. Please refresh the page.');
-      return null;
-    }
-
-    // Clear any existing verifier first
-    if (recaptchaVerifier) {
-      try {
-        await recaptchaVerifier.clear();
-        console.log('Cleared existing reCAPTCHA verifier');
-      } catch (e) {
-        console.warn('Error clearing reCAPTCHA:', e);
-      }
-      recaptchaVerifier = null;
-      recaptchaWidgetId = null;
-    }
-
-    // Reset the container completely
-    const container = document.getElementById('recaptcha-container');
-    if (container) {
-      container.innerHTML = '';
-      console.log('Reset reCAPTCHA container');
-    }
 
     try {
-      // Create new verifier
+      // Clear any existing verifier first
+      if (recaptchaVerifier) {
+        try {
+          await recaptchaVerifier.clear();
+        } catch (e) {
+          console.warn('Error clearing existing verifier:', e);
+        }
+        recaptchaVerifier = null;
+      }
+
+      // Ensure the container exists and is empty
+      const container = document.getElementById('recaptcha-container');
+      if (!container) {
+        console.error('reCAPTCHA container not found');
+        return false;
+      }
+      container.innerHTML = ''; // Clear any existing content
+
+      // Create new verifier with better error handling
       recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         size: 'invisible',
-        callback: (response) => {
+        callback: () => {
           console.log('reCAPTCHA solved successfully');
         },
         'expired-callback': () => {
-          console.warn('reCAPTCHA expired, will need to retry');
+          console.warn('reCAPTCHA expired');
         },
         'error-callback': (error) => {
-          console.error('reCAPTCHA error:', error);
+          console.error('reCAPTCHA error callback:', error);
         }
       });
 
-      // Render the verifier
-      recaptchaWidgetId = await recaptchaVerifier.render();
-      console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
-      
-      return recaptchaVerifier;
+      // Render with timeout
+      const renderPromise = recaptchaVerifier.render();
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('reCAPTCHA render timeout')), 10000);
+      });
 
-    } catch (error) {
-      console.error('reCAPTCHA setup failed:', error);
-      
-      // If it's the "already rendered" error, try to work around it
-      if (error.message.includes('already been rendered')) {
-        console.log('Attempting to handle already rendered error...');
-        
-        // Clear everything and try once more
-        if (container) {
-          container.innerHTML = '';
-          // Create a new container element
-          const newDiv = document.createElement('div');
-          newDiv.id = 'recaptcha-container-retry';
-          newDiv.style.cssText = 'position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;';
-          document.body.appendChild(newDiv);
-          
-          try {
-            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container-retry', {
-              size: 'invisible'
-            });
-            recaptchaWidgetId = await recaptchaVerifier.render();
-            console.log('reCAPTCHA retry successful');
-            return recaptchaVerifier;
-          } catch (retryError) {
-            console.error('reCAPTCHA retry also failed:', retryError);
-          }
-        }
-      }
-      
-      return null;
-    }
-  }
-
-  // Show detailed error messages to user
-  function showUserFriendlyError(error) {
-    const code = error?.code || '';
-    const message = error?.message || '';
-    
-    console.error('Firebase Auth Error:', { code, message, error });
-    
-    let userMessage = '';
-    
-    switch (code) {
-      case 'auth/too-many-requests':
-        userMessage = 'Too many attempts. Please wait 15-30 minutes before trying again.';
-        break;
-      case 'auth/invalid-phone-number':
-        userMessage = 'Please enter a valid Indian mobile number.';
-        break;
-      case 'auth/quota-exceeded':
-        userMessage = 'SMS quota exceeded. Please try again later.';
-        break;
-      case 'auth/invalid-verification-code':
-        userMessage = 'Invalid OTP. Please check and try again.';
-        break;
-      case 'auth/code-expired':
-        userMessage = 'OTP has expired. Please request a new one.';
-        break;
-      case 'auth/missing-verification-code':
-        userMessage = 'Please enter the complete 6-digit OTP.';
-        break;
-      default:
-        if (message.includes('reCAPTCHA')) {
-          userMessage = 'Security verification failed. Please try again.';
-        } else if (message.includes('network')) {
-          userMessage = 'Network error. Please check your connection and try again.';
-        } else {
-          userMessage = 'Something went wrong. Please try again.';
-        }
-        break;
-    }
-    
-    // Show error to user (you can customize this)
-    alert(userMessage);
-    
-    return userMessage;
-  }
-
-  // Enhanced OTP sending with better error handling
-  async function sendOtpReal() {
-    if (isSendingOtp) {
-      console.log('Already sending OTP, ignoring duplicate request');
-      return;
-    }
-    
-    isSendingOtp = true;
-    console.log('Starting OTP send process...');
-
-    // Disable the active submit button for UX
-    const activeBtn = (otpMode === 'signup') ? signupSubmitBtn : loginSubmitBtn;
-    if (activeBtn) {
-      activeBtn.disabled = true;
-      activeBtn.textContent = 'Sending OTP...';
-    }
-
-    try {
-      // Get phone number
-      const phoneNumber = getFullPhone();
-      console.log('Sending OTP to:', phoneNumber);
-
-      // Validate phone number format
-      if (!/^\+91\d{10}$/.test(phoneNumber)) {
-        throw new Error('Invalid phone number format');
-      }
-
-      // Setup reCAPTCHA
-      const verifier = await ensureRecaptcha();
-      if (!verifier) {
-        throw new Error('reCAPTCHA setup failed');
-      }
-
-      console.log('Calling Firebase signInWithPhoneNumber...');
-      
-      // Send SMS
-      confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
-      
-      console.log('OTP sent successfully!', confirmationResult);
-
-      // Use the goToOtp() function which handles everything properly
-      goToOtp();
-
-    } catch (error) {
-      console.error('Send OTP failed:', error);
-      
-      // Show user-friendly error
-      showUserFriendlyError(error);
-
-      // Return to original form
-      if (otpMode === 'signup') {
-        setTitle('Create new account');
-        showWelcome(false);
-        showForm('signup');
-      } else {
-        setTitle('Login');
-        showWelcome(true);
-        showForm('login');
-      }
-
-      // Highlight problematic input
-      const sourceId = (otpMode === 'signup') ? 'signupPhone' : 'loginPhone';
-      const input = document.getElementById(sourceId);
-      if (input) {
-        input.style.borderColor = '#ff4444';
-        input.style.backgroundColor = '#fff5f5';
-        setTimeout(() => {
-          if (input) {
-            input.style.borderColor = '';
-            input.style.backgroundColor = '';
-          }
-        }, 2000);
-      }
-
-      // Reset reCAPTCHA on certain errors
-      if (error.code === 'auth/internal-error' || 
-          error.message.includes('already been rendered') ||
-          error.message.includes('reCAPTCHA')) {
-        console.log('Resetting reCAPTCHA due to error');
-        try {
-          if (recaptchaVerifier) {
-            await recaptchaVerifier.clear();
-          }
-        } catch (e) {
-          console.warn('Error clearing reCAPTCHA:', e);
-        }
-        recaptchaVerifier = null;
-        recaptchaWidgetId = null;
-      }
-
-    } finally {
-      isSendingOtp = false;
-      
-      // Re-enable submit button
-      if (activeBtn) {
-        activeBtn.disabled = false;
-        activeBtn.textContent = (otpMode === 'signup') ? 'Create account' : 'Log in';
-      }
-    }
-  }
-
-  // Enhanced OTP verification
-  async function verifyOtpReal(otpCode) {
-    console.log('Verifying OTP:', otpCode);
-
-    if (!confirmationResult || typeof confirmationResult.confirm !== 'function') {
-      console.error('No valid confirmation result found');
-      alert('OTP session expired. Please request a new OTP.');
-      return false;
-    }
-
-    if (!/^\d{6}$/.test(otpCode)) {
-      console.error('Invalid OTP format:', otpCode);
-      showOtpError();
-      return false;
-    }
-
-    try {
-      const result = await confirmationResult.confirm(otpCode);
-      console.log('OTP verification successful:', result.user.uid);
-      
-      // Show success screen
-      showInlineSuccess(otpMode);
-      
+      await Promise.race([renderPromise, timeoutPromise]);
+      console.log('reCAPTCHA setup complete');
       return true;
 
     } catch (error) {
-      console.error('OTP verification failed:', error);
-      
-      // Show user-friendly error
-      showUserFriendlyError(error);
-      
-      // Show visual error feedback
-      showOtpError();
-      
+      console.error('reCAPTCHA setup failed:', error);
+
+      // Reset container on error
+      const container = document.getElementById('recaptcha-container');
+      if (container) {
+        container.innerHTML = '';
+      }
+
+      recaptchaVerifier = null;
       return false;
     }
   }
 
   // -------------------------------
-  // Event Listeners
+  // OTP Functions (Improved)
   // -------------------------------
+  async function sendOtp(phoneNumber) {
+    console.log('Sending OTP to:', phoneNumber);
 
-  // Header login button → open drawer on Login view
+    try {
+      // Validate Firebase is available
+      if (typeof firebase === 'undefined' || !firebase.auth) {
+        throw new Error('Firebase not properly initialized');
+      }
+
+      // Setup reCAPTCHA with retry logic
+      let recaptchaReady = false;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        console.log(`reCAPTCHA setup attempt ${attempt}/3`);
+        recaptchaReady = await setupRecaptcha();
+        if (recaptchaReady) break;
+
+        // Wait before retry
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+
+      if (!recaptchaReady) {
+        throw new Error('Failed to setup reCAPTCHA after multiple attempts');
+      }
+
+      const fullPhone = `+91${phoneNumber}`;
+      console.log('Calling Firebase signInWithPhoneNumber...');
+
+      confirmationResult = await firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier);
+
+      console.log('OTP sent successfully');
+      currentPhone = phoneNumber;
+
+      if (otpPhoneDisplay) {
+        otpPhoneDisplay.textContent = formatPhoneForDisplay(phoneNumber);
+      }
+
+      showScreen('otp');
+      startResendTimer();
+
+      // Focus first OTP input
+      setTimeout(() => {
+        clearOtpInputs();
+        if (otpDigits[0]) otpDigits[0].focus();
+      }, 100);
+
+      return true;
+
+    } catch (error) {
+      console.error('Send OTP failed:', error);
+
+      // Clean up on error
+      if (recaptchaVerifier) {
+        try {
+          await recaptchaVerifier.clear();
+        } catch (e) {
+          console.warn('Error clearing verifier after failure:', e);
+        }
+        recaptchaVerifier = null;
+      }
+
+      let errorMessage = 'Failed to send OTP. Please try again.';
+
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many attempts. Please wait 15-30 minutes before trying again.';
+          break;
+        case 'auth/invalid-phone-number':
+          errorMessage = 'Please enter a valid Indian mobile number.';
+          break;
+        case 'auth/quota-exceeded':
+          errorMessage = 'SMS quota exceeded. Please try again later.';
+          break;
+        case 'auth/internal-error':
+          errorMessage = 'Internal error occurred. Please try again.';
+          break;
+        default:
+          if (error.message.includes('reCAPTCHA')) {
+            errorMessage = 'Security verification failed. Please refresh and try again.';
+          } else if (error.message.includes('network') || error.message.includes('timeout')) {
+            errorMessage = 'Network error. Please check your connection and try again.';
+          }
+          break;
+      }
+
+      const activeForm = currentMode === 'login' ? loginForm : signupForm;
+      showError(errorMessage, activeForm);
+      return false;
+    }
+  }
+
+  // -------------------------------
+  // VERIFY OTP  (includes Firestore profile write)
+  // -------------------------------
+  async function verifyOtp() {
+    const otpCode = Array.from(otpDigits).map(input => input.value).join('');
+
+    if (otpCode.length !== 6) {
+      showOtpError('Please enter complete 6-digit OTP');
+      return;
+    }
+
+    if (!confirmationResult) {
+      showOtpError('OTP session expired. Please request a new OTP.');
+      setTimeout(() => {
+        showScreen(currentMode);
+      }, 2000);
+      return;
+    }
+
+    try {
+      console.log('Verifying OTP:', otpCode);
+
+      // Disable verify button during verification
+      if (verifyOtpBtn) {
+        verifyOtpBtn.disabled = true;
+        verifyOtpBtn.textContent = 'Verifying...';
+      }
+
+      const result = await confirmationResult.confirm(otpCode);
+      console.log('OTP verified successfully:', result.user.uid);
+
+      // ---- Create/Update Firestore profile ----
+      try {
+        if (db) {
+          const uid = result.user.uid;
+          const usersRef = db.collection('users').doc(uid);
+
+          const safe = (el) => (el && el.value ? el.value.trim() : '');
+          const name  = signupName?.value?.trim() || '';
+          const phone = `+91${currentPhone}`;
+          const email = safe(signupEmail);
+          const city  = safe(signupCity);
+
+          if (currentMode === 'signup') {
+            await usersRef.set({
+              name,
+              phone,
+              email,
+              city,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          } else {
+            await usersRef.set({
+              lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+          console.log('User profile stored/updated in Firestore');
+        } else {
+          console.warn('Skipping profile write: Firestore not initialized');
+        }
+      } catch (profileErr) {
+        console.error('Failed to write user profile:', profileErr);
+      }
+      // ---- END profile write ----
+
+      // Show success screen
+      if (currentMode === 'signup') {
+        if (successTitle) successTitle.textContent = 'Account Created Successfully!';
+        if (successMessage) successMessage.textContent = 'Welcome to Hawaa! Your account has been created.';
+      } else {
+        if (successTitle) successTitle.textContent = 'Login Successful!';
+        if (successMessage) successMessage.textContent = 'Welcome back! You are now logged in.';
+      }
+
+      showScreen('success');
+
+      // Clear timer
+      if (resendTimerInterval) {
+        clearInterval(resendTimerInterval);
+        resendTimerInterval = null;
+      }
+
+    } catch (error) {
+      console.error('OTP verification failed:', error);
+
+      let errorMessage = 'Invalid OTP. Please try again.';
+
+      switch (error.code) {
+        case 'auth/invalid-verification-code':
+          errorMessage = 'Invalid OTP. Please check and try again.';
+          break;
+        case 'auth/code-expired':
+          errorMessage = 'OTP has expired. Please request a new one.';
+          break;
+        case 'auth/missing-verification-code':
+          errorMessage = 'Please enter the complete 6-digit OTP.';
+          break;
+        default:
+          if (error.message.includes('session')) {
+            errorMessage = 'Session expired. Please request a new OTP.';
+          }
+          break;
+      }
+
+      showOtpError(errorMessage);
+
+    } finally {
+      // Re-enable verify button
+      if (verifyOtpBtn) {
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.textContent = 'Verify OTP';
+      }
+    }
+  }
+
+  function showOtpError(message) {
+    console.log('Showing OTP error:', message);
+
+    // Visual feedback
+    otpDigits.forEach(input => {
+      if (input) input.classList.add('error');
+    });
+
+    // Add shake animation to the screen
+    if (otpScreen) {
+      otpScreen.classList.add('shake');
+      setTimeout(() => {
+        if (otpScreen) otpScreen.classList.remove('shake');
+      }, 400);
+    }
+
+    // Show error message
+    showError(message, otpForm);
+
+    // Clear error styling after delay
+    setTimeout(() => {
+      otpDigits.forEach(input => {
+        if (input) input.classList.remove('error');
+      });
+    }, 2000);
+
+    // Clear OTP inputs
+    setTimeout(() => {
+      clearOtpInputs();
+      if (otpDigits[0]) otpDigits[0].focus();
+    }, 500);
+  }
+
+  // -------------------------------
+  // Resend Timer
+  // -------------------------------
+  function startResendTimer() {
+    let timeLeft = 30;
+
+    if (resendTimerInterval) {
+      clearInterval(resendTimerInterval);
+    }
+
+    if (resendOtpBtn) {
+      resendOtpBtn.disabled = true;
+    }
+
+    function updateTimer() {
+      if (resendTimer) resendTimer.textContent = timeLeft;
+
+      if (timeLeft <= 0) {
+        if (resendOtpBtn) resendOtpBtn.disabled = false;
+        if (resendTimer) resendTimer.textContent = '0';
+        clearInterval(resendTimerInterval);
+        resendTimerInterval = null;
+        return;
+      }
+
+      timeLeft--;
+    }
+
+    updateTimer();
+    resendTimerInterval = setInterval(updateTimer, 1000);
+  }
+
+  // -------------------------------
+  // OTP Input Handlers (Enhanced)
+  // -------------------------------
+  function setupOtpInputs() {
+    if (!otpDigits.length) return;
+
+    otpDigits.forEach((input, index) => {
+      // Input event
+      input.addEventListener('input', function() {
+        // Only allow digits
+        let value = this.value.replace(/\D/g, '');
+        this.value = value.slice(0, 1);
+
+        // Move to next input if current is filled
+        if (this.value && index < otpDigits.length - 1) {
+          otpDigits[index + 1].focus();
+        }
+
+        // Clear error state when typing
+        this.classList.remove('error');
+        clearErrors();
+
+        // Auto-verify when 6 digits are filled
+        const code = Array.from(otpDigits).map(inp => inp.value).join('');
+        if (code.length === 6) {
+          setTimeout(() => verifyOtp(), 200);
+        }
+      });
+
+      // Keydown event for navigation
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          if (!this.value && index > 0) {
+            otpDigits[index - 1].focus();
+          }
+        }
+        if (e.key === 'ArrowLeft' && index > 0) {
+          e.preventDefault();
+          otpDigits[index - 1].focus();
+        }
+        if (e.key === 'ArrowRight' && index < otpDigits.length - 1) {
+          e.preventDefault();
+          otpDigits[index + 1].focus();
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          verifyOtp();
+        }
+      });
+
+      // Paste event
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        const digits = paste.replace(/\D/g, '');
+        if (digits.length >= 6) {
+          otpDigits.forEach((inp, i) => {
+            inp.value = digits[i] || '';
+            inp.classList.remove('error');
+          });
+          setTimeout(() => verifyOtp(), 200);
+        }
+      });
+
+      // Focus event
+      input.addEventListener('focus', function() {
+        this.classList.remove('error');
+        this.select();
+      });
+    });
+  }
+
+  // -------------------------------
+  // NEW: Auth-aware Header & Nav
+  // -------------------------------
+  function addNavLogoutItem() {
+    if (!mobileNav) return;
+
+    // use the last <ul.nav-links> in the mobile nav
+    const lists = mobileNav.querySelectorAll('.nav-links');
+    if (!lists.length) return;
+    const lastList = lists[lists.length - 1];
+
+    // already exists?
+    if (mobileNav.querySelector('#navLogoutItem')) return;
+
+    const li = document.createElement('li');
+    li.id = 'navLogoutItem';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rc-button nav-logout-btn'; // safe if CSS class doesn’t exist
+    btn.textContent = 'Log out';
+
+    btn.addEventListener('click', async () => {
+      try {
+        await firebase.auth().signOut();
+        if (mobileNav.classList.contains('active')) toggleMobileMenu();
+      } catch (e) {
+        console.error('Sign out failed:', e);
+        alert('Failed to log out. Please try again.');
+      }
+    });
+
+    li.appendChild(btn);
+    lastList.appendChild(li);
+  }
+
+  function removeNavLogoutItem() {
+    const item = document.getElementById('navLogoutItem');
+    if (item && item.parentNode) item.parentNode.removeChild(item);
+  }
+
+  function renderAuthUI(user) {
+    // Hide/show header Login button
+    if (headerLoginBtn) {
+      headerLoginBtn.style.display = user ? 'none' : 'inline-flex';
+    }
+    // Add/remove mobile nav logout
+    if (user) addNavLogoutItem();
+    else removeNavLogoutItem();
+  }
+
+  // Observe auth state (works even after page reload)
+  try {
+    firebase.auth().onAuthStateChanged(function(user) {
+      console.log('Auth state changed. Signed in?', !!user);
+      renderAuthUI(user);
+    });
+  } catch (e) {
+    console.warn('Auth observer failed:', e);
+  }
+
+  // -------------------------------
+  // Events
+  // -------------------------------
   if (headerLoginBtn) {
     headerLoginBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('Header login button clicked');
-      setTitle('Login');
-      showWelcome(true);
-      showForm('login');
+      showScreen('login');
       openAuthDrawer();
     });
   }
 
-  // Close drawer
-  if (overlay) overlay.addEventListener('click', closeDrawer);
-  const closeBtn = document.getElementById('drawerCloseBtn');
-  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthDrawer);
+  if (authOverlay) authOverlay.addEventListener('click', closeAuthDrawer);
 
-  // Switch forms
-  if (toSignupLink) {
-    toSignupLink.addEventListener('click', function(e) {
+  if (switchToSignup) {
+    switchToSignup.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('Switch to signup clicked');
-      setTitle('Create new account');
-      showWelcome(false);
-      showForm('signup');
+      showScreen('signup');
+      clearErrors();
     });
   }
 
-  if (toLoginLink) {
-    toLoginLink.addEventListener('click', function(e) {
+  if (switchToLogin) {
+    switchToLogin.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('Switch to login clicked');
-      setTitle('Login');
-      showWelcome(true);
-      showForm('login');
+      showScreen('login');
+      clearErrors();
     });
   }
 
-  // -------------------------------
-  // Form Submit Handlers
-  // -------------------------------
-
-  // Login form submit
   if (loginForm) {
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
-      console.log('Login form submitted');
-      
-      const phone = document.getElementById('loginPhone');
-      if (!ensurePhone(phone)) {
-        console.log('Phone validation failed');
+
+      const phone = loginPhone.value.replace(/\D/g, '');
+      if (!validatePhone(phone)) {
+        showError('Please enter a valid 10-digit mobile number', this);
+        loginPhone.focus();
+        loginPhone.classList.add('error');
         return;
       }
-      
-      otpMode = 'login';
-      await sendOtpReal();
+
+      loginPhone.classList.remove('error');
+      sendLoginOtpBtn.disabled = true;
+      sendLoginOtpBtn.textContent = 'Sending...';
+
+      await sendOtp(phone);
+
+      sendLoginOtpBtn.disabled = false;
+      sendLoginOtpBtn.textContent = 'Send OTP';
     });
   }
 
-  // Signup form submit
   if (signupForm) {
     signupForm.addEventListener('submit', async function(e) {
       e.preventDefault();
-      console.log('Signup form submitted');
-      
-      const nameInput = document.getElementById('signupName');
-      const phone = document.getElementById('signupPhone');
 
-      // Validate name
-      if (!nameInput || !nameInput.value.trim()) {
-        console.log('Name validation failed');
-        if (nameInput) {
-          nameInput.focus();
-          nameInput.style.borderColor = '#ff4444';
-          nameInput.style.backgroundColor = '#fff5f5';
-          setTimeout(() => {
-            if (nameInput) {
-              nameInput.style.borderColor = '';
-              nameInput.style.backgroundColor = '';
-            }
-          }, 1500);
-        }
-        return;
-      }
-      
-      // Validate phone
-      if (!ensurePhone(phone)) {
-        console.log('Phone validation failed');
-        return;
-      }
+      const name = signupName.value.trim();
+      const phone = signupPhone.value.replace(/\D/g, '');
 
-      otpMode = 'signup';
-      await sendOtpReal();
-    });
-  }
+      let hasError = false;
 
-  // OTP form submit
-  if (otpForm) {
-    otpForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      console.log('OTP form submitted');
-      
-      const inputs = Array.from(otpForm.querySelectorAll('.otp'));
-      const code = inputs.map(i => i.value).join('');
-      
-      await verifyOtpReal(code);
-    });
-  }
-
-  // Edit phone in OTP
-  if (editPhoneBtn) {
-    editPhoneBtn.addEventListener('click', function() {
-      console.log('Edit phone clicked');
-      
-      if (currentResendTimer) {
-        clearInterval(currentResendTimer);
-        currentResendTimer = null;
-      }
-      
-      if (otpMode === 'signup') {
-        setTitle('Create new account');
-        showWelcome(false);
-        showForm('signup');
+      if (!name || name.length < 2) {
+        showError('Please enter your full name (at least 2 characters)', this);
+        signupName.focus();
+        signupName.classList.add('error');
+        hasError = true;
       } else {
-        setTitle('Login');
-        showWelcome(true);
-        showForm('login');
+        signupName.classList.remove('error');
+      }
+
+      if (!validatePhone(phone)) {
+        if (!hasError) {
+          showError('Please enter a valid 10-digit mobile number', this);
+        }
+        if (!hasError) signupPhone.focus();
+        signupPhone.classList.add('error');
+        hasError = true;
+      } else {
+        signupPhone.classList.remove('error');
+      }
+
+      if (hasError) return;
+
+      sendSignupOtpBtn.disabled = true;
+      sendSignupOtpBtn.textContent = 'Sending...';
+
+      await sendOtp(phone);
+
+      sendSignupOtpBtn.disabled = false;
+      sendSignupOtpBtn.textContent = 'Send OTP';
+    });
+  }
+
+  if (otpForm) {
+    otpForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      verifyOtp();
+    });
+  }
+
+  if (changePhoneBtn) {
+    changePhoneBtn.addEventListener('click', function() {
+      showScreen(currentMode);
+      clearErrors();
+      if (resendTimerInterval) {
+        clearInterval(resendTimerInterval);
+        resendTimerInterval = null;
       }
     });
   }
 
-  // Inline success continue
-  if (authSuccessContinue) {
-    authSuccessContinue.addEventListener('click', function() {
-      console.log('Success continue clicked');
-      closeDrawer();
+  if (resendOtpBtn) {
+    resendOtpBtn.addEventListener('click', async function() {
+      if (this.disabled || !currentPhone) return;
+
+      console.log('Resending OTP...');
+      this.disabled = true;
+      const originalText = this.textContent;
+      this.textContent = 'Sending...';
+
+      const success = await sendOtp(currentPhone);
+
+      if (!success) {
+        this.disabled = false;
+        this.textContent = originalText;
+      }
+      // Timer will be started by sendOtp if successful
     });
   }
 
-  // Enhanced resend OTP
-  if (resendBtn) {
-    resendBtn.addEventListener('click', async function() {
-      if (resendBtn.disabled) {
-        console.log('Resend button disabled, ignoring click');
-        return;
+  if (continueBtn) {
+    continueBtn.addEventListener('click', function() {
+      closeAuthDrawer();
+      // Optional: redirect after success
+      // window.location.href = '/';
+    });
+  }
+
+  // Phone input UX polish
+  [loginPhone, signupPhone].forEach(input => {
+    if (!input) return;
+    input.addEventListener('input', function() {
+      let value = this.value.replace(/\D/g, '');
+      this.value = value.slice(0, 10);
+      this.classList.remove('error');
+      if (validatePhone(value)) {
+        const err = this.parentNode.parentNode.querySelector('.error-message');
+        if (err) err.remove();
       }
+    });
+    input.addEventListener('keydown', function(e) {
+      const allow = [46, 8, 9, 27, 13];
+      if (allow.includes(e.keyCode) ||
+          (e.ctrlKey && [65,67,86,88].includes(e.keyCode)) ||
+          (e.keyCode >= 35 && e.keyCode <= 40)) return;
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) &&
+          (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
+    });
+  });
 
-      console.log('Resend OTP clicked');
-      
-      // Clear OTP inputs and restart timer immediately for better UX
-      clearOtpInputs();
-      startResendTimer();
-      
-      try {
-        const verifier = await ensureRecaptcha();
-        if (!verifier) {
-          throw new Error('reCAPTCHA setup failed');
-        }
-
-        const phoneNumber = getFullPhone();
-        console.log('Resending OTP to:', phoneNumber);
-        
-        confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
-        console.log('OTP resent successfully');
-        
-      } catch (error) {
-        console.error('Resend OTP failed:', error);
-        
-        // Show user-friendly error
-        showUserFriendlyError(error);
-        
-        // Stop timer and restore button
-        if (currentResendTimer) {
-          clearInterval(currentResendTimer);
-          currentResendTimer = null;
-        }
-        resendBtn.disabled = false;
-        resendBtn.innerHTML = 'Resend code';
-
-        // Reset reCAPTCHA on error
-        try {
-          if (recaptchaVerifier) {
-            await recaptchaVerifier.clear();
-          }
-        } catch (e) {
-          console.warn('Error clearing reCAPTCHA:', e);
-        }
-        recaptchaVerifier = null;
-        recaptchaWidgetId = null;
+  if (signupName) {
+    signupName.addEventListener('input', function() {
+      this.classList.remove('error');
+      if (this.value.trim().length >= 2) {
+        const err = this.parentNode.querySelector('.error-message');
+        if (err) err.remove();
       }
     });
   }
 
-  // ESC key handling
+  // ESC to close drawer or menu
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      if (drawer && drawer.classList.contains('open')) {
-        closeDrawer();
+      if (authDrawer && authDrawer.classList.contains('active')) {
+        closeAuthDrawer();
       } else if (mobileNav && mobileNav.classList.contains('active')) {
-        toggleMenu();
+        toggleMobileMenu();
       }
     }
   });
 
-  // Initialize Firebase check
-  function initializeFirebaseAuth() {
-    console.log('Checking Firebase initialization...');
-    
+  // Initialize OTP inputs
+  setupOtpInputs();
+
+  // Final sanity: Firebase ready check
+  function checkFirebaseAuth() {
     if (typeof firebase === 'undefined') {
-      console.error('Firebase not loaded! Check script tags.');
+      console.error('Firebase not loaded! Make sure Firebase scripts are included.');
       return false;
     }
-    
     if (!firebase.auth) {
-      console.error('Firebase Auth not loaded! Check firebase-auth script tag.');
+      console.error('Firebase Auth not loaded! Make sure firebase-auth script is included.');
       return false;
     }
-    
-    console.log('Firebase Auth ready');
-    return true;
+    try {
+      firebase.auth();
+      console.log('Firebase Auth instance OK');
+      return true;
+    } catch (error) {
+      console.error('Firebase Auth initialization error:', error);
+      return false;
+    }
   }
 
-  // Final initialization
   setTimeout(() => {
-    const firebaseReady = initializeFirebaseAuth();
-    if (!firebaseReady) {
-      console.error('Firebase initialization failed - authentication will not work');
-      alert('Authentication system is not properly loaded. Please refresh the page.');
+    const ok = checkFirebaseAuth();
+    if (!ok && headerLoginBtn) {
+      headerLoginBtn.addEventListener('click', () =>
+        alert('Authentication system is not properly loaded. Please refresh the page and try again.')
+      );
     } else {
-      console.log('Header.js initialization complete - Firebase Auth ready');
+      console.log('✅ Firebase Auth ready');
+      console.log('✅ Header Auth: Initialization complete');
     }
   }, 100);
-
 });
