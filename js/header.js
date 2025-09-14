@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const signupName = document.getElementById('signupName');
   const signupPhone = document.getElementById('signupPhone');
 
-  // Optional (you’ll add these inputs later; safe if not present yet)
+  // Optional (you'll add these inputs later; safe if not present yet)
   const signupEmail = document.getElementById('signupEmail');
   const signupCity  = document.getElementById('signupCity');
 
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // -------------------------------
-  // VERIFY OTP  (includes Firestore profile write)
+  // VERIFY OTP (Manual verification - no auto-verify)
   // -------------------------------
   async function verifyOtp() {
     const otpCode = Array.from(otpDigits).map(input => input.value).join('');
@@ -389,7 +389,19 @@ document.addEventListener('DOMContentLoaded', function() {
       // Disable verify button during verification
       if (verifyOtpBtn) {
         verifyOtpBtn.disabled = true;
-        verifyOtpBtn.textContent = 'Verifying...';
+        verifyOtpBtn.innerHTML = `
+          <span class="button-bg">
+            <span class="button-bg-layers">
+              <span class="button-bg-layer button-bg-layer-1"></span>
+              <span class="button-bg-layer button-bg-layer-2"></span>
+              <span class="button-bg-layer button-bg-layer-3"></span>
+            </span>
+          </span>
+          <span class="button-inner">
+            <span class="button-inner-static">Verifying...</span>
+            <span class="button-inner-hover">Verifying...</span>
+          </span>
+        `;
       }
 
       const result = await confirmationResult.confirm(otpCode);
@@ -476,7 +488,19 @@ document.addEventListener('DOMContentLoaded', function() {
       // Re-enable verify button
       if (verifyOtpBtn) {
         verifyOtpBtn.disabled = false;
-        verifyOtpBtn.textContent = 'Verify OTP';
+        verifyOtpBtn.innerHTML = `
+          <span class="button-bg">
+            <span class="button-bg-layers">
+              <span class="button-bg-layer button-bg-layer-1"></span>
+              <span class="button-bg-layer button-bg-layer-2"></span>
+              <span class="button-bg-layer button-bg-layer-3"></span>
+            </span>
+          </span>
+          <span class="button-inner">
+            <span class="button-inner-static">Verify</span>
+            <span class="button-inner-hover">Verify</span>
+          </span>
+        `;
       }
     }
   }
@@ -547,12 +571,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // -------------------------------
-  // OTP Input Handlers (Enhanced)
+  // OTP Input Handlers (Enhanced - NO AUTO-VERIFY)
   // -------------------------------
   function setupOtpInputs() {
     if (!otpDigits.length) return;
 
     otpDigits.forEach((input, index) => {
+      // Set numeric inputmode for mobile keyboard
+      input.setAttribute('inputmode', 'numeric');
+      
       // Input event
       input.addEventListener('input', function() {
         // Only allow digits
@@ -568,11 +595,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.classList.remove('error');
         clearErrors();
 
-        // Auto-verify when 6 digits are filled
-        const code = Array.from(otpDigits).map(inp => inp.value).join('');
-        if (code.length === 6) {
-          setTimeout(() => verifyOtp(), 200);
-        }
+        // NO AUTO-VERIFY - user must click Verify button
       });
 
       // Keydown event for navigation
@@ -606,7 +629,10 @@ document.addEventListener('DOMContentLoaded', function() {
             inp.value = digits[i] || '';
             inp.classList.remove('error');
           });
-          setTimeout(() => verifyOtp(), 200);
+          // Focus the verify button after paste
+          if (verifyOtpBtn) {
+            verifyOtpBtn.focus();
+          }
         }
       });
 
@@ -624,23 +650,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function addNavLogoutItem() {
     if (!mobileNav) return;
 
-    // use the last <ul.nav-links> in the mobile nav
-    const lists = mobileNav.querySelectorAll('.nav-links');
-    if (!lists.length) return;
-    const lastList = lists[lists.length - 1];
-
     // already exists?
-    if (mobileNav.querySelector('#navLogoutItem')) return;
+    if (mobileNav.querySelector('#navLogoutSection')) return;
 
-    const li = document.createElement('li');
-    li.id = 'navLogoutItem';
+    // Find the nav-content container
+    const navContent = mobileNav.querySelector('.nav-content');
+    if (!navContent) return;
 
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'rc-button nav-logout-btn'; // safe if CSS class doesn’t exist
-    btn.textContent = 'Log out';
+    // Create logout section outside nav-sections, at the bottom
+    const logoutSection = document.createElement('div');
+    logoutSection.id = 'navLogoutSection';
+    logoutSection.className = 'nav-logout-section';
 
-    btn.addEventListener('click', async () => {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.type = 'button';
+    logoutBtn.className = 'nav-logout-btn';
+    logoutBtn.innerHTML = `
+      <span class="material-symbols-rounded">logout</span>
+      <span>Log out</span>
+    `;
+
+    logoutBtn.addEventListener('click', async () => {
       try {
         await firebase.auth().signOut();
         if (mobileNav.classList.contains('active')) toggleMobileMenu();
@@ -650,13 +680,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    li.appendChild(btn);
-    lastList.appendChild(li);
+    logoutSection.appendChild(logoutBtn);
+    navContent.appendChild(logoutSection);
   }
 
   function removeNavLogoutItem() {
-    const item = document.getElementById('navLogoutItem');
-    if (item && item.parentNode) item.parentNode.removeChild(item);
+    const section = document.getElementById('navLogoutSection');
+    if (section && section.parentNode) section.parentNode.removeChild(section);
   }
 
   function renderAuthUI(user) {
@@ -723,12 +753,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
       loginPhone.classList.remove('error');
       sendLoginOtpBtn.disabled = true;
-      sendLoginOtpBtn.textContent = 'Sending...';
+      sendLoginOtpBtn.innerHTML = `
+        <span class="button-bg">
+          <span class="button-bg-layers">
+            <span class="button-bg-layer button-bg-layer-1"></span>
+            <span class="button-bg-layer button-bg-layer-2"></span>
+            <span class="button-bg-layer button-bg-layer-3"></span>
+          </span>
+        </span>
+        <span class="button-inner">
+          <span class="button-inner-static">Sending...</span>
+          <span class="button-inner-hover">Sending...</span>
+        </span>
+      `;
 
       await sendOtp(phone);
 
       sendLoginOtpBtn.disabled = false;
-      sendLoginOtpBtn.textContent = 'Send OTP';
+      sendLoginOtpBtn.innerHTML = `
+        <span class="button-bg">
+          <span class="button-bg-layers">
+            <span class="button-bg-layer button-bg-layer-1"></span>
+            <span class="button-bg-layer button-bg-layer-2"></span>
+            <span class="button-bg-layer button-bg-layer-3"></span>
+          </span>
+        </span>
+        <span class="button-inner">
+          <span class="button-inner-static">Send OTP</span>
+          <span class="button-inner-hover">Send OTP</span>
+        </span>
+      `;
     });
   }
 
@@ -764,12 +818,36 @@ document.addEventListener('DOMContentLoaded', function() {
       if (hasError) return;
 
       sendSignupOtpBtn.disabled = true;
-      sendSignupOtpBtn.textContent = 'Sending...';
+      sendSignupOtpBtn.innerHTML = `
+        <span class="button-bg">
+          <span class="button-bg-layers">
+            <span class="button-bg-layer button-bg-layer-1"></span>
+            <span class="button-bg-layer button-bg-layer-2"></span>
+            <span class="button-bg-layer button-bg-layer-3"></span>
+          </span>
+        </span>
+        <span class="button-inner">
+          <span class="button-inner-static">Sending...</span>
+          <span class="button-inner-hover">Sending...</span>
+        </span>
+      `;
 
       await sendOtp(phone);
 
       sendSignupOtpBtn.disabled = false;
-      sendSignupOtpBtn.textContent = 'Send OTP';
+      sendSignupOtpBtn.innerHTML = `
+        <span class="button-bg">
+          <span class="button-bg-layers">
+            <span class="button-bg-layer button-bg-layer-1"></span>
+            <span class="button-bg-layer button-bg-layer-2"></span>
+            <span class="button-bg-layer button-bg-layer-3"></span>
+          </span>
+        </span>
+        <span class="button-inner">
+          <span class="button-inner-static">Send OTP</span>
+          <span class="button-inner-hover">Send OTP</span>
+        </span>
+      `;
     });
   }
 
@@ -818,9 +896,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Phone input UX polish
+  // Phone input UX polish with mobile keyboard support
   [loginPhone, signupPhone].forEach(input => {
     if (!input) return;
+    
+    // Set numeric inputmode for mobile keyboard
+    input.setAttribute('inputmode', 'numeric');
+    
     input.addEventListener('input', function() {
       let value = this.value.replace(/\D/g, '');
       this.value = value.slice(0, 10);
@@ -840,6 +922,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Name input - normal keyboard
   if (signupName) {
     signupName.addEventListener('input', function() {
       this.classList.remove('error');
@@ -848,6 +931,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (err) err.remove();
       }
     });
+  }
+
+  // Email input - email keyboard if exists
+  if (signupEmail) {
+    signupEmail.setAttribute('inputmode', 'email');
   }
 
   // ESC to close drawer or menu
