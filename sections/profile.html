@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile & Settings</title>
+
+  <!-- Outfit + Material Symbols Rounded -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/profile.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Profile & Settings</h2>
+      <ul>
+        <li id="personal-tab" class="active">
+          <span class="material-symbols-rounded">person</span> Personal Info
+        </li>
+        <li id="orders-tab">
+          <span class="material-symbols-rounded">shopping_bag</span> Orders
+        </li>
+        <li>
+          <span class="material-symbols-rounded">notifications</span> Notifications
+        </li>
+      </ul>
+      <div class="logout">
+        <button id="logout-btn" class="logout-btn">
+          <span class="material-symbols-rounded">logout</span> Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content" id="main-content">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" class="crumb-link">
+          <span class="material-symbols-rounded" aria-hidden="true">home</span>
+          Home
+        </a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Profile & Settings</span>
+      </nav>
+
+      <!-- Mobile Tabs (visible only on mobile) -->
+      <div class="mobile-tabs" role="tablist" aria-label="Profile tabs">
+        <button id="m-tab-personal" class="mobile-tab active" data-target="personal-info" aria-selected="true">
+          <span class="material-symbols-rounded" aria-hidden="true">person</span>
+          Info
+        </button>
+        <button id="m-tab-orders" class="mobile-tab" data-target="orders" aria-selected="false">
+          <span class="material-symbols-rounded" aria-hidden="true">shopping_bag</span>
+          Orders
+        </button>
+      </div>
+
+      <!-- Personal Info -->
+      <section id="personal-info" class="section active">
+        <h3>Personal details</h3>
+
+        <div class="profile-header">
+          <div class="profile-pic">
+            <div class="avatar-initial" aria-hidden="true">U</div>
+          </div>
+          <div class="profile-info">
+            <h2></h2>
+            <p></p>
+          </div>
+        </div>
+
+        <form id="profile-form" autocomplete="off" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full name</label>
+              <input type="text" id="name" placeholder=""/>
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="text" id="dob" placeholder=""/>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender">
+                <option value="" selected disabled hidden>Select</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nationality">Nationality</label>
+              <input type="text" id="nationality" placeholder="" readonly>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input type="text" id="address" placeholder=""/>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder=""/>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" placeholder="" readonly>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder=""/>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="save-btn" disabled>
+              <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+              Update
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Orders -->
+      <section id="orders" class="section" aria-labelledby="orders-heading">
+        <h3 id="orders-heading">My Orders</h3>
+        <div class="orders-filter">
+          <button class="filter-btn active">All Orders</button>
+          <button class="filter-btn">Completed</button>
+          <button class="filter-btn">Processing</button>
+          <button class="filter-btn">Cancelled</button>
+        </div>
+        <ul id="orders-list"><!-- Filled by JS --></ul>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/profile.js"></script>
+</body>
+</html>
