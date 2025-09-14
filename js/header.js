@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // Real OTP via Firebase Phone Auth (Compat SDK)
+  // Enhanced Firebase Phone Auth with Better Error Handling
   // ============================================================
   let recaptchaVerifier = null;
   let recaptchaWidgetId = null;
@@ -347,95 +347,270 @@ document.addEventListener('DOMContentLoaded', function() {
     return `+91${digits}`;
   }
 
-  // PREWARM reCAPTCHA on load to avoid first-click delay
-  (async function prewarmRecaptcha() {
-    try {
-      if (typeof firebase !== 'undefined' && firebase?.auth && !recaptchaVerifier) {
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
-        recaptchaWidgetId = await recaptchaVerifier.render();
-        // console.log('reCAPTCHA ready', recaptchaWidgetId);
-      }
-    } catch (e) {
-      console.warn('reCAPTCHA prewarm deferred:', e?.message || e);
-    }
-  })();
-
-  // Create once and reuse; if broken, clear and recreate safely.
+  // Fixed reCAPTCHA setup with better error handling
   async function ensureRecaptcha() {
+    console.log('Setting up reCAPTCHA...');
+    
     if (typeof firebase === 'undefined' || !firebase?.auth) {
-      console.warn('Firebase not loaded. Include firebase-app-compat.js and firebase-auth-compat.js');
+      console.error('Firebase not loaded. Check Firebase script inclusion.');
+      alert('Firebase authentication is not properly loaded. Please refresh the page.');
       return null;
     }
-    // Reuse if already rendered
-    if (recaptchaVerifier && recaptchaWidgetId != null) return recaptchaVerifier;
+
+    // Clear any existing verifier first
+    if (recaptchaVerifier) {
+      try {
+        await recaptchaVerifier.clear();
+        console.log('Cleared existing reCAPTCHA verifier');
+      } catch (e) {
+        console.warn('Error clearing reCAPTCHA:', e);
+      }
+      recaptchaVerifier = null;
+      recaptchaWidgetId = null;
+    }
+
+    // Reset the container completely
+    const container = document.getElementById('recaptcha-container');
+    if (container) {
+      container.innerHTML = '';
+      console.log('Reset reCAPTCHA container');
+    }
 
     try {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+      // Create new verifier
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {
+          console.log('reCAPTCHA solved successfully');
+        },
+        'expired-callback': () => {
+          console.warn('reCAPTCHA expired, will need to retry');
+        },
+        'error-callback': (error) => {
+          console.error('reCAPTCHA error:', error);
+        }
+      });
+
+      // Render the verifier
       recaptchaWidgetId = await recaptchaVerifier.render();
+      console.log('reCAPTCHA rendered with widget ID:', recaptchaWidgetId);
+      
       return recaptchaVerifier;
-    } catch (e) {
-      // If element already has a widget or got stale, clear and recreate once
-      try { await recaptchaVerifier?.clear(); } catch {}
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
-      recaptchaWidgetId = await recaptchaVerifier.render();
-      return recaptchaVerifier;
+
+    } catch (error) {
+      console.error('reCAPTCHA setup failed:', error);
+      
+      // If it's the "already rendered" error, try to work around it
+      if (error.message.includes('already been rendered')) {
+        console.log('Attempting to handle already rendered error...');
+        
+        // Clear everything and try once more
+        if (container) {
+          container.innerHTML = '';
+          // Create a new container element
+          const newDiv = document.createElement('div');
+          newDiv.id = 'recaptcha-container-retry';
+          newDiv.style.cssText = 'position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;';
+          document.body.appendChild(newDiv);
+          
+          try {
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container-retry', {
+              size: 'invisible'
+            });
+            recaptchaWidgetId = await recaptchaVerifier.render();
+            console.log('reCAPTCHA retry successful');
+            return recaptchaVerifier;
+          } catch (retryError) {
+            console.error('reCAPTCHA retry also failed:', retryError);
+          }
+        }
+      }
+      
+      return null;
     }
   }
 
-  // Show OTP UI immediately; send SMS in the background
+  // Show detailed error messages to user
+  function showUserFriendlyError(error) {
+    const code = error?.code || '';
+    const message = error?.message || '';
+    
+    console.error('Firebase Auth Error:', { code, message, error });
+    
+    let userMessage = '';
+    
+    switch (code) {
+      case 'auth/too-many-requests':
+        userMessage = 'Too many attempts. Please wait 15-30 minutes before trying again.';
+        break;
+      case 'auth/invalid-phone-number':
+        userMessage = 'Please enter a valid Indian mobile number.';
+        break;
+      case 'auth/quota-exceeded':
+        userMessage = 'SMS quota exceeded. Please try again later.';
+        break;
+      case 'auth/invalid-verification-code':
+        userMessage = 'Invalid OTP. Please check and try again.';
+        break;
+      case 'auth/code-expired':
+        userMessage = 'OTP has expired. Please request a new one.';
+        break;
+      case 'auth/missing-verification-code':
+        userMessage = 'Please enter the complete 6-digit OTP.';
+        break;
+      default:
+        if (message.includes('reCAPTCHA')) {
+          userMessage = 'Security verification failed. Please try again.';
+        } else if (message.includes('network')) {
+          userMessage = 'Network error. Please check your connection and try again.';
+        } else {
+          userMessage = 'Something went wrong. Please try again.';
+        }
+        break;
+    }
+    
+    // Show error to user (you can customize this)
+    alert(userMessage);
+    
+    return userMessage;
+  }
+
+  // Enhanced OTP sending with better error handling
   async function sendOtpReal() {
-    if (isSendingOtp) return; // debounce
+    if (isSendingOtp) {
+      console.log('Already sending OTP, ignoring duplicate request');
+      return;
+    }
+    
     isSendingOtp = true;
+    console.log('Starting OTP send process...');
 
     // Disable the active submit button for UX
     const activeBtn = (otpMode === 'signup') ? signupSubmitBtn : loginSubmitBtn;
-    if (activeBtn) activeBtn.disabled = true;
-
-    // 1) Immediate UX: show OTP screen now
-    setTitle('Verify OTP');
-    showWelcome(false);
-    showForm('otp');
-    startResendTimer();
+    if (activeBtn) {
+      activeBtn.disabled = true;
+      activeBtn.textContent = 'Sending OTP...';
+    }
 
     try {
-      const verifier = await ensureRecaptcha();
-      if (!verifier) throw new Error('reCAPTCHA not ready');
-
+      // Get phone number
       const phoneNumber = getFullPhone();
-      confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
-      // success: OTP UI already visible
-    } catch (err) {
-      console.error('Failed to send OTP:', err);
-      const code = err?.code || '';
+      console.log('Sending OTP to:', phoneNumber);
 
-      if (code === 'auth/too-many-requests') {
-        alert('Too many OTP attempts. Please wait ~30–60 minutes and try again, or add a test phone in Firebase while developing.');
+      // Validate phone number format
+      if (!/^\+91\d{10}$/.test(phoneNumber)) {
+        throw new Error('Invalid phone number format');
       }
+
+      // Setup reCAPTCHA
+      const verifier = await ensureRecaptcha();
+      if (!verifier) {
+        throw new Error('reCAPTCHA setup failed');
+      }
+
+      console.log('Calling Firebase signInWithPhoneNumber...');
+      
+      // Send SMS
+      confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
+      
+      console.log('OTP sent successfully!', confirmationResult);
+
+      // Use the goToOtp() function which handles everything properly
+      goToOtp();
+
+    } catch (error) {
+      console.error('Send OTP failed:', error);
+      
+      // Show user-friendly error
+      showUserFriendlyError(error);
 
       // Return to original form
       if (otpMode === 'signup') {
-        setTitle('Create new account'); showWelcome(false); showForm('signup');
+        setTitle('Create new account');
+        showWelcome(false);
+        showForm('signup');
       } else {
-        setTitle('Login'); showWelcome(true); showForm('login');
+        setTitle('Login');
+        showWelcome(true);
+        showForm('login');
       }
 
-      // Inline highlight
+      // Highlight problematic input
       const sourceId = (otpMode === 'signup') ? 'signupPhone' : 'loginPhone';
       const input = document.getElementById(sourceId);
       if (input) {
         input.style.borderColor = '#ff4444';
         input.style.backgroundColor = '#fff5f5';
-        setTimeout(() => { input.style.borderColor = ''; input.style.backgroundColor = ''; }, 1200);
+        setTimeout(() => {
+          if (input) {
+            input.style.borderColor = '';
+            input.style.backgroundColor = '';
+          }
+        }, 2000);
       }
 
-      // If reCAPTCHA got into a bad state, clear it so next try works
-      if (String(err).includes('already been rendered') || code === 'auth/internal-error') {
-        try { await recaptchaVerifier?.clear(); } catch {}
-        recaptchaVerifier = null; recaptchaWidgetId = null;
+      // Reset reCAPTCHA on certain errors
+      if (error.code === 'auth/internal-error' || 
+          error.message.includes('already been rendered') ||
+          error.message.includes('reCAPTCHA')) {
+        console.log('Resetting reCAPTCHA due to error');
+        try {
+          if (recaptchaVerifier) {
+            await recaptchaVerifier.clear();
+          }
+        } catch (e) {
+          console.warn('Error clearing reCAPTCHA:', e);
+        }
+        recaptchaVerifier = null;
+        recaptchaWidgetId = null;
       }
+
     } finally {
       isSendingOtp = false;
-      if (activeBtn) activeBtn.disabled = false;
+      
+      // Re-enable submit button
+      if (activeBtn) {
+        activeBtn.disabled = false;
+        activeBtn.textContent = (otpMode === 'signup') ? 'Create account' : 'Log in';
+      }
+    }
+  }
+
+  // Enhanced OTP verification
+  async function verifyOtpReal(otpCode) {
+    console.log('Verifying OTP:', otpCode);
+
+    if (!confirmationResult || typeof confirmationResult.confirm !== 'function') {
+      console.error('No valid confirmation result found');
+      alert('OTP session expired. Please request a new OTP.');
+      return false;
+    }
+
+    if (!/^\d{6}$/.test(otpCode)) {
+      console.error('Invalid OTP format:', otpCode);
+      showOtpError();
+      return false;
+    }
+
+    try {
+      const result = await confirmationResult.confirm(otpCode);
+      console.log('OTP verification successful:', result.user.uid);
+      
+      // Show success screen
+      showInlineSuccess(otpMode);
+      
+      return true;
+
+    } catch (error) {
+      console.error('OTP verification failed:', error);
+      
+      // Show user-friendly error
+      showUserFriendlyError(error);
+      
+      // Show visual error feedback
+      showOtpError();
+      
+      return false;
     }
   }
 
@@ -482,15 +657,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // -------------------------------
-  // CLEANED-UP SUBMIT HANDLERS (single source of truth)
+  // Form Submit Handlers
   // -------------------------------
 
-  // Login form submit (covers button click & Enter key)
+  // Login form submit
   if (loginForm) {
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      console.log('Login form submitted');
+      
       const phone = document.getElementById('loginPhone');
-      if (!ensurePhone(phone)) return;
+      if (!ensurePhone(phone)) {
+        console.log('Phone validation failed');
+        return;
+      }
+      
       otpMode = 'login';
       await sendOtpReal();
     });
@@ -500,59 +681,62 @@ document.addEventListener('DOMContentLoaded', function() {
   if (signupForm) {
     signupForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      console.log('Signup form submitted');
+      
       const nameInput = document.getElementById('signupName');
       const phone = document.getElementById('signupPhone');
 
+      // Validate name
       if (!nameInput || !nameInput.value.trim()) {
+        console.log('Name validation failed');
         if (nameInput) {
           nameInput.focus();
           nameInput.style.borderColor = '#ff4444';
           nameInput.style.backgroundColor = '#fff5f5';
-          setTimeout(() => { nameInput.style.borderColor = ''; nameInput.style.backgroundColor = ''; }, 1500);
+          setTimeout(() => {
+            if (nameInput) {
+              nameInput.style.borderColor = '';
+              nameInput.style.backgroundColor = '';
+            }
+          }, 1500);
         }
         return;
       }
-      if (!ensurePhone(phone)) return;
+      
+      // Validate phone
+      if (!ensurePhone(phone)) {
+        console.log('Phone validation failed');
+        return;
+      }
 
       otpMode = 'signup';
       await sendOtpReal();
     });
   }
 
-  // OTP submission (real verification)
+  // OTP form submit
   if (otpForm) {
     otpForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      console.log('OTP form submitted');
+      
       const inputs = Array.from(otpForm.querySelectorAll('.otp'));
       const code = inputs.map(i => i.value).join('');
-
-      if (!/^\d{6}$/.test(code)) {
-        showOtpError();
-        return;
-      }
-
-      try {
-        if (!confirmationResult || typeof confirmationResult.confirm !== 'function') {
-          alert('Your OTP session expired. Please resend the code.');
-          return;
-        }
-        const result = await confirmationResult.confirm(code);
-        console.log('OTP verified successfully:', result?.user?.uid);
-        showInlineSuccess(otpMode);
-      } catch (err) {
-        console.error('OTP verify failed:', err);
-        showOtpError();
-      }
+      
+      await verifyOtpReal(code);
     });
   }
 
   // Edit phone in OTP
   if (editPhoneBtn) {
     editPhoneBtn.addEventListener('click', function() {
+      console.log('Edit phone clicked');
+      
       if (currentResendTimer) {
         clearInterval(currentResendTimer);
         currentResendTimer = null;
       }
+      
       if (otpMode === 'signup') {
         setTitle('Create new account');
         showWelcome(false);
@@ -568,34 +752,61 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inline success continue
   if (authSuccessContinue) {
     authSuccessContinue.addEventListener('click', function() {
+      console.log('Success continue clicked');
       closeDrawer();
     });
   }
 
-  // Resend OTP (real API) — resilient and fast
+  // Enhanced resend OTP
   if (resendBtn) {
     resendBtn.addEventListener('click', async function() {
-      if (resendBtn.disabled) return;
+      if (resendBtn.disabled) {
+        console.log('Resend button disabled, ignoring click');
+        return;
+      }
 
-      clearOtpInputs();     // clear boxes
-      startResendTimer();   // restart timer immediately
+      console.log('Resend OTP clicked');
+      
+      // Clear OTP inputs and restart timer immediately for better UX
+      clearOtpInputs();
+      startResendTimer();
+      
       try {
         const verifier = await ensureRecaptcha();
-        if (!verifier) throw new Error('reCAPTCHA not ready');
+        if (!verifier) {
+          throw new Error('reCAPTCHA setup failed');
+        }
 
         const phoneNumber = getFullPhone();
+        console.log('Resending OTP to:', phoneNumber);
+        
         confirmationResult = await firebase.auth().signInWithPhoneNumber(phoneNumber, verifier);
-        // success: stay on OTP screen
-      } catch (e) {
-        console.error('Resend failed:', e);
-        // stop timer + restore button
-        if (currentResendTimer) { clearInterval(currentResendTimer); currentResendTimer = null; }
+        console.log('OTP resent successfully');
+        
+      } catch (error) {
+        console.error('Resend OTP failed:', error);
+        
+        // Show user-friendly error
+        showUserFriendlyError(error);
+        
+        // Stop timer and restore button
+        if (currentResendTimer) {
+          clearInterval(currentResendTimer);
+          currentResendTimer = null;
+        }
         resendBtn.disabled = false;
         resendBtn.innerHTML = 'Resend code';
 
-        // reset widget if stale
-        try { await recaptchaVerifier?.clear(); } catch {}
-        recaptchaVerifier = null; recaptchaWidgetId = null;
+        // Reset reCAPTCHA on error
+        try {
+          if (recaptchaVerifier) {
+            await recaptchaVerifier.clear();
+          }
+        } catch (e) {
+          console.warn('Error clearing reCAPTCHA:', e);
+        }
+        recaptchaVerifier = null;
+        recaptchaWidgetId = null;
       }
     });
   }
@@ -611,28 +822,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Small inline CSS for shake/error if needed
-  if (!document.querySelector('style[data-shake]')) {
-    const style = document.createElement('style');
-    style.setAttribute('data-shake', 'true');
-    style.textContent = `
-      @keyframes shake {
-        10%, 90% { transform: translateX(-1px); }
-        20%, 80% { transform: translateX(2px); }
-        30%, 50%, 70% { transform: translateX(-4px); }
-        40%, 60% { transform: translateX(4px); }
-      }
-
-      .input:invalid, .otp:invalid {
-        border-color: #ff4444 !important;
-        background-color: #fff5f5 !important;
-      }
-      .input:focus:invalid, .otp:focus:invalid {
-        box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1) !important;
-      }
-    `;
-    document.head.appendChild(style);
+  // Initialize Firebase check
+  function initializeFirebaseAuth() {
+    console.log('Checking Firebase initialization...');
+    
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase not loaded! Check script tags.');
+      return false;
+    }
+    
+    if (!firebase.auth) {
+      console.error('Firebase Auth not loaded! Check firebase-auth script tag.');
+      return false;
+    }
+    
+    console.log('Firebase Auth ready');
+    return true;
   }
 
-  console.log('Header.js initialization complete');
+  // Final initialization
+  setTimeout(() => {
+    const firebaseReady = initializeFirebaseAuth();
+    if (!firebaseReady) {
+      console.error('Firebase initialization failed - authentication will not work');
+      alert('Authentication system is not properly loaded. Please refresh the page.');
+    } else {
+      console.log('Header.js initialization complete - Firebase Auth ready');
+    }
+  }, 100);
+
 });

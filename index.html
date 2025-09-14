@@ -256,21 +256,21 @@
       </form>
 
       <!-- ✅ Inline Success Screen (shows inside the drawer) -->
-<div id="authSuccess" class="auth-success hidden" role="status" aria-live="polite">
-  <div class="success-visual" aria-hidden="true">
-    <svg viewBox="0 0 120 120" class="success-rings">
-      <circle cx="60" cy="60" r="52" fill="rgba(16,185,129,0.12)"></circle>
-      <circle cx="60" cy="60" r="38" fill="rgba(16,185,129,0.20)"></circle>
-      <circle cx="60" cy="60" r="26" fill="rgba(16,185,129,1)"></circle>
-    </svg>
-    <svg viewBox="0 0 24 24" class="success-check" aria-hidden="true">
-      <path d="M9 16.2l-3.5-3.5a1 1 0 10-1.4 1.4l4.2 4.2a1 1 0 001.4 0L20 7.6a1 1 0 10-1.4-1.4L9 16.2z" fill="#fff"/>
-    </svg>
-  </div>
-  <h3 class="success-title" id="authSuccessTitle">Success</h3>
-  <p class="success-copy" id="authSuccessCopy">Your identity has been verified successfully</p>
-  <button class="btn btn-primary" id="authSuccessContinue">Continue</button>
-</div>
+      <div id="authSuccess" class="auth-success hidden" role="status" aria-live="polite">
+        <div class="success-visual" aria-hidden="true">
+          <svg viewBox="0 0 120 120" class="success-rings">
+            <circle cx="60" cy="60" r="52" fill="rgba(16,185,129,0.12)"></circle>
+            <circle cx="60" cy="60" r="38" fill="rgba(16,185,129,0.20)"></circle>
+            <circle cx="60" cy="60" r="26" fill="rgba(16,185,129,1)"></circle>
+          </svg>
+          <svg viewBox="0 0 24 24" class="success-check" aria-hidden="true">
+            <path d="M9 16.2l-3.5-3.5a1 1 0 10-1.4 1.4l4.2 4.2a1 1 0 001.4 0L20 7.6a1 1 0 10-1.4-1.4L9 16.2z" fill="#fff"/>
+          </svg>
+        </div>
+        <h3 class="success-title" id="authSuccessTitle">Success</h3>
+        <p class="success-copy" id="authSuccessCopy">Your identity has been verified successfully</p>
+        <button class="btn btn-primary" id="authSuccessContinue">Continue</button>
+      </div>
       <!-- /Inline Success Screen -->
     </section>
   </div>
@@ -1072,28 +1072,31 @@
   </div>
 </footer>
 
-<!-- put this once, OUTSIDE the drawer, near </body> -->
-<div id="recaptcha-container"
-     style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
-</div>
+ <!-- put this once, OUTSIDE the drawer, near </body> -->
+  <div id="recaptcha-container"
+       style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+  </div>
 
   <!-- Scripts -->
   <script src="js/announcement-bar.js"></script>
-  <!-- Firebase SDK (compat) — keep ABOVE header.js -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyB4D531Uj4SGql8pkaXPKZvdHa5XFby2LU",
-    authDomain: "hawaa-df1cc.firebaseapp.com",
-    projectId: "hawaa-df1cc",
-    storageBucket: "hawaa-df1cc.firebasestorage.app",
-    messagingSenderId: "547302517440",
-    appId: "1:547302517440:web:9ef37f89e74cac785f9b25",
-    measurementId: "G-C3T5G8W7H7"
-  };
-  firebase.initializeApp(firebaseConfig);
-</script>
+
+  <!-- Firebase SDK (compat) — keep ABOVE header.js; single initialization only -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4D531Uj4SGql8pkaXPKZvdHa5XFby2LU",
+      authDomain: "hawaa-df1cc.firebaseapp.com",
+      projectId: "hawaa-df1cc",
+      storageBucket: "hawaa-df1cc.firebasestorage.app",
+      messagingSenderId: "547302517440",
+      appId: "1:547302517440:web:9ef37f89e74cac785f9b25",
+      measurementId: "G-C3T5G8W7H7"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- Your app scripts (header.js relies on firebase/auth above) -->
   <script src="js/header.js" defer></script>
   <script src="js/hero-index.js" defer></script>
   <script src="js/Bento-AQI.js"></script>
@@ -1103,6 +1106,7 @@
   <script src="js/hepa-filter-hero.js"></script>
   <script src="js/testimonial.js"></script>
   <script src="js/dual-slider.js"></script>
+
   <!-- QUIZ SCRIPTS - CORRECT ORDER -->
   <script src="js/debug-quiz.js"></script>
   <script src="js/quiz-cta.js"></script>
