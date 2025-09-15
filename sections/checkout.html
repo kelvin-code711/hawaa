@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cart</title>
 
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="../css/checkout.css?v=6" />
+  <link rel="stylesheet" href="../css/checkout.css" />
 
   <meta name="color-scheme" content="light dark">
   <style>html, body { background: transparent !important; }</style>
@@ -66,7 +66,7 @@
 
         <section class="cd-summary">
           <div class="cd-row"><span>Subtotal</span><strong id="sum-subtotal">₹0</strong></div>
-          <div class="cd-row"><span>Discount</span><strong id="sum-discount">– ₹0</strong></div>
+          <div class="cd-row"><span>Discount</span><strong id="sum-discount">— ₹0</strong></div>
           <div class="cd-row"><span>Shipping</span><strong id="sum-shipping">₹80</strong></div>
           <div class="cd-row cd-total"><span>Total</span><strong id="sum-total">₹0</strong></div>
           <p class="cd-note">Taxes calculated at checkout.</p>
@@ -76,7 +76,7 @@
       <!-- STEP 2: INFO VIEW -->
       <div id="view-info" class="view" data-step="info" hidden>
         <div class="cd-accordions" id="info-accordions">
-          <!-- Customer Information (OPEN by default) -->
+          <!-- Customer Information -->
           <section class="cd-acc cd-acc-customer">
             <button class="cd-acc-head" type="button" aria-expanded="true" aria-controls="acc-customer">
               <span class="cd-acc-title">Customer information</span>
@@ -94,7 +94,6 @@
                 </label>
               </div>
 
-              <!-- Save & Continue (below fields, right-aligned) -->
               <div class="cd-actions-right">
                 <button type="button" class="cd-secondary-btn cd-save-continue" data-target="customer">
                   Save &amp; Continue
@@ -103,7 +102,7 @@
             </div>
           </section>
 
-          <!-- Shipping Address (CLOSED by default) -->
+          <!-- Shipping Address -->
           <section class="cd-acc cd-acc-shipping">
             <button class="cd-acc-head" type="button" aria-expanded="false" aria-controls="acc-shipping">
               <span class="cd-acc-title">Shipping address</span>
@@ -151,7 +150,6 @@
                 </label>
               </div>
 
-              <!-- Save & Continue (below fields, right-aligned) -->
               <div class="cd-actions-right">
                 <button type="button" class="cd-secondary-btn cd-save-continue" data-target="shipping">
                   Save &amp; Continue
@@ -161,9 +159,30 @@
           </section>
         </div>
       </div>
+
+      <!-- STEP 3: PAYMENT PROCESSING -->
+      <div id="view-payment" class="view" data-step="payment" hidden>
+        <div class="cd-payment-processing">
+          <div class="cd-payment-icon">
+            <div class="cd-spinner"></div>
+          </div>
+          <h3>Processing Payment</h3>
+          <p>Please wait while we process your payment securely through PhonePe...</p>
+          <div class="cd-payment-details">
+            <div class="cd-payment-row">
+              <span>Amount:</span>
+              <strong id="payment-amount">₹0</strong>
+            </div>
+            <div class="cd-payment-row">
+              <span>Order ID:</span>
+              <strong id="payment-order-id">-</strong>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Footer: total on the left, primary button on the right -->
+    <!-- Footer -->
     <footer class="cd-foot">
       <div class="cd-foot-total" aria-live="polite">
         <span class="cd-foot-label">Total</span>
@@ -176,6 +195,26 @@
     </footer>
   </aside>
 
+  <!-- Firebase SDK (modular v9+) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4D531Uj4SGql8pkaXPKZvdHa5XFby2LU",
+      authDomain: "hawaa-df1cc.firebaseapp.com",
+      projectId: "hawaa-df1cc",
+      storageBucket: "hawaa-df1cc.firebasestorage.app",
+      messagingSenderId: "547302517440",
+      appId: "1:547302517440:web:9ef37f89e74cac785f9b25",
+      measurementId: "G-C3T5G8W7H7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
+  <!-- Your checkout script -->
   <script src="../js/checkout.js"></script>
 </body>
 </html>

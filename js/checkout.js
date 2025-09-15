@@ -1,14 +1,23 @@
-// checkout.js — preserves your UI, enforces Outfit, loads order from localStorage,
-// Save & Continue buttons below fields (right-aligned), no info icon,
-// BACK TO CART strictly hidden on Cart step, shown only on Info step.
+// checkout.js — PhonePe PG integration with Firebase backend
 
 (function(){
-  const CART_KEY = 'hawaa_cart'; // same key as product page (order fetching)
+  const CART_KEY = 'hawaa_cart';
   const $  = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const inr = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
 
-  // DOM
+  // PhonePe Configuration - UPDATED WITH YOUR FIREBASE PROJECT ID
+  const PHONEPE_CONFIG = {
+    merchantId: 'M01IMCT0B',
+    environment: 'UAT', // Change to 'PRODUCTION' for live
+    saltIndex: 1,
+    baseUrl: 'https://api-preprod.phonepe.com/apis/pg-sandbox',
+    redirectUrl: 'https://www.hawaa.in/sections/payment-success.html',
+    callbackUrl: 'https://hawaa-df1cc.cloudfunctions.net/phonepe-callback',
+    initiatePaymentUrl: 'https://hawaa-df1cc.cloudfunctions.net/initiatePhonePePayment'
+  };
+
+  // DOM Elements
   const drawer      = $('#cart-drawer');
   const listEl      = $('#cart-items');
   const emptyEl     = $('#cart-empty');
@@ -25,6 +34,7 @@
 
   const viewCart    = $('#view-cart');
   const viewInfo    = $('#view-info');
+  const viewPayment = $('#view-payment');
 
   // Header pieces
   const cartTitle   = $('#cart-title');
@@ -41,11 +51,16 @@
   const saveCustomerBtn = document.querySelector('.cd-acc-customer .cd-save-continue');
   const saveShippingBtn = document.querySelector('.cd-acc-shipping .cd-save-continue');
 
+  // Payment elements
+  const paymentAmount = $('#payment-amount');
+  const paymentOrderId = $('#payment-order-id');
+
   // State
   let cart     = [];
   let discount = 0;
   const shippingFlat = 80;
-  let step = 'cart'; // 'cart' | 'info'
+  let step = 'cart';
+  let currentOrderId = null;
 
   // --- Storage helpers ---
   const loadCart = () => {
@@ -54,6 +69,23 @@
   };
   const saveCart = (arr) => {
     try { localStorage.setItem(CART_KEY, JSON.stringify(arr)); } catch {}
+  };
+
+  // --- Utility functions ---
+  const generateOrderId = () => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    return `HAWAA_${timestamp}_${random}`;
+  };
+
+  const showError = (message) => {
+    console.error('Checkout Error:', message);
+    alert(message);
+  };
+
+  const showSuccess = (message) => {
+    console.log('Checkout Success:', message);
+    alert(message);
   };
 
   // --- Totals ---
@@ -65,10 +97,14 @@
     const tot = Math.max(0, sub - discount) + ship;
 
     subtotalEl.textContent  = inr.format(sub);
-    discountEl.textContent  = discount ? `– ${inr.format(discount)}` : '– ₹0';
+    discountEl.textContent  = discount ? `— ${inr.format(discount)}` : '— ₹0';
     shippingEl.textContent  = inr.format(ship);
     totalEl.textContent     = inr.format(tot);
     footTotalEl.textContent = inr.format(tot);
+    
+    if (paymentAmount) {
+      paymentAmount.textContent = inr.format(tot);
+    }
   }
 
   // --- Cart render ---
@@ -113,43 +149,106 @@
   function setStep(next){
     step = next;
 
+    // Hide all views first
+    viewCart.hidden = true; viewCart.classList.remove('active');
+    viewInfo.hidden = true; viewInfo.classList.remove('active');
+    viewPayment.hidden = true; viewPayment.classList.remove('active');
+
     if (step === 'cart'){
-      // Views
       viewCart.hidden = false; viewCart.classList.add('active');
-      viewInfo.hidden = true;  viewInfo.classList.remove('active');
-
-      // Header: title visible, back button hidden (force)
       cartTitle.hidden = false;
-      infoHeader.hidden = true;                // attribute
-      infoHeader.style.display = '';           // clear inline styles if any
-      // (CSS has .cd-infohead[hidden]{display:none!important} to hard-hide)
-
-      // Footer button
+      infoHeader.hidden = true;
       nextBtn.dataset.state = 'cart';
       nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span> Next`;
-    } else {
-      // Views
-      viewCart.hidden = true;  viewCart.classList.remove('active');
-      viewInfo.hidden = false; viewInfo.classList.add('active');
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('loading');
 
-      // Header: title hidden, back button shown
+    } else if (step === 'info') {
+      viewInfo.hidden = false; viewInfo.classList.add('active');
       cartTitle.hidden = true;
       infoHeader.hidden = false;
-
-      // Footer button
       nextBtn.dataset.state = 'info';
-      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">payment</span> Continue to pay`;
-
-      // Default accordion states
+      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">payment</span> Pay with PhonePe`;
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('loading');
       customerHead?.setAttribute('aria-expanded','true');
       customerBody?.classList.add('open');
       shippingHead?.setAttribute('aria-expanded','false');
       shippingBody?.classList.remove('open');
+
+    } else if (step === 'payment') {
+      viewPayment.hidden = false; viewPayment.classList.add('active');
+      cartTitle.hidden = true;
+      infoHeader.hidden = false;
+      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">hourglass_empty</span> Processing...`;
+      nextBtn.disabled = true;
+      nextBtn.classList.add('loading');
+      if (paymentOrderId) {
+        paymentOrderId.textContent = currentOrderId || '-';
+      }
     }
 
     renderTotals();
-    // scroll to top of drawer body
     $('#cart-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // --- PhonePe Payment Integration ---
+  async function initiatePhonePePayment(orderData) {
+    try {
+      currentOrderId = generateOrderId();
+      const totalAmount = Math.max(0, orderData.totals.subtotal - orderData.totals.discount) + orderData.totals.shipping;
+      const amountInPaise = Math.round(totalAmount * 100);
+
+      const paymentPayload = {
+        merchantId: PHONEPE_CONFIG.merchantId,
+        merchantTransactionId: currentOrderId,
+        merchantUserId: `USER_${Date.now()}`,
+        amount: amountInPaise,
+        redirectUrl: PHONEPE_CONFIG.redirectUrl,
+        redirectMode: 'REDIRECT',
+        callbackUrl: PHONEPE_CONFIG.callbackUrl,
+        paymentInstrument: {
+          type: 'PAY_PAGE'
+        },
+        merchantOrderId: currentOrderId,
+        message: `Payment for order ${currentOrderId}`,
+        email: orderData.email,
+        mobile: orderData.phone.replace(/\D/g, ''),
+        orderDetails: {
+          cart: orderData.cart,
+          shipping: orderData.shipping,
+          totals: orderData.totals
+        }
+      };
+
+      console.log('Initiating PhonePe payment with payload:', paymentPayload);
+      setStep('payment');
+
+      const response = await fetch(PHONEPE_CONFIG.initiatePaymentUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentPayload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.data?.instrumentResponse?.redirectInfo?.url) {
+        window.top.location.href = result.data.instrumentResponse.redirectInfo.url;
+      } else {
+        throw new Error(result.message || 'Failed to initiate payment');
+      }
+
+    } catch (error) {
+      console.error('PhonePe payment initiation failed:', error);
+      showError(`Payment initiation failed: ${error.message}`);
+      setStep('info');
+    }
   }
 
   // --- Quantity / Remove handlers (delegated) ---
@@ -211,6 +310,9 @@
     if (code === 'SAVE10'){
       discount = Math.round(sub * 0.10);
       promoMsg.textContent = 'Applied 10% off.';
+    } else if (code === 'PHONEPE50'){
+      discount = Math.min(50, Math.round(sub * 0.05));
+      promoMsg.textContent = 'PhonePe special: ₹50 off applied!';
     } else {
       discount = 0; promoMsg.textContent = 'Invalid code.';
     }
@@ -223,11 +325,18 @@
     const phone = $('#cust-phone');
     let ok = true;
 
-    for (const el of [email, phone]){
-      const valid = el && el.value && String(el.value).trim().length > 0;
-      el.classList.toggle('cd-invalid', !valid);
-      if (!valid) ok = false;
+    if (email) {
+      const emailValid = email.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+      email.classList.toggle('cd-invalid', !emailValid);
+      if (!emailValid) ok = false;
     }
+
+    if (phone) {
+      const phoneValid = phone.value && /^[\+]?[\d\s\-\(\)]{10,}$/.test(phone.value.trim());
+      phone.classList.toggle('cd-invalid', !phoneValid);
+      if (!phoneValid) ok = false;
+    }
+
     return ok;
   }
 
@@ -237,7 +346,7 @@
     for (const sel of reqSel){
       const el = $(sel);
       const valid = el && el.value && String(el.value).trim().length > 0;
-      el.classList.toggle('cd-invalid', !valid);
+      el?.classList.toggle('cd-invalid', !valid);
       if (!valid) ok = false;
     }
     return ok;
@@ -263,7 +372,6 @@
       customerBody?.classList.add('open');
       return;
     }
-    // Close customer, open shipping
     customerHead?.setAttribute('aria-expanded','false');
     customerBody?.classList.remove('open');
     shippingHead?.setAttribute('aria-expanded','true');
@@ -277,10 +385,9 @@
       shippingBody?.classList.add('open');
       return;
     }
-    // Shipping saved — user will tap "Continue to pay"
   });
 
-  // --- Footer primary button: Next → Continue to pay ---
+  // --- Footer primary button: Next → Pay with PhonePe ---
   nextBtn?.addEventListener('click', () => {
     if (step === 'cart'){
       if (!cart.length){ return; }
@@ -288,48 +395,54 @@
       return;
     }
 
-    // On info step, ensure both groups valid before continuing to pay
-    const okCustomer = validateCustomer();
-    const okShipping = validateShipping();
+    if (step === 'info') {
+      const okCustomer = validateCustomer();
+      const okShipping = validateShipping();
 
-    if (!okCustomer){
-      customerHead?.setAttribute('aria-expanded','true');
-      customerBody?.classList.add('open');
+      if (!okCustomer){
+        customerHead?.setAttribute('aria-expanded','true');
+        customerBody?.classList.add('open');
+      }
+      if (!okShipping){
+        shippingHead?.setAttribute('aria-expanded','true');
+        shippingBody?.classList.add('open');
+      }
+      if (!(okCustomer && okShipping)) return;
+
+      const orderData = {
+        email: $('#cust-email').value.trim(),
+        phone: $('#cust-phone').value.trim(),
+        shipping: {
+          firstName: $('#ship-first').value.trim(),
+          lastName:  $('#ship-last').value.trim(),
+          line1:     $('#ship-line1').value.trim(),
+          line2:     $('#ship-line2').value.trim(),
+          city:      $('#ship-city').value.trim(),
+          state:     $('#ship-state').value.trim(),
+          zip:       $('#ship-zip').value.trim(),
+          country:   $('#ship-country').value
+        },
+        totals: {
+          subtotal: calcSubtotal(),
+          discount,
+          shipping: cart.length ? 80 : 0
+        },
+        cart
+      };
+
+      initiatePhonePePayment(orderData);
+      return;
     }
-    if (!okShipping){
-      shippingHead?.setAttribute('aria-expanded','true');
-      shippingBody?.classList.add('open');
-    }
-    if (!(okCustomer && okShipping)) return;
-
-    // Build payload
-    const payload = {
-      email: $('#cust-email').value.trim(),
-      phone: $('#cust-phone').value.trim(),
-      shipping: {
-        firstName: $('#ship-first').value.trim(),
-        lastName:  $('#ship-last').value.trim(),
-        line1:     $('#ship-line1').value.trim(),
-        line2:     $('#ship-line2').value.trim(),
-        city:      $('#ship-city').value.trim(),
-        state:     $('#ship-state').value.trim(),
-        zip:       $('#ship-zip').value.trim(),
-        country:   $('#ship-country').value
-      },
-      totals: {
-        subtotal: calcSubtotal(),
-        discount,
-        shipping: cart.length ? 80 : 0
-      },
-      cart
-    };
-
-    // Notify parent page to proceed to payment step
-    try { window.parent.postMessage({ type:'hawaa:continueToPayment', data: payload }, '*'); } catch {}
   });
 
   // --- Header buttons ---
-  backToCart?.addEventListener('click', () => setStep('cart'));
+  backToCart?.addEventListener('click', () => {
+    if (step === 'payment') {
+      setStep('info');
+    } else {
+      setStep('cart');
+    }
+  });
 
   closeBtn?.addEventListener('click', () => {
     try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
@@ -339,18 +452,49 @@
     try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
   });
 
+  // --- Payment status handling ---
+  function handlePaymentResult() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    const orderId = urlParams.get('orderId');
+
+    if (status && orderId) {
+      if (status === 'success') {
+        cart = [];
+        saveCart(cart);
+        showSuccess('Payment successful! Your order has been placed.');
+        
+        try { 
+          window.parent.postMessage({ 
+            type:'hawaa:paymentSuccess', 
+            data: { orderId, status } 
+          }, '*'); 
+        } catch {}
+        
+      } else if (status === 'failed') {
+        showError('Payment failed. Please try again.');
+        setStep('info');
+        
+      } else if (status === 'cancelled') {
+        showError('Payment was cancelled.');
+        setStep('info');
+      }
+      
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
   // --- Init ---
   function init(){
-    cart = loadCart();  // order fetching retained
+    cart = loadCart();
     renderCart();
-
-    // FORCE initial state to Cart: show title, hide back button
+    handlePaymentResult();
     cartTitle.hidden = false;
     infoHeader.hidden = true;
-
     setStep('cart');
     requestAnimationFrame(() => drawer.classList.add('is-open'));
   }
+
   init();
 
 })();
