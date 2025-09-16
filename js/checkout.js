@@ -1,500 +1,553 @@
-// checkout.js — PhonePe PG integration with Firebase backend
+// checkout.js — OPTIMIZED VERSION
+// Reduces DOM queries, implements debouncing, improves performance
 
 (function(){
+  'use strict'; // Enable strict mode for better performance
+  
   const CART_KEY = 'hawaa_cart';
-  const $  = (s, el = document) => el.querySelector(s);
-  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
-  const inr = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
-
-  // PhonePe Configuration - UPDATED WITH YOUR FIREBASE PROJECT ID
-  const PHONEPE_CONFIG = {
-    merchantId: 'M01IMCT0B',
-    environment: 'UAT', // Change to 'PRODUCTION' for live
-    saltIndex: 1,
-    baseUrl: 'https://api-preprod.phonepe.com/apis/pg-sandbox',
-    redirectUrl: 'https://www.hawaa.in/sections/payment-success.html',
-    callbackUrl: 'https://hawaa-df1cc.cloudfunctions.net/phonepe-callback',
-    initiatePaymentUrl: 'https://hawaa-df1cc.cloudfunctions.net/initiatePhonePePayment'
+  const DEBOUNCE_DELAY = 150; // ms for input debouncing
+  
+  // Optimized DOM selectors - cache frequently used elements
+  const DOM = {
+    drawer: null,
+    listEl: null,
+    emptyEl: null,
+    subtotalEl: null,
+    discountEl: null,
+    shippingEl: null,
+    totalEl: null,
+    footTotalEl: null,
+    promoForm: null,
+    promoInput: null,
+    promoMsg: null,
+    nextBtn: null,
+    closeBtn: null,
+    viewCart: null,
+    viewInfo: null,
+    cartTitle: null,
+    infoHeader: null,
+    backToCart: null,
+    accRoot: null,
+    customerHead: null,
+    customerBody: null,
+    shippingHead: null,
+    shippingBody: null,
+    saveCustomerBtn: null,
+    saveShippingBtn: null,
+    scrollContainer: null
   };
 
-  // DOM Elements
-  const drawer      = $('#cart-drawer');
-  const listEl      = $('#cart-items');
-  const emptyEl     = $('#cart-empty');
-  const subtotalEl  = $('#sum-subtotal');
-  const discountEl  = $('#sum-discount');
-  const shippingEl  = $('#sum-shipping');
-  const totalEl     = $('#sum-total');
-  const footTotalEl = $('#foot-total');
-  const promoForm   = $('#promo-form');
-  const promoInput  = $('#promo-input');
-  const promoMsg    = $('#promo-msg');
-  const nextBtn     = $('#next-btn');
-  const closeBtn    = $('#close-btn');
+  // Performance optimized selectors
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  
+  // Currency formatter - create once, reuse
+  const inr = new Intl.NumberFormat('en-IN', { 
+    style: 'currency', 
+    currency: 'INR', 
+    maximumFractionDigits: 0 
+  });
 
-  const viewCart    = $('#view-cart');
-  const viewInfo    = $('#view-info');
-  const viewPayment = $('#view-payment');
-
-  // Header pieces
-  const cartTitle   = $('#cart-title');
-  const infoHeader  = $('#info-header');
-  const backToCart  = $('#back-to-cart');
-
-  // Accordions + fields
-  const accRoot     = $('#info-accordions');
-  const customerHead= document.querySelector('.cd-acc-customer .cd-acc-head');
-  const customerBody= $('#acc-customer');
-  const shippingHead= document.querySelector('.cd-acc-shipping .cd-acc-head');
-  const shippingBody= $('#acc-shipping');
-
-  const saveCustomerBtn = document.querySelector('.cd-acc-customer .cd-save-continue');
-  const saveShippingBtn = document.querySelector('.cd-acc-shipping .cd-save-continue');
-
-  // Payment elements
-  const paymentAmount = $('#payment-amount');
-  const paymentOrderId = $('#payment-order-id');
-
-  // State
-  let cart     = [];
+  // State management
+  let cart = [];
   let discount = 0;
   const shippingFlat = 80;
   let step = 'cart';
-  let currentOrderId = null;
+  
+  // Debounce utility for input handling
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(null, args), delay);
+    };
+  };
 
-  // --- Storage helpers ---
+  // Optimized RAF wrapper for smooth animations
+  const scheduleUpdate = (() => {
+    let rafId = null;
+    let callbacks = [];
+    
+    const flush = () => {
+      const cbs = callbacks.slice();
+      callbacks.length = 0;
+      rafId = null;
+      cbs.forEach(cb => cb());
+    };
+    
+    return (callback) => {
+      callbacks.push(callback);
+      if (!rafId) {
+        rafId = requestAnimationFrame(flush);
+      }
+    };
+  })();
+
+  // --- Storage helpers with error handling ---
   const loadCart = () => {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-    catch { return []; }
+    try { 
+      const stored = localStorage.getItem(CART_KEY);
+      return stored ? JSON.parse(stored) : [];
+    }
+    catch (error) { 
+      console.warn('Failed to load cart from localStorage:', error);
+      return []; 
+    }
   };
+  
   const saveCart = (arr) => {
-    try { localStorage.setItem(CART_KEY, JSON.stringify(arr)); } catch {}
+    try { 
+      localStorage.setItem(CART_KEY, JSON.stringify(arr)); 
+    } catch (error) {
+      console.warn('Failed to save cart to localStorage:', error);
+    }
   };
 
-  // --- Utility functions ---
-  const generateOrderId = () => {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    return `HAWAA_${timestamp}_${random}`;
-  };
+  // --- Optimized calculation functions ---
+  const calcSubtotal = () => cart.reduce((sum, item) => {
+    return sum + (Number(item.price) || 0) * (Number(item.qty) || 1);
+  }, 0);
 
-  const showError = (message) => {
-    console.error('Checkout Error:', message);
-    alert(message);
-  };
-
-  const showSuccess = (message) => {
-    console.log('Checkout Success:', message);
-    alert(message);
-  };
-
-  // --- Totals ---
-  const calcSubtotal = () => cart.reduce((s, it) => s + (Number(it.price)||0) * (Number(it.qty)||1), 0);
-
-  function renderTotals(){
+  // Batch DOM updates to prevent layout thrashing
+  function updateTotals(){
     const sub = calcSubtotal();
     const ship = cart.length ? shippingFlat : 0;
     const tot = Math.max(0, sub - discount) + ship;
-
-    subtotalEl.textContent  = inr.format(sub);
-    discountEl.textContent  = discount ? `— ${inr.format(discount)}` : '— ₹0';
-    shippingEl.textContent  = inr.format(ship);
-    totalEl.textContent     = inr.format(tot);
-    footTotalEl.textContent = inr.format(tot);
     
-    if (paymentAmount) {
-      paymentAmount.textContent = inr.format(tot);
-    }
+    // Batch all DOM updates
+    scheduleUpdate(() => {
+      if (DOM.subtotalEl) DOM.subtotalEl.textContent = inr.format(sub);
+      if (DOM.discountEl) DOM.discountEl.textContent = discount ? `− ${inr.format(discount)}` : '− ₹0';
+      if (DOM.shippingEl) DOM.shippingEl.textContent = inr.format(ship);
+      if (DOM.totalEl) DOM.totalEl.textContent = inr.format(tot);
+      if (DOM.footTotalEl) DOM.footTotalEl.textContent = inr.format(tot);
+    });
   }
 
-  // --- Cart render ---
+  // --- Optimized cart rendering with DocumentFragment ---
   function renderCart(){
-    listEl.innerHTML = '';
+    if (!DOM.listEl) return;
+    
+    // Use DocumentFragment for better performance
+    const fragment = document.createDocumentFragment();
+    
     if (!cart.length){
-      emptyEl.hidden = false;
-      renderTotals();
+      DOM.emptyEl && (DOM.emptyEl.hidden = false);
+      DOM.listEl.innerHTML = '';
+      updateTotals();
       return;
     }
-    emptyEl.hidden = true;
+    
+    DOM.emptyEl && (DOM.emptyEl.hidden = true);
 
-    for (const item of cart){
+    // Build all items in memory first
+    cart.forEach(item => {
       const li = document.createElement('li');
       li.className = 'cd-item';
+      
+      // Use template literal with proper escaping
       li.innerHTML = `
-        <div class="cd-thumb"><img alt="" src="${item.img || ''}"></div>
+        <div class="cd-thumb">
+          <img alt="${escapeHtml(item.title || '')}" src="${escapeHtml(item.img || '')}" loading="lazy">
+        </div>
         <div class="cd-meta">
-          <h4 class="cd-title">${item.title || ''}</h4>
-          <div class="cd-attrs">${item.variant || ''}</div>
-          <div class="cd-qty" data-id="${item.id}">
-            <button type="button" class="qty-dec" data-glyph="−" aria-label="Decrease"></button>
-            <input class="qty-input" inputmode="numeric" value="${item.qty || 1}" aria-label="Quantity">
-            <button type="button" class="qty-inc" data-glyph="+" aria-label="Increase"></button>
+          <h4 class="cd-title">${escapeHtml(item.title || '')}</h4>
+          <div class="cd-attrs">${escapeHtml(item.variant || '')}</div>
+          <div class="cd-qty" data-id="${escapeHtml(item.id)}">
+            <button type="button" class="qty-dec" data-glyph="−" aria-label="Decrease quantity"></button>
+            <input class="qty-input" inputmode="numeric" value="${item.qty || 1}" aria-label="Quantity" min="1">
+            <button type="button" class="qty-inc" data-glyph="+" aria-label="Increase quantity"></button>
           </div>
         </div>
         <div class="cd-pricecol">
           <div class="cd-line">${inr.format(item.price || 0)}</div>
-          <button class="cd-remove" type="button" data-id="${item.id}">
+          <button class="cd-remove" type="button" data-id="${escapeHtml(item.id)}">
             <span class="material-symbols-rounded" aria-hidden="true">delete</span>
             Remove
           </button>
         </div>
       `;
-      listEl.appendChild(li);
-    }
+      fragment.appendChild(li);
+    });
 
-    renderTotals();
+    // Single DOM update
+    DOM.listEl.innerHTML = '';
+    DOM.listEl.appendChild(fragment);
+    updateTotals();
   }
 
-  // --- Step management ---
-  function setStep(next){
-    step = next;
-
-    // Hide all views first
-    viewCart.hidden = true; viewCart.classList.remove('active');
-    viewInfo.hidden = true; viewInfo.classList.remove('active');
-    viewPayment.hidden = true; viewPayment.classList.remove('active');
-
-    if (step === 'cart'){
-      viewCart.hidden = false; viewCart.classList.add('active');
-      cartTitle.hidden = false;
-      infoHeader.hidden = true;
-      nextBtn.dataset.state = 'cart';
-      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span> Next`;
-      nextBtn.disabled = false;
-      nextBtn.classList.remove('loading');
-
-    } else if (step === 'info') {
-      viewInfo.hidden = false; viewInfo.classList.add('active');
-      cartTitle.hidden = true;
-      infoHeader.hidden = false;
-      nextBtn.dataset.state = 'info';
-      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">payment</span> Pay with PhonePe`;
-      nextBtn.disabled = false;
-      nextBtn.classList.remove('loading');
-      customerHead?.setAttribute('aria-expanded','true');
-      customerBody?.classList.add('open');
-      shippingHead?.setAttribute('aria-expanded','false');
-      shippingBody?.classList.remove('open');
-
-    } else if (step === 'payment') {
-      viewPayment.hidden = false; viewPayment.classList.add('active');
-      cartTitle.hidden = true;
-      infoHeader.hidden = false;
-      nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">hourglass_empty</span> Processing...`;
-      nextBtn.disabled = true;
-      nextBtn.classList.add('loading');
-      if (paymentOrderId) {
-        paymentOrderId.textContent = currentOrderId || '-';
-      }
-    }
-
-    renderTotals();
-    $('#cart-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+  // HTML escaping utility
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
-  // --- PhonePe Payment Integration ---
-  async function initiatePhonePePayment(orderData) {
-    try {
-      currentOrderId = generateOrderId();
-      const totalAmount = Math.max(0, orderData.totals.subtotal - orderData.totals.discount) + orderData.totals.shipping;
-      const amountInPaise = Math.round(totalAmount * 100);
+  // --- Optimized step management ---
+  function setStep(nextStep){
+    if (step === nextStep) return; // Avoid unnecessary updates
+    
+    step = nextStep;
 
-      const paymentPayload = {
-        merchantId: PHONEPE_CONFIG.merchantId,
-        merchantTransactionId: currentOrderId,
-        merchantUserId: `USER_${Date.now()}`,
-        amount: amountInPaise,
-        redirectUrl: PHONEPE_CONFIG.redirectUrl,
-        redirectMode: 'REDIRECT',
-        callbackUrl: PHONEPE_CONFIG.callbackUrl,
-        paymentInstrument: {
-          type: 'PAY_PAGE'
-        },
-        merchantOrderId: currentOrderId,
-        message: `Payment for order ${currentOrderId}`,
-        email: orderData.email,
-        mobile: orderData.phone.replace(/\D/g, ''),
-        orderDetails: {
-          cart: orderData.cart,
-          shipping: orderData.shipping,
-          totals: orderData.totals
+    scheduleUpdate(() => {
+      if (step === 'cart'){
+        // Show cart view
+        DOM.viewCart && (DOM.viewCart.hidden = false, DOM.viewCart.classList.add('active'));
+        DOM.viewInfo && (DOM.viewInfo.hidden = true, DOM.viewInfo.classList.remove('active'));
+
+        // Update header
+        DOM.cartTitle && (DOM.cartTitle.hidden = false);
+        DOM.infoHeader && (DOM.infoHeader.hidden = true);
+
+        // Update footer button
+        if (DOM.nextBtn) {
+          DOM.nextBtn.dataset.state = 'cart';
+          DOM.nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span> Next`;
         }
-      };
-
-      console.log('Initiating PhonePe payment with payload:', paymentPayload);
-      setStep('payment');
-
-      const response = await fetch(PHONEPE_CONFIG.initiatePaymentUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentPayload)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (result.success && result.data?.instrumentResponse?.redirectInfo?.url) {
-        window.top.location.href = result.data.instrumentResponse.redirectInfo.url;
       } else {
-        throw new Error(result.message || 'Failed to initiate payment');
+        // Show info view
+        DOM.viewCart && (DOM.viewCart.hidden = true, DOM.viewCart.classList.remove('active'));
+        DOM.viewInfo && (DOM.viewInfo.hidden = false, DOM.viewInfo.classList.add('active'));
+
+        // Update header
+        DOM.cartTitle && (DOM.cartTitle.hidden = true);
+        DOM.infoHeader && (DOM.infoHeader.hidden = false);
+
+        // Update footer button
+        if (DOM.nextBtn) {
+          DOM.nextBtn.dataset.state = 'info';
+          DOM.nextBtn.innerHTML = `<span class="material-symbols-rounded" aria-hidden="true">payment</span> Continue to pay`;
+        }
+
+        // Set default accordion states
+        DOM.customerHead?.setAttribute('aria-expanded','true');
+        DOM.customerBody?.classList.add('open');
+        DOM.shippingHead?.setAttribute('aria-expanded','false');
+        DOM.shippingBody?.classList.remove('open');
       }
 
-    } catch (error) {
-      console.error('PhonePe payment initiation failed:', error);
-      showError(`Payment initiation failed: ${error.message}`);
-      setStep('info');
-    }
+      updateTotals();
+      
+      // Smooth scroll to top
+      DOM.scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
-  // --- Quantity / Remove handlers (delegated) ---
-  listEl.addEventListener('click', (e) => {
-    const dec = e.target.closest('.qty-dec');
-    const inc = e.target.closest('.qty-inc');
-    const rem = e.target.closest('.cd-remove');
+  // --- Optimized quantity handlers with debouncing ---
+  const debouncedQtyUpdate = debounce((item, newQty) => {
+    item.qty = Math.max(1, newQty);
+    saveCart(cart);
+    updateTotals();
+  }, DEBOUNCE_DELAY);
 
-    if (rem){
-      const id = rem.getAttribute('data-id');
+  // Event delegation for better performance
+  function handleListClick(e) {
+    const target = e.target;
+    const button = target.closest('button');
+    
+    if (!button) return;
+
+    if (button.classList.contains('cd-remove')) {
+      const id = button.getAttribute('data-id');
       cart = cart.filter(x => String(x.id) !== String(id));
       saveCart(cart);
       renderCart();
       return;
     }
 
-    const ctrl = dec || inc;
-    if (!ctrl) return;
+    if (button.classList.contains('qty-dec') || button.classList.contains('qty-inc')) {
+      const wrap = button.closest('.cd-qty');
+      const id = wrap?.getAttribute('data-id');
+      const input = wrap?.querySelector('.qty-input');
+      const item = cart.find(x => String(x.id) === String(id));
+      
+      if (!item || !input) return;
 
-    const wrap = ctrl.closest('.cd-qty');
-    const id   = wrap?.getAttribute('data-id');
-    const input= wrap?.querySelector('.qty-input');
-    const item = cart.find(x => String(x.id) === String(id));
-    if (!item || !input) return;
+      let qty = Number(input.value) || 1;
+      
+      if (button.classList.contains('qty-dec')) {
+        qty = Math.max(1, qty - 1);
+      } else {
+        qty = Math.max(1, qty + 1);
+      }
+      
+      input.value = qty;
+      debouncedQtyUpdate(item, qty);
+    }
+  }
 
-    let q = Number(input.value || 1);
-    if (dec) q = Math.max(1, q - 1);
-    if (inc) q = Math.max(1, q + 1);
-    input.value = q;
-    item.qty = q;
-    saveCart(cart);
-    renderTotals();
-  });
-
-  listEl.addEventListener('change', (e) => {
-    const input = e.target.closest('.qty-input');
-    if (!input) return;
+  function handleListInput(e) {
+    const input = e.target;
+    if (!input.classList.contains('qty-input')) return;
+    
     const wrap = input.closest('.cd-qty');
-    const id   = wrap?.getAttribute('data-id');
+    const id = wrap?.getAttribute('data-id');
     const item = cart.find(x => String(x.id) === String(id));
+    
     if (!item) return;
-    let q = parseInt((input.value||'').replace(/\D+/g,'')) || 1;
-    q = Math.max(1, q);
-    input.value = q;
-    item.qty = q;
-    saveCart(cart);
-    renderTotals();
-  });
+    
+    let qty = parseInt(input.value.replace(/\D+/g, '')) || 1;
+    qty = Math.max(1, Math.min(999, qty)); // Reasonable limits
+    input.value = qty;
+    
+    debouncedQtyUpdate(item, qty);
+  }
 
-  // --- Promo code demo ---
-  promoForm?.addEventListener('submit', (e) => {
+  // --- Promo code handling ---
+  function handlePromoSubmit(e) {
     e.preventDefault();
-    const code = (promoInput?.value || '').trim().toUpperCase();
+    
+    const code = (DOM.promoInput?.value || '').trim().toUpperCase();
     const sub = calcSubtotal();
 
-    if (!code){
-      discount = 0; promoMsg.textContent = ''; renderTotals(); return;
+    if (!code) {
+      discount = 0;
+      DOM.promoMsg && (DOM.promoMsg.textContent = '');
+      updateTotals();
+      return;
     }
-    if (code === 'SAVE10'){
+    
+    // Simple promo logic - can be extended
+    if (code === 'SAVE10') {
       discount = Math.round(sub * 0.10);
-      promoMsg.textContent = 'Applied 10% off.';
-    } else if (code === 'PHONEPE50'){
-      discount = Math.min(50, Math.round(sub * 0.05));
-      promoMsg.textContent = 'PhonePe special: ₹50 off applied!';
+      DOM.promoMsg && (DOM.promoMsg.textContent = 'Applied 10% off.');
     } else {
-      discount = 0; promoMsg.textContent = 'Invalid code.';
+      discount = 0;
+      DOM.promoMsg && (DOM.promoMsg.textContent = 'Invalid code.');
     }
-    renderTotals();
-  });
-
-  // --- Validation helpers for Info step ---
-  function validateCustomer(){
-    const email = $('#cust-email');
-    const phone = $('#cust-phone');
-    let ok = true;
-
-    if (email) {
-      const emailValid = email.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-      email.classList.toggle('cd-invalid', !emailValid);
-      if (!emailValid) ok = false;
-    }
-
-    if (phone) {
-      const phoneValid = phone.value && /^[\+]?[\d\s\-\(\)]{10,}$/.test(phone.value.trim());
-      phone.classList.toggle('cd-invalid', !phoneValid);
-      if (!phoneValid) ok = false;
-    }
-
-    return ok;
+    
+    updateTotals();
   }
 
-  function validateShipping(){
-    const reqSel = ['#ship-first','#ship-last','#ship-line1','#ship-city','#ship-state','#ship-zip','#ship-country'];
-    let ok = true;
-    for (const sel of reqSel){
-      const el = $(sel);
-      const valid = el && el.value && String(el.value).trim().length > 0;
-      el?.classList.toggle('cd-invalid', !valid);
-      if (!valid) ok = false;
-    }
-    return ok;
+  // --- Validation with better UX ---
+  function validateField(element) {
+    if (!element) return false;
+    
+    const value = String(element.value || '').trim();
+    const isValid = value.length > 0;
+    
+    element.classList.toggle('cd-invalid', !isValid);
+    
+    return isValid;
   }
 
-  // --- Accordion header toggle (expand/collapse) ---
-  accRoot?.addEventListener('click', (e) => {
+  function validateCustomer() {
+    const emailEl = $('#cust-email');
+    const phoneEl = $('#cust-phone');
+    
+    const emailValid = validateField(emailEl);
+    const phoneValid = validateField(phoneEl);
+    
+    return emailValid && phoneValid;
+  }
+
+  function validateShipping() {
+    const requiredSelectors = [
+      '#ship-first', '#ship-last', '#ship-line1', 
+      '#ship-city', '#ship-state', '#ship-zip', '#ship-country'
+    ];
+    
+    return requiredSelectors.every(selector => validateField($(selector)));
+  }
+
+  // --- Accordion management ---
+  function handleAccordionClick(e) {
     const head = e.target.closest('.cd-acc-head');
     if (!head) return;
 
     const expanded = head.getAttribute('aria-expanded') === 'true';
-    head.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    const newState = expanded ? 'false' : 'true';
+    
+    head.setAttribute('aria-expanded', newState);
 
     const body = head.nextElementSibling;
-    if (body) body.classList.toggle('open', !expanded);
-  });
-
-  // --- Save & Continue buttons (below fields) ---
-  saveCustomerBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!validateCustomer()){
-      customerHead?.setAttribute('aria-expanded','true');
-      customerBody?.classList.add('open');
-      return;
-    }
-    customerHead?.setAttribute('aria-expanded','false');
-    customerBody?.classList.remove('open');
-    shippingHead?.setAttribute('aria-expanded','true');
-    shippingBody?.classList.add('open');
-  });
-
-  saveShippingBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!validateShipping()){
-      shippingHead?.setAttribute('aria-expanded','true');
-      shippingBody?.classList.add('open');
-      return;
-    }
-  });
-
-  // --- Footer primary button: Next → Pay with PhonePe ---
-  nextBtn?.addEventListener('click', () => {
-    if (step === 'cart'){
-      if (!cart.length){ return; }
-      setStep('info');
-      return;
-    }
-
-    if (step === 'info') {
-      const okCustomer = validateCustomer();
-      const okShipping = validateShipping();
-
-      if (!okCustomer){
-        customerHead?.setAttribute('aria-expanded','true');
-        customerBody?.classList.add('open');
-      }
-      if (!okShipping){
-        shippingHead?.setAttribute('aria-expanded','true');
-        shippingBody?.classList.add('open');
-      }
-      if (!(okCustomer && okShipping)) return;
-
-      const orderData = {
-        email: $('#cust-email').value.trim(),
-        phone: $('#cust-phone').value.trim(),
-        shipping: {
-          firstName: $('#ship-first').value.trim(),
-          lastName:  $('#ship-last').value.trim(),
-          line1:     $('#ship-line1').value.trim(),
-          line2:     $('#ship-line2').value.trim(),
-          city:      $('#ship-city').value.trim(),
-          state:     $('#ship-state').value.trim(),
-          zip:       $('#ship-zip').value.trim(),
-          country:   $('#ship-country').value
-        },
-        totals: {
-          subtotal: calcSubtotal(),
-          discount,
-          shipping: cart.length ? 80 : 0
-        },
-        cart
-      };
-
-      initiatePhonePePayment(orderData);
-      return;
-    }
-  });
-
-  // --- Header buttons ---
-  backToCart?.addEventListener('click', () => {
-    if (step === 'payment') {
-      setStep('info');
-    } else {
-      setStep('cart');
-    }
-  });
-
-  closeBtn?.addEventListener('click', () => {
-    try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
-  });
-
-  $('#continue-shopping')?.addEventListener('click', () => {
-    try { window.parent.postMessage({ type:'hawaa:closeCheckout' }, '*'); } catch {}
-  });
-
-  // --- Payment status handling ---
-  function handlePaymentResult() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    const orderId = urlParams.get('orderId');
-
-    if (status && orderId) {
-      if (status === 'success') {
-        cart = [];
-        saveCart(cart);
-        showSuccess('Payment successful! Your order has been placed.');
-        
-        try { 
-          window.parent.postMessage({ 
-            type:'hawaa:paymentSuccess', 
-            data: { orderId, status } 
-          }, '*'); 
-        } catch {}
-        
-      } else if (status === 'failed') {
-        showError('Payment failed. Please try again.');
-        setStep('info');
-        
-      } else if (status === 'cancelled') {
-        showError('Payment was cancelled.');
-        setStep('info');
-      }
-      
-      window.history.replaceState({}, document.title, window.location.pathname);
+    if (body) {
+      body.classList.toggle('open', newState === 'true');
     }
   }
 
-  // --- Init ---
-  function init(){
-    cart = loadCart();
-    renderCart();
-    handlePaymentResult();
-    cartTitle.hidden = false;
-    infoHeader.hidden = true;
+  // --- Save & Continue handlers ---
+  function handleSaveCustomer(e) {
+    e.preventDefault();
+    
+    if (!validateCustomer()) {
+      DOM.customerHead?.setAttribute('aria-expanded', 'true');
+      DOM.customerBody?.classList.add('open');
+      return;
+    }
+    
+    // Smooth transition to shipping
+    scheduleUpdate(() => {
+      DOM.customerHead?.setAttribute('aria-expanded', 'false');
+      DOM.customerBody?.classList.remove('open');
+      DOM.shippingHead?.setAttribute('aria-expanded', 'true');
+      DOM.shippingBody?.classList.add('open');
+    });
+  }
+
+  function handleSaveShipping(e) {
+    e.preventDefault();
+    
+    if (!validateShipping()) {
+      DOM.shippingHead?.setAttribute('aria-expanded', 'true');
+      DOM.shippingBody?.classList.add('open');
+    }
+    // If valid, user will use "Continue to pay"
+  }
+
+  // --- Main action handler ---
+  function handleNextClick() {
+    if (step === 'cart') {
+      if (!cart.length) return;
+      setStep('info');
+      return;
+    }
+
+    // Info step - validate everything
+    const customerValid = validateCustomer();
+    const shippingValid = validateShipping();
+
+    if (!customerValid) {
+      DOM.customerHead?.setAttribute('aria-expanded', 'true');
+      DOM.customerBody?.classList.add('open');
+    }
+    
+    if (!shippingValid) {
+      DOM.shippingHead?.setAttribute('aria-expanded', 'true');
+      DOM.shippingBody?.classList.add('open');
+    }
+    
+    if (!customerValid || !shippingValid) return;
+
+    // Build optimized payload
+    const payload = {
+      email: $('#cust-email')?.value.trim() || '',
+      phone: $('#cust-phone')?.value.trim() || '',
+      shipping: {
+        firstName: $('#ship-first')?.value.trim() || '',
+        lastName: $('#ship-last')?.value.trim() || '',
+        line1: $('#ship-line1')?.value.trim() || '',
+        line2: $('#ship-line2')?.value.trim() || '',
+        city: $('#ship-city')?.value.trim() || '',
+        state: $('#ship-state')?.value.trim() || '',
+        zip: $('#ship-zip')?.value.trim() || '',
+        country: $('#ship-country')?.value || 'IN'
+      },
+      totals: {
+        subtotal: calcSubtotal(),
+        discount,
+        shipping: cart.length ? shippingFlat : 0
+      },
+      cart: cart.slice() // Create copy to prevent mutations
+    };
+
+    // Notify parent
+    try {
+      window.parent.postMessage({
+        type: 'hawaa:continueToPayment',
+        data: payload
+      }, '*');
+    } catch (error) {
+      console.warn('Failed to communicate with parent window:', error);
+    }
+  }
+
+  // --- Navigation handlers ---
+  function handleBackToCart() {
     setStep('cart');
-    requestAnimationFrame(() => drawer.classList.add('is-open'));
   }
 
-  init();
+  function handleClose() {
+    try {
+      window.parent.postMessage({
+        type: 'hawaa:closeCheckout'
+      }, '*');
+    } catch (error) {
+      console.warn('Failed to communicate with parent window:', error);
+    }
+  }
+
+  // --- DOM initialization ---
+  function initializeDOM() {
+    // Cache all frequently accessed elements
+    DOM.drawer = $('#cart-drawer');
+    DOM.listEl = $('#cart-items');
+    DOM.emptyEl = $('#cart-empty');
+    DOM.subtotalEl = $('#sum-subtotal');
+    DOM.discountEl = $('#sum-discount');
+    DOM.shippingEl = $('#sum-shipping');
+    DOM.totalEl = $('#sum-total');
+    DOM.footTotalEl = $('#foot-total');
+    DOM.promoForm = $('#promo-form');
+    DOM.promoInput = $('#promo-input');
+    DOM.promoMsg = $('#promo-msg');
+    DOM.nextBtn = $('#next-btn');
+    DOM.closeBtn = $('#close-btn');
+    DOM.viewCart = $('#view-cart');
+    DOM.viewInfo = $('#view-info');
+    DOM.cartTitle = $('#cart-title');
+    DOM.infoHeader = $('#info-header');
+    DOM.backToCart = $('#back-to-cart');
+    DOM.accRoot = $('#info-accordions');
+    DOM.customerHead = $('.cd-acc-customer .cd-acc-head');
+    DOM.customerBody = $('#acc-customer');
+    DOM.shippingHead = $('.cd-acc-shipping .cd-acc-head');
+    DOM.shippingBody = $('#acc-shipping');
+    DOM.saveCustomerBtn = $('.cd-acc-customer .cd-save-continue');
+    DOM.saveShippingBtn = $('.cd-acc-shipping .cd-save-continue');
+    DOM.scrollContainer = $('#cart-scroll');
+  }
+
+  // --- Event listeners setup ---
+  function setupEventListeners() {
+    // Use event delegation for better performance
+    DOM.listEl?.addEventListener('click', handleListClick);
+    DOM.listEl?.addEventListener('input', handleListInput);
+    DOM.promoForm?.addEventListener('submit', handlePromoSubmit);
+    DOM.accRoot?.addEventListener('click', handleAccordionClick);
+    DOM.saveCustomerBtn?.addEventListener('click', handleSaveCustomer);
+    DOM.saveShippingBtn?.addEventListener('click', handleSaveShipping);
+    DOM.nextBtn?.addEventListener('click', handleNextClick);
+    DOM.backToCart?.addEventListener('click', handleBackToCart);
+    DOM.closeBtn?.addEventListener('click', handleClose);
+    $('#continue-shopping')?.addEventListener('click', handleClose);
+  }
+
+  // --- Initialization ---
+  function initialize() {
+    // Load data
+    cart = loadCart();
+    
+    // Initialize DOM references
+    initializeDOM();
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Initial render
+    renderCart();
+
+    // Set initial state
+    if (DOM.cartTitle) DOM.cartTitle.hidden = false;
+    if (DOM.infoHeader) DOM.infoHeader.hidden = true;
+    
+    setStep('cart');
+    
+    // Smooth drawer opening
+    requestAnimationFrame(() => {
+      DOM.drawer?.classList.add('is-open');
+      // Mark as fonts loaded if font detection didn't work
+      setTimeout(() => {
+        DOM.drawer?.classList.add('fonts-loaded');
+      }, 100);
+    });
+  }
+
+  // Start when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
 
 })();

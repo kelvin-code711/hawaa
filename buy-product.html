@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hawaa - Air Purifier</title>
 
-  <!-- Material Symbols -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <!-- Material Symbols Rounded (variable font) -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet" />
 
   <!-- Header CSS (navbar styles & logo sizing) -->
   <link rel="stylesheet" href="css/header.css" />
@@ -32,6 +32,7 @@
         <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
       </a>
       <div class="header-actions">
+        <!-- Hamburger Menu -->
         <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
           <span class="material-symbols-rounded icon-28">menu</span>
         </button>
@@ -46,9 +47,10 @@
     <div class="nav-header">
       <h2 class="nav-title">Menu</h2>
       <div class="nav-icons">
-        <button class="nav-icon" aria-label="Account">
-          <span class="material-symbols-rounded">account_circle</span>
-        </button>
+        <!-- ✅ Profile icon as link -->
+        <a href="sections/profile.html" class="nav-icon" aria-label="Account">
+         <span class="material-symbols-rounded">account_circle</span>
+        </a>
         <button class="nav-icon" aria-label="Cart">
           <span class="material-symbols-rounded">shopping_cart</span>
         </button>

@@ -75,70 +75,6 @@ body.menu-open {
   padding: 0 20px;
 }
 
-/* ===== Mobile Navigation (kept) ===== */
-.mobile-nav {
-  position: fixed;
-  top: 0; right: -100%;
-  width: 100%;
-  height: 100vh;
-  z-index: 9999;
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.mobile-nav.active { right: 0; }
-
-.nav-overlay {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.5);
-  opacity: 0; transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-.mobile-nav.active .nav-overlay {
-  opacity: 1; pointer-events: all;
-}
-
-/* Panel with only top-left & bottom-left radius */
-.nav-panel {
-  position: absolute; top: 0; right: 0;
-  width: 320px; height: 100%;
-  background: #ffffff;
-  box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 24px 0 0 24px;
-}
-
-.nav-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 20px; border-bottom: 1px solid #f0f0f0;
-}
-.nav-title { font-size: 1.25rem; font-weight: 600; color: #1a1a1a; }
-.nav-icons { display: flex; gap: 12px; }
-.nav-icon, .nav-close {
-  background: none; border: none; cursor: pointer;
-  padding: 8px; color: #1a1a1a; border-radius: 8px;
-  transition: background-color 0.2s ease;
-}
-.nav-icon:hover, .nav-close:hover { background-color: #f5f5f5; }
-.nav-icon svg, .nav-close svg { width: 20px; height: 20px; }
-
-.nav-content { padding: 20px; }
-.nav-section { margin-bottom: 32px; }
-.section-title {
-  font-size: 0.875rem; font-weight: 600; letter-spacing: 0.05em;
-  color: #666; margin-bottom: 16px;
-}
-.nav-links { list-style: none; }
-.nav-links li { margin-bottom: 8px; }
-.nav-links a {
-  display: block; padding: 12px 0;
-  color: #1a1a1a; text-decoration: none;
-  font-size: 1rem; font-weight: 400;
-  transition: color 0.2s ease;
-}
-.nav-links a:hover { color: #007acc; }
-
 /* ===== Hero Section ===== */
 .hero-section {
   position: relative;
@@ -345,8 +281,6 @@ body.menu-open {
   .hero-media { order: 0; height: 430px; padding: 0 20px 24px; }
   .hero-media img { height: 100%; width: 100%; border-radius: 20px; object-fit: cover; }
 
-  .nav-panel { width: 280px; }
-
   .page-width { padding: 0 16px; }
 
   .filter-text-section { margin: 64px 0; padding: 40px 0; }
@@ -378,7 +312,6 @@ body.menu-open {
 
 /* Small mobile (≤480px) */
 @media (max-width: 480px) {
-  .nav-panel { width: 100%; }
   .hero-text { padding: 80px 20px 32px; height: auto; min-height: auto; margin-bottom: 24px; }
   .hero-title { font-size: 1.75rem; }
   .hero-copy { font-size: 0.9rem; }

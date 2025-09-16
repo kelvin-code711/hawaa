@@ -1,19 +1,5 @@
-// Minimal JS: menu + curtain glue (keeps layout breathing on all devices)
-
-// Mobile menu
-const menuToggle = document.getElementById('menu-toggle');
-const mobileNav  = document.getElementById('mobile-nav');
-const navClose   = document.getElementById('nav-close');
-const navOverlay = document.getElementById('nav-overlay');
-
-if (menuToggle && mobileNav && navClose && navOverlay) {
-  const open = () => { mobileNav.classList.add('active'); mobileNav.setAttribute('aria-hidden','false'); };
-  const close = () => { mobileNav.classList.remove('active'); mobileNav.setAttribute('aria-hidden','true'); };
-
-  menuToggle.addEventListener('click', open);
-  navClose.addEventListener('click', close);
-  navOverlay.addEventListener('click', close);
-}
+// Minimal JS: blog-specific functionality only
+// Mobile menu functionality is handled by header.js
 
 // Curtain: make scene1 sticky under real header height, add soft shadow on overlap
 (() => {

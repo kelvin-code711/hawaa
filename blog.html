@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <title>Hawaa Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preload" href="fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/Outfit-Medium.woff2"  as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/Outfit-Bold.woff2"    as="font" type="font/woff2" crossorigin>
+
+  <!-- Material Symbols Rounded (variable font) -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet" />
+
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/blog.css">
 </head>
@@ -16,8 +25,9 @@
         <img src="images/logo.svg" alt="Hawaa" width="120" height="auto" />
       </a>
       <div class="header-actions">
+        <!-- Hamburger Menu -->
         <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <div class="hamburger-icon"><span></span><span></span><span></span></div>
+          <span class="material-symbols-rounded icon-28">menu</span>
         </button>
       </div>
     </div>
@@ -28,14 +38,15 @@
       <div class="nav-header">
         <h2 class="nav-title">Menu</h2>
         <div class="nav-icons">
-          <button class="nav-icon" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </button>
+          <!-- ✅ Profile icon as link -->
+          <a href="sections/profile.html" class="nav-icon" aria-label="Account">
+           <span class="material-symbols-rounded">account_circle</span>
+          </a>
           <button class="nav-icon" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="material-symbols-rounded">shopping_cart</span>
           </button>
           <button class="nav-close" id="nav-close" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span class="material-symbols-rounded">close</span>
           </button>
         </div>
       </div>
@@ -44,9 +55,21 @@
           <h3 class="section-title">EXPLORE</h3>
           <div class="nav-links-wrapper">
             <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="sections/filter-learn.html">Filter Technology</a></li>
-              <li><a href="/technology">Instalation Guide</a></li>
+              <li>
+                <a href="index.html">
+                  Home <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
+              <li>
+                <a href="sections/filter-learn.html">
+                  Filter Technology <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
+              <li>
+                <a href="sections/installation-guide.html">
+                  Installation Guide <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -54,9 +77,21 @@
           <h3 class="section-title">ABOUT HAWAA</h3>
           <div class="nav-links-wrapper">
             <ul class="nav-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-              <li><a href="blog.html">Blog</a></li>
+              <li>
+                <a href="about.html">
+                  About Us <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
+              <li>
+                <a href="sections/faq-page.html">
+                  FAQ <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
+              <li>
+                <a href="blog.html">
+                  Blog <span class="material-symbols-rounded">chevron_right</span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -166,7 +201,7 @@
     </section>
   </main>
 
-  <script src="/js/header.js" defer></script>
+  <script src="js/header.js" defer></script>
   <script src="js/blog.js" defer></script>
 </body>
 </html>
