@@ -108,11 +108,11 @@
     }
   }
 
-  // Toggle mobile menu
+  // Toggle mobile menu (icon animation removed)
   if (menuToggle && nav) {
     menuToggle.addEventListener('click', () => {
       const isOpen = nav.classList.contains('open');
-      menuToggle.classList.toggle('active', !isOpen);
+      // removed icon animation: no toggle of .active on menuToggle
       nav.classList.toggle('open', !isOpen);
       nav.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
     });

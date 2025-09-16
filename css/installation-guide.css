@@ -178,9 +178,10 @@ body {
 }
 
 .site-header .logo img {
-  height: 64px;
+  height: 20px;
   width: auto;
-  max-width: 120px;
+  display: block;
+  object-fit: contain;
 }
 
 /* Menu Toggle */
