@@ -3,12 +3,13 @@
    ================================ */
 
 :root {
-  /* Hawaa Brand Colors */
-  --blue-200:#B5E1EC;
-  --blue-300:#82CADE;
-  --blue-400:#48ABC8;
-  --blue-500:#2DBFAD;
-  --blue-950:#132A39; /* Primary Brand Color */
+  /* Hawaa Brand Colors - Overridden by strict palette in header.css, 
+     but redefining locally to safe variables just in case */
+  --blue-200: var(--palette-gray-6);
+  --blue-300: var(--palette-gray-5);
+  --blue-400: var(--palette-gray-4);
+  --blue-500: var(--palette-black);
+  --blue-950: var(--palette-black);
 }
 
 /* ================================
@@ -21,9 +22,11 @@
   align-items: center;
   justify-content: center;
   min-width: 150px;
-  height: 3rem; /* 48px consistent height */
+  height: 3rem;
+  /* 48px consistent height */
   padding: 0 2rem;
-  border-radius: 9999px; /* Full pill shape */
+  border-radius: 9999px;
+  /* Full pill shape */
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -44,13 +47,13 @@
   display: block;
 }
 
-.hawaa-button .button-inner { 
-  position: relative; 
+.hawaa-button .button-inner {
+  position: relative;
 }
 
 .hawaa-button .button-inner-hover {
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
   opacity: 0;
   transform: translateY(70%);
@@ -60,9 +63,9 @@
   overflow: hidden;
   border-radius: inherit;
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
-  width: 100%; 
+  width: 100%;
   height: 100%;
 }
 
@@ -78,45 +81,54 @@
 .hawaa-button .button-bg-layer {
   border-radius: 9999px;
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   transform: scale(0);
 }
 
-.hawaa-button .button-bg-layer.-purple   { background-color: var(--blue-300); }
-.hawaa-button .button-bg-layer.-turquoise{ background-color: var(--blue-400); }
-.hawaa-button .button-bg-layer.-yellow   { background-color: var(--blue-200); }
+.hawaa-button .button-bg-layer.-purple {
+  background-color: var(--palette-gray-5);
+}
+
+.hawaa-button .button-bg-layer.-turquoise {
+  background-color: var(--palette-gray-4);
+}
+
+.hawaa-button .button-bg-layer.-yellow {
+  background-color: var(--palette-gray-6);
+}
 
 /* ================================
    Primary Button
    ================================ */
 .hawaa-button--primary {
-  background: var(--blue-950);
-  color: #fff;
+  background: var(--palette-black);
+  color: var(--palette-white);
   border: none;
 }
 
-.hawaa-button--primary .button-bg { 
-  background: var(--blue-950); 
+.hawaa-button--primary .button-bg {
+  background: var(--palette-black);
 }
 
 /* ================================
    Secondary Button  
    ================================ */
 .hawaa-button--secondary {
-  background: transparent;
-  color: var(--blue-950);
-  border: 2px solid var(--blue-950);
+  background: var(--palette-white);
+  color: var(--palette-black);
+  border: 2px solid var(--palette-black);
 }
 
-.hawaa-button--secondary .button-bg { 
-  background: transparent; 
+.hawaa-button--secondary .button-bg {
+  background: var(--palette-white);
 }
 
-.hawaa-button--secondary:hover { 
-  border-color: var(--blue-500); 
+.hawaa-button--secondary:hover {
+  border-color: var(--palette-gray-2);
+  color: var(--palette-gray-2);
 }
 
 /* ================================
@@ -138,9 +150,19 @@
   transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
 }
 
-.hawaa-button:hover .button-bg-layer-1 { transform: scale(1); }
-.hawaa-button:hover .button-bg-layer-2 { transform: scale(1); transition-delay: .1s; }
-.hawaa-button:hover .button-bg-layer-3 { transform: scale(1); transition-delay: .2s; }
+.hawaa-button:hover .button-bg-layer-1 {
+  transform: scale(1);
+}
+
+.hawaa-button:hover .button-bg-layer-2 {
+  transform: scale(1);
+  transition-delay: .1s;
+}
+
+.hawaa-button:hover .button-bg-layer-3 {
+  transform: scale(1);
+  transition-delay: .2s;
+}
 
 /* ================================
    Icon + Text Buttons
@@ -149,66 +171,69 @@
 .hawaa-button--icon svg {
   width: 1.3em;
   height: 1.3em;
-  margin-left: 0.5rem; /* icon on right */
+  margin-left: 0.5rem;
+  /* icon on right */
   transition: all 0.3s ease;
 }
 
 .hawaa-button--icon:hover .material-symbols-rounded,
-.hawaa-button--icon:hover svg { 
-  transform: translateX(5px); 
+.hawaa-button--icon:hover svg {
+  transform: translateX(5px);
 }
 
 .hawaa-button--icon-primary {
-  background: var(--blue-950);
-  color: #fff;
+  background: var(--palette-black);
+  color: var(--palette-white);
   border: none;
 }
 
-.hawaa-button--icon-primary:hover { 
-  background: var(--blue-500); 
+.hawaa-button--icon-primary:hover {
+  background: var(--palette-gray-1);
 }
 
 .hawaa-button--icon-secondary {
-  background: transparent;
-  color: var(--blue-950);
-  border: 2px solid var(--blue-950);
+  background: var(--palette-white);
+  color: var(--palette-black);
+  border: 2px solid var(--palette-black);
 }
 
 .hawaa-button--icon-secondary:hover {
-  background: var(--blue-200);
-  border-color: var(--blue-500);
-  color: var(--blue-950);
+  background: var(--palette-gray-7);
+  border-color: var(--palette-gray-2);
+  color: var(--palette-gray-2);
 }
 
 /* ================================
    Tertiary Button
    ================================ */
 .hawaa-button--tertiary {
-  border: 2px solid var(--blue-950);
+  border: 2px solid var(--palette-gray-5);
+  /* Ghost/Text button border #D0D0D0 */
   background: transparent;
-  color: var(--blue-950);
+  color: var(--palette-black);
 }
 
 .hawaa-button--tertiary::after {
   content: "";
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   border-radius: inherit;
-  background: radial-gradient(circle, rgba(45,191,173,0.25) 0%, rgba(19,42,57,0) 70%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  /* Grayscale gradient */
   transform: scale(0);
   transition: transform 0.5s ease;
 }
 
-.hawaa-button--tertiary:hover::after { 
-  transform: scale(4); 
+.hawaa-button--tertiary:hover::after {
+  transform: scale(4);
 }
 
 .hawaa-button--tertiary:hover {
-  border-color: var(--blue-500);
-  background: var(--blue-200);
+  border-color: var(--palette-gray-3);
+  background: var(--palette-gray-6);
 }
 
 /* ================================
@@ -223,8 +248,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--blue-950);
-  color: #fff;
+  background: var(--palette-black);
+  color: var(--palette-white);
   transition: all 0.3s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -237,20 +262,20 @@
   pointer-events: none;
 }
 
-.hawaa-icon-button:hover { 
-  background: var(--blue-500); 
+.hawaa-icon-button:hover {
+  background: var(--palette-gray-2);
 }
 
 .hawaa-icon-button--secondary {
   background: transparent;
-  border: 2px solid var(--blue-950);
-  color: var(--blue-950);
+  border: 2px solid var(--palette-black);
+  color: var(--palette-black);
 }
 
 .hawaa-icon-button--secondary:hover {
-  background: var(--blue-200);
-  border-color: var(--blue-500);
-  color: var(--blue-950);
+  background: var(--palette-gray-6);
+  border-color: var(--palette-gray-2);
+  color: var(--palette-gray-1);
 }
 
 /* ================================
@@ -279,13 +304,13 @@
     font-size: 0.95rem;
     padding: 0 1.5rem;
   }
-  
+
   .hawaa-button--small {
     min-width: 100px;
     font-size: 0.85rem;
     padding: 0 1.2rem;
   }
-  
+
   .hawaa-button--large {
     min-width: 140px;
     font-size: 1rem;
@@ -300,7 +325,7 @@
     font-size: 0.9rem;
     padding: 0 1.2rem;
   }
-  
+
   .hawaa-button--small {
     min-width: 90px;
     font-size: 0.8rem;
@@ -322,11 +347,11 @@
    Focus States (Accessibility)
    ================================ */
 .hawaa-button:focus-visible {
-  outline: 2px solid var(--blue-500);
+  outline: 2px solid var(--palette-black);
   outline-offset: 2px;
 }
 
 .hawaa-icon-button:focus-visible {
-  outline: 2px solid var(--blue-500);
+  outline: 2px solid var(--palette-black);
   outline-offset: 2px;
 }

@@ -5,13 +5,15 @@
 
 /* Theme variables */
 :root {
-  --color-background: 255, 255, 255;
-  --border-light: #e0e0e0;
+  --color-background: var(--palette-white);
+  --border-light: var(--palette-gray-6);
   --font-family-primary: 'Outfit', sans-serif;
   --font-weight-medium: 500;
   --font-weight-regular: 400;
-  --text-secondary: #666666;
-  --hawaa-blue: #2a7f62;
+  --text-secondary: var(--palette-gray-2);
+  /* #4A4A4A */
+  --hawaa-blue: var(--palette-black);
+  /* Icon color -> Black */
 }
 
 /* Reset & base */
@@ -23,7 +25,7 @@
 
 body {
   font-family: var(--font-family-primary);
-  color: #333;
+  color: var(--palette-gray-2);
 }
 
 /* Announcement strip */
@@ -31,7 +33,7 @@ body {
   height: 40px;
   padding-left: 20px;
   padding-right: 0vw;
-  background: rgb(var(--color-background));
+  background: var(--color-background);
   border-top: 0px solid var(--border-light);
   border-bottom: 0px solid var(--border-light);
   display: flex;
@@ -45,6 +47,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .why-strip::-webkit-scrollbar {
   display: none;
 }
@@ -72,14 +75,20 @@ body {
   animation: whyScroll var(--scroll-time, 20s) linear infinite;
   will-change: transform;
 }
+
 .why-strip__track::before {
   content: '';
   flex: 0 0 var(--gap, 24px);
 }
 
 @keyframes whyScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @media (min-width: 992px) {
@@ -115,20 +124,25 @@ body {
   .why-strip {
     padding: 0 5vw;
   }
+
   .why-strip__heading {
     padding-right: 32px;
     font-size: 14px;
   }
+
   .why-strip__track {
     gap: calc(var(--gap, 24px) * 0.7);
     --scroll-time: 25s;
   }
+
   .why-strip__track::before {
     flex: 0 0 calc(var(--gap, 24px) * 0.7);
   }
+
   .why-strip__icon {
     font-size: 14px;
   }
+
   .why-strip__text {
     font-size: 14px;
   }

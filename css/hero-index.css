@@ -1,28 +1,31 @@
 /* ---------- HERO TOP BAR (outside the video) ---------- */
 .hero-topbar {
   max-width: 1160px;
-  margin: 40px auto 12px;      /* space above video like Apple */
+  margin: 40px auto 12px;
+  /* space above video like Apple */
   padding: 0 16px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: end;
   gap: 16px;
 }
+
 .hero-topbar .ht-title {
   font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-weight: 700;
   font-size: clamp(32px, 6vw, 64px);
   line-height: 1.05;
   margin: 0;
-  color: #111;
+  color: var(--palette-gray-1);
 }
+
 .hero-topbar .ht-subtitle {
   font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-weight: 600;
   font-size: clamp(16px, 2.2vw, 24px);
   line-height: 1.25;
   margin: 0;
-  color: #111;
+  color: var(--palette-gray-1);
   text-align: right;
   white-space: nowrap;
 }
@@ -38,7 +41,7 @@
   overflow: hidden;
   margin: 32px auto;
   position: relative;
-  background: #0b0b0b;
+  background: var(--palette-black);
 }
 
 /* Media layers fill and stack */
@@ -51,9 +54,15 @@
   object-fit: cover;
   display: block;
 }
-.hero-media { z-index: 1; }     /* video */
+
+.hero-media {
+  z-index: 1;
+}
+
+/* video */
 .hero-fallback {
-  z-index: 2;                   /* image sits on top until video is ready */
+  z-index: 2;
+  /* image sits on top until video is ready */
   opacity: 1;
   transition: opacity .4s ease;
 }
@@ -71,10 +80,12 @@
     gap: 4px;
     margin: 24px auto 8px;
   }
+
   .hero-topbar .ht-subtitle {
     text-align: left;
     white-space: normal;
   }
+
   .hero-index {
     height: 62vh;
     max-height: 680px;
@@ -83,5 +94,7 @@
 
 /* ---------- ACCESSIBILITY ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .hero-index { transition: none !important; }
+  .hero-index {
+    transition: none !important;
+  }
 }

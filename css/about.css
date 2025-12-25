@@ -1,215 +1,333 @@
 /* -------------------------------------------------------------
    Outfit font (served from /hawaa/fonts)
 ------------------------------------------------------------- */
-@font-face{
-  font-family:"Outfit";
-  src:local("Outfit Regular"),
-      url("/hawaa/fonts/Outfit-Regular.woff2") format("woff2"),
-      url("/hawaa/fonts/Outfit-Regular.woff") format("woff");
-  font-weight:400; font-style:normal; font-display:swap;
+@font-face {
+  font-family: "Outfit";
+  src: local("Outfit Regular"),
+    url("/hawaa/fonts/Outfit-Regular.woff2") format("woff2"),
+    url("/hawaa/fonts/Outfit-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
-@font-face{
-  font-family:"Outfit";
-  src:local("Outfit Bold"),
-      url("/hawaa/fonts/Outfit-Bold.woff2") format("woff2"),
-      url("/hawaa/fonts/Outfit-Bold.woff") format("woff");
-  font-weight:700; font-style:normal; font-display:swap;
+
+@font-face {
+  font-family: "Outfit";
+  src: local("Outfit Bold"),
+    url("/hawaa/fonts/Outfit-Bold.woff2") format("woff2"),
+    url("/hawaa/fonts/Outfit-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Base / sizing */
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-html{ -webkit-text-size-adjust:100%; }
-body{
-  margin:0;
-  font-family:"Outfit",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:#fff;
-  background:#fff;            /* page bg #fff */
-  overflow-x:clip;            /* hard stop any horizontal page scroll */
-  touch-action:manipulation;
-  overscroll-behavior-x:none;
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--palette-black);
+  background: var(--palette-white);
+  /* page bg #fff */
+  overflow-x: clip;
+  /* hard stop any horizontal page scroll */
+  touch-action: manipulation;
+  overscroll-behavior-x: none;
 }
 
 /* Vars (S1 geometry) */
-:root{
-  --circle-size:100vw;
-  --circle-offset-y:50vh;
-  --text-ring-scale:1.02;
-  --text-ring-font-size:80px;
-  --rotation:0deg;
-  --vh:1vh; /* JS will set real mobile 1% height */
+:root {
+  --circle-size: 100vw;
+  --circle-offset-y: 50vh;
+  --text-ring-scale: 1.02;
+  --text-ring-font-size: 80px;
+  --rotation: 0deg;
+  --vh: 1vh;
+  /* JS will set real mobile 1% height */
 }
 
 /* ===== Normal scroll layout (no curtain/pinning) ===== */
-.curtain{ width:100%; overflow-x:clip; scroll-snap-type:none !important; }
-
-.scene{
-  position:relative;
-  height:auto;                  /* cancel 200vh */
+.curtain {
+  width: 100%;
+  overflow-x: clip;
+  scroll-snap-type: none !important;
 }
-.scene + .scene{
-  margin-top:0;                 /* cancel -100vh overlap */
+
+.scene {
+  position: relative;
+  height: auto;
+  /* cancel 200vh */
+}
+
+.scene+.scene {
+  margin-top: 0;
+  /* cancel -100vh overlap */
 }
 
 /* Cards scroll normally with the page */
-.card{
-  position:static;              /* cancel sticky */
-  top:auto;
-  height:auto;                  /* let content define height */
-  display:block;
-  padding:0;                    /* inner blocks manage their own spacing */
+.card {
+  position: static;
+  /* cancel sticky */
+  top: auto;
+  height: auto;
+  /* let content define height */
+  display: block;
+  padding: 0;
+  /* inner blocks manage their own spacing */
 }
 
 /* ===== SCENE 1 ===== */
-#scene1 .s1{
-  background:#287392;
-  overflow:hidden;
-  min-height:calc(var(--vh,1vh) * 100);    /* ensure full-viewport presence */
-}
-.s1-wrap{
-  position:relative;
-  width:100vw;
-  height:calc(var(--vh,1vh) * 100);
+#scene1 .s1 {
+  background: var(--palette-black);
+  overflow: hidden;
+  min-height: calc(var(--vh, 1vh) * 100);
+  /* ensure full-viewport presence */
 }
 
-.s1 .circle{
-  position:absolute; bottom:0; left:50%;
-  width:var(--circle-size); height:var(--circle-size);
-  background:#fff; border-radius:50%;
-  transform:translate(-50%, calc(50% + var(--circle-offset-y)));
+.s1-wrap {
+  position: relative;
+  width: 100vw;
+  height: calc(var(--vh, 1vh) * 100);
 }
-.s1 .text-ring{
-  position:absolute; bottom:0; left:50%;
-  width:var(--circle-size); height:var(--circle-size);
-  pointer-events:none; overflow:visible; transform-origin:center;
+
+.s1 .circle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background: var(--palette-white);
+  border-radius: 50%;
+  transform: translate(-50%, calc(50% + var(--circle-offset-y)));
+}
+
+.s1 .text-ring {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  pointer-events: none;
+  overflow: visible;
+  transform-origin: center;
   transform:
-    translate(-50%, calc(50% + var(--circle-offset-y)))
-    scale(var(--text-ring-scale))
-    rotate(var(--rotation));
+    translate(-50%, calc(50% + var(--circle-offset-y))) scale(var(--text-ring-scale)) rotate(var(--rotation));
 }
-.s1 .text-ring text{ font-size:var(--text-ring-font-size); fill:#fff; }
-.s1 .circle-center-image{
-  position:absolute; bottom:0; left:50%;
-  transform:translate(-50%, 0%);
-  width:620px; height:620px; overflow:hidden; border:0; z-index:10;
+
+.s1 .text-ring text {
+  font-size: var(--text-ring-font-size);
+  fill: var(--palette-white);
 }
-.s1 .circle-center-image img{ width:100%; height:100%; object-fit:cover; }
+
+.s1 .circle-center-image {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: 620px;
+  height: 620px;
+  overflow: hidden;
+  border: 0;
+  z-index: 10;
+}
+
+.s1 .circle-center-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 /* ===== SCENE 2 (content card) ===== */
-.s2{ background:transparent; }
+.s2 {
+  background: transparent;
+}
 
 /* Content card (auto height, no inner scroll) */
-.blank-card{
-  position:relative; 
-  z-index:100;
-  width:100vw; 
-  max-width:100vw;
+.blank-card {
+  position: relative;
+  z-index: 100;
+  width: 100vw;
+  max-width: 100vw;
 
-  min-height:calc(var(--vh,1vh) * 100);  /* fully visible section by default */
-  height:auto;
-  max-height:none;
-  overflow:visible;
+  min-height: calc(var(--vh, 1vh) * 100);
+  /* fully visible section by default */
+  height: auto;
+  max-height: none;
+  overflow: visible;
 
-  padding:32px clamp(16px,4vw,40px);
-  margin:0 auto;
-  background:#fff; 
-  border-radius:24px;
-  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  padding: 32px clamp(16px, 4vw, 40px);
+  margin: 0 auto;
+  background: var(--palette-white);
+  border-radius: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
 
-  display:grid;
-  grid-template-columns:1fr;
-  justify-items:center;
-  row-gap:var(--card-gap,24px);
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  row-gap: var(--card-gap, 24px);
 }
 
-.blank-card::-webkit-scrollbar{ width:8px; }
-.blank-card::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.15); border-radius:8px; }
-.blank-card::-webkit-scrollbar-track{ background:transparent; }
+.blank-card::-webkit-scrollbar {
+  width: 8px;
+}
 
-.blank-card p{
-  font-size:clamp(18px,3.2vw,40px);
-  line-height:1.25; text-align:left; margin:0; max-width:600px; color:#333;
-  letter-spacing:var(--card-letter-spacing,0);
+.blank-card::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .15);
+  border-radius: 8px;
 }
-.card-headline{
-  font-size:clamp(22px,2.4vw,40px); font-weight:600;
-  color:#287392; text-align:left; margin:0 0 8px 0; max-width:600px;
-}
-.card-subtext{
-  font-size:clamp(16px,1.6vw,28px);
-  line-height:1.35; text-align:left; margin:0; color:#333; max-width:600px;
-}
-.highlight{ padding:0 4px; border-radius:4px; color:#fff; }
-.highlight-1{ background:#244255; } .highlight-2{ background:#265e78; } .highlight-3{ background:#2d8fad; }
 
-.card-image-wrapper{
-  width:min(1100px,92vw); border-radius:32px; overflow:hidden;
-  transform-origin:center; will-change:transform; position:relative; z-index:2000;
+.blank-card::-webkit-scrollbar-track {
+  background: transparent;
 }
-.card-image-wrapper img{
-  display:block; width:100%; height:auto;
-  visibility:visible !important; opacity:1 !important; pointer-events:auto;
+
+.blank-card p {
+  font-size: clamp(18px, 3.2vw, 40px);
+  line-height: 1.25;
+  text-align: left;
+  margin: 0;
+  max-width: 600px;
+  color: var(--palette-gray-2);
+  letter-spacing: var(--card-letter-spacing, 0);
+}
+
+.card-headline {
+  font-size: clamp(22px, 2.4vw, 40px);
+  font-weight: 600;
+  color: var(--palette-black);
+  text-align: left;
+  margin: 0 0 8px 0;
+  max-width: 600px;
+}
+
+.card-subtext {
+  font-size: clamp(16px, 1.6vw, 28px);
+  line-height: 1.35;
+  text-align: left;
+  margin: 0;
+  color: var(--palette-gray-2);
+  max-width: 600px;
+}
+
+.highlight {
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--palette-white);
+}
+
+.highlight-1 {
+  background: var(--palette-gray-2);
+}
+
+.highlight-2 {
+  background: var(--palette-gray-3);
+}
+
+.highlight-3 {
+  background: var(--palette-gray-4);
+}
+
+.card-image-wrapper {
+  width: min(1100px, 92vw);
+  border-radius: 32px;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform;
+  position: relative;
+  z-index: 2000;
+}
+
+.card-image-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto;
 }
 
 /* ===== Motion safety ===== */
-@media (prefers-reduced-motion:reduce){
-  html{ scroll-behavior:auto; }
+@media (prefers-reduced-motion:reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* =========================
    MOBILE-ONLY CONTROLS (≤ 768px)
    ========================= */
-@media (max-width: 768px){
-  :root{
+@media (max-width: 768px) {
+  :root {
     /* Section 1 knobs (edit these only) */
-    --m-s1-height:             100vh;
-    --m-circle-size:           160vw;     /* circle + ring diameter */
-    --m-circle-offset-y:       -24vh;     /* Y-axis offset of circle & ring */
-    --m-text-ring-scale:       1.02;
-    --m-text-ring-font-size:   64px;
+    --m-s1-height: 100vh;
+    --m-circle-size: 160vw;
+    /* circle + ring diameter */
+    --m-circle-offset-y: -24vh;
+    /* Y-axis offset of circle & ring */
+    --m-text-ring-scale: 1.02;
+    --m-text-ring-font-size: 64px;
 
-    --m-center-image-size:     280px;
+    --m-center-image-size: 280px;
     --m-center-image-offset-y: -120%;
 
     /* Map knobs → actual variables used in layout */
-    --circle-size:             var(--m-circle-size);
-    --circle-offset-y:         var(--m-circle-offset-y);
-    --text-ring-scale:         var(--m-text-ring-scale);
-    --text-ring-font-size:     var(--m-text-ring-font-size);
+    --circle-size: var(--m-circle-size);
+    --circle-offset-y: var(--m-circle-offset-y);
+    --text-ring-scale: var(--m-text-ring-scale);
+    --text-ring-font-size: var(--m-text-ring-font-size);
   }
 
   /* Force Outfit everywhere */
-  body, .about-page,
-  .s1, .s2,
+  body,
+  .about-page,
+  .s1,
+  .s2,
   .blank-card,
-  .s1 .text-ring text{
+  .s1 .text-ring text {
     font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
   }
 
   /* Section 1 sizing */
-  #scene1 .s1{ min-height: var(--m-s1-height); }
-  #scene1 .card{ height: var(--m-s1-height); } /* harmless with position:static */
+  #scene1 .s1 {
+    min-height: var(--m-s1-height);
+  }
 
-  .s1 .circle{
+  #scene1 .card {
+    height: var(--m-s1-height);
+  }
+
+  /* harmless with position:static */
+
+  .s1 .circle {
     width: var(--circle-size);
     height: var(--circle-size);
     transform: translate(-50%, calc(50% + var(--circle-offset-y)));
   }
 
-  .s1 .text-ring{
+  .s1 .text-ring {
     width: var(--circle-size);
     height: var(--circle-size);
     transform:
-      translate(-50%, calc(50% + var(--circle-offset-y)))
-      scale(var(--text-ring-scale))
-      rotate(var(--rotation));
-  }
-  .s1 .text-ring text{
-    font-size: var(--text-ring-font-size);
-    fill: #fff;
+      translate(-50%, calc(50% + var(--circle-offset-y))) scale(var(--text-ring-scale)) rotate(var(--rotation));
   }
 
-  .s1 .circle-center-image{
+  .s1 .text-ring text {
+    font-size: var(--text-ring-font-size);
+    fill: var(--palette-white);
+  }
+
+  .s1 .circle-center-image {
     width: var(--m-center-image-size);
     height: var(--m-center-image-size);
     left: 50%;
@@ -218,16 +336,27 @@ body{
   }
 
   /* Section 2 spacing/rounding + pull up */
-  .blank-card{
+  .blank-card {
     border-radius: 20px;
-    padding: 20px clamp(12px,4vw,24px);
+    padding: 20px clamp(12px, 4vw, 24px);
     row-gap: 18px;
-    min-height: calc(var(--vh,1vh) * 100); /* fully visible on small screens */
-    margin-top: -340px;                      /* pull 2nd section up on mobile */
+    min-height: calc(var(--vh, 1vh) * 100);
+    /* fully visible on small screens */
+    margin-top: -340px;
+    /* pull 2nd section up on mobile */
   }
-  .blank-card p{ line-height: 1.32; }
-  .card-headline{ margin-bottom: 6px; }
-  .card-image-wrapper{ border-radius: 20px; }
+
+  .blank-card p {
+    line-height: 1.32;
+  }
+
+  .card-headline {
+    margin-bottom: 6px;
+  }
+
+  .card-image-wrapper {
+    border-radius: 20px;
+  }
 }
 
 /* ============================================================
@@ -236,16 +365,19 @@ body{
    Example usage: <span class="msr">wifi</span>
    Optional modifiers: msr--fill, msr--thin, msr--bold, msr-16/20/24/32
 ============================================================ */
-:root{
-  --msr-size:20px;
-  --msr-color:#5b5f67;
-  --msr-wght:500;   /* 300..700 supported */
-  --msr-fill:0;     /* 0 = outline, 1 = filled */
-  --msr-grad:0;
-  --msr-opsz:24;    /* optical size 20..48 */
+:root {
+  --msr-size: 20px;
+  --msr-color: var(--palette-gray-2);
+  --msr-wght: 500;
+  /* 300..700 supported */
+  --msr-fill: 0;
+  /* 0 = outline, 1 = filled */
+  --msr-grad: 0;
+  --msr-opsz: 24;
+  /* optical size 20..48 */
 }
 
-.msr{
+.msr {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-weight: normal;
@@ -271,19 +403,60 @@ body{
 }
 
 /* Size helpers */
-.msr-16{ --msr-size:16px; --msr-opsz:20; }
-.msr-20{ --msr-size:20px; --msr-opsz:24; }
-.msr-24{ --msr-size:24px; --msr-opsz:24; }
-.msr-28{ --msr-size:28px; --msr-opsz:24; }
-.msr-32{ --msr-size:32px; --msr-opsz:24; }
+.msr-16 {
+  --msr-size: 16px;
+  --msr-opsz: 20;
+}
+
+.msr-20 {
+  --msr-size: 20px;
+  --msr-opsz: 24;
+}
+
+.msr-24 {
+  --msr-size: 24px;
+  --msr-opsz: 24;
+}
+
+.msr-28 {
+  --msr-size: 28px;
+  --msr-opsz: 24;
+}
+
+.msr-32 {
+  --msr-size: 32px;
+  --msr-opsz: 24;
+}
 
 /* Weight / style helpers */
-.msr--thin { --msr-wght:300; }
-.msr--bold { --msr-wght:700; }
-.msr--fill { --msr-fill:1;  }   /* filled glyphs */
-.msr--outline { --msr-fill:0; } /* outline glyphs */
+.msr--thin {
+  --msr-wght: 300;
+}
+
+.msr--bold {
+  --msr-wght: 700;
+}
+
+.msr--fill {
+  --msr-fill: 1;
+}
+
+/* filled glyphs */
+.msr--outline {
+  --msr-fill: 0;
+}
+
+/* outline glyphs */
 
 /* Color helper (override via inline style or class) */
-.msr-muted { --msr-color:#5b5f67; }
-.msr-ink   { --msr-color:#111;   }
-.msr-accent{ --msr-color:#287392; }
+.msr-muted {
+  --msr-color: var(--palette-gray-2);
+}
+
+.msr-ink {
+  --msr-color: var(--palette-black);
+}
+
+.msr-accent {
+  --msr-color: var(--palette-black);
+}

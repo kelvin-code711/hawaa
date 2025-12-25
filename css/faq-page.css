@@ -2,7 +2,7 @@
 @font-face {
     font-family: 'Outfit';
     src: url('../fonts/Outfit-Regular.woff2') format('woff2'),
-         url('../fonts/Outfit-Regular.woff') format('woff');
+        url('../fonts/Outfit-Regular.woff') format('woff');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -11,7 +11,7 @@
 @font-face {
     font-family: 'Outfit';
     src: url('../fonts/Outfit-Medium.woff2') format('woff2'),
-         url('../fonts/Outfit-Medium.woff') format('woff');
+        url('../fonts/Outfit-Medium.woff') format('woff');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -20,7 +20,7 @@
 @font-face {
     font-family: 'Outfit';
     src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
-         url('../fonts/Outfit-SemiBold.woff') format('woff');
+        url('../fonts/Outfit-SemiBold.woff') format('woff');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
@@ -29,7 +29,7 @@
 @font-face {
     font-family: 'Outfit';
     src: url('../fonts/Outfit-Bold.woff2') format('woff2'),
-         url('../fonts/Outfit-Bold.woff') format('woff');
+        url('../fonts/Outfit-Bold.woff') format('woff');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -44,8 +44,8 @@
 
 body {
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    background-color: #fafafa;
-    color: #101828;
+    background-color: var(--palette-white);
+    color: var(--palette-black);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -59,8 +59,8 @@ body {
 
 /* Header */
 .faq-header {
-    background: #ffffff;
-    border-bottom: 1px solid #e4e7ec;
+    background: var(--palette-white);
+    border-bottom: 1px solid var(--palette-gray-6);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -93,7 +93,7 @@ body {
 }
 
 .nav-item {
-    color: #475467;
+    color: var(--palette-gray-2);
     text-decoration: none;
     font-weight: 500;
     font-size: 16px;
@@ -104,7 +104,7 @@ body {
 }
 
 .nav-item:hover {
-    color: #101828;
+    color: var(--palette-black);
 }
 
 .dropdown-arrow {
@@ -121,7 +121,7 @@ body {
     width: 40px;
     height: 40px;
     border: none;
-    background: #f9fafb;
+    background: var(--palette-gray-7);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -131,7 +131,7 @@ body {
 }
 
 .profile-btn:hover {
-    background: #f2f4f7;
+    background: var(--palette-gray-6);
 }
 
 .profile-btn img {
@@ -160,7 +160,7 @@ body {
 .faq-title {
     font-size: 48px;
     font-weight: 600;
-    color: #101828;
+    color: var(--palette-black);
     margin-bottom: 20px;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -168,18 +168,18 @@ body {
 
 .faq-subtitle {
     font-size: 20px;
-    color: #667085;
+    color: var(--palette-gray-3);
     margin-bottom: 8px;
     font-weight: 400;
 }
 
 .faq-contact {
     font-size: 16px;
-    color: #667085;
+    color: var(--palette-gray-3);
 }
 
 .contact-link {
-    color: #7c3aed;
+    color: var(--palette-black);
     text-decoration: none;
     font-weight: 500;
 }
@@ -193,7 +193,7 @@ body {
     display: flex;
     gap: 4px;
     margin-bottom: 32px;
-    background: #f2f4f7;
+    background: var(--palette-gray-7);
     padding: 4px;
     border-radius: 8px;
     width: fit-content;
@@ -205,7 +205,7 @@ body {
     padding: 8px 16px;
     border: none;
     background: transparent;
-    color: #667085;
+    color: var(--palette-gray-3);
     font-size: 14px;
     font-weight: 500;
     border-radius: 6px;
@@ -215,12 +215,12 @@ body {
 }
 
 .filter-tab:hover {
-    color: #344054;
+    color: var(--palette-black);
 }
 
 .filter-tab.active {
-    background: #ffffff;
-    color: #344054;
+    background: var(--palette-white);
+    color: var(--palette-black);
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
 }
 
@@ -232,7 +232,7 @@ body {
 }
 
 .faq-item {
-    border-bottom: 1px solid #eaecf0;
+    border-bottom: 1px solid var(--palette-gray-6);
     background: transparent;
     margin: 0;
     overflow: visible;
@@ -261,7 +261,7 @@ body {
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     font-size: 18px;
     font-weight: 500;
-    color: #101828;
+    color: var(--palette-black);
     list-style: none;
     outline: none;
     background: transparent;
@@ -276,16 +276,16 @@ body {
 }
 
 .faq-question:hover {
-    color: #333333;
+    color: var(--palette-gray-2);
 }
 
 .faq-question:hover .faq-icon {
-    background-color: #333333;
+    background-color: var(--palette-gray-2);
     transform: scale(1.05);
 }
 
 .question-text {
-    color: #101828;
+    color: var(--palette-black);
     font-size: 18px;
     font-weight: 500;
     text-align: left;
@@ -297,7 +297,7 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #222222;
+    background-color: var(--palette-black);
     position: relative;
     flex-shrink: 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -309,7 +309,7 @@ body {
 .faq-icon::after {
     content: '';
     position: absolute;
-    background: #ffffff;
+    background: var(--palette-white);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -340,7 +340,7 @@ body {
 /* FAQ Answer */
 .faq-answer {
     padding: 0 0 25px;
-    color: #333333;
+    color: var(--palette-gray-2);
     max-width: 85%;
     overflow: hidden;
     opacity: 0;
@@ -360,7 +360,7 @@ body {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 15px;
-    color: #475467;
+    color: var(--palette-gray-2);
     word-wrap: break-word;
     overflow-wrap: break-word;
     font-weight: 400;
@@ -382,7 +382,7 @@ body {
 .chat-button {
     width: 56px;
     height: 56px;
-    background: #101828;
+    background: var(--palette-black);
     border: none;
     border-radius: 50%;
     display: flex;
@@ -394,7 +394,7 @@ body {
 }
 
 .chat-button:hover {
-    background: #1d2939;
+    background: var(--palette-gray-1);
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(16, 24, 40, 0.2);
 }
@@ -404,57 +404,57 @@ body {
     .nav-menu {
         display: none;
     }
-    
+
     .main-content {
         padding: 40px 16px 60px;
     }
-    
+
     .faq-title {
         font-size: 36px;
         margin-bottom: 16px;
     }
-    
+
     .faq-subtitle {
         font-size: 18px;
     }
-    
+
     .filter-tabs {
         flex-wrap: wrap;
         justify-content: center;
         margin-bottom: 24px;
     }
-    
+
     .faq-question {
         padding: 20px 0;
         font-size: 16px;
         gap: 15px;
     }
-    
+
     .question-text {
         font-size: 16px;
     }
-    
+
     .faq-answer {
         padding: 0 0 20px;
         max-width: 90%;
     }
-    
+
     .faq-answer p {
         font-size: 14px;
         line-height: 1.4;
         margin-bottom: 10px;
     }
-    
+
     .faq-icon {
         width: 28px;
         height: 28px;
     }
-    
+
     .faq-icon::before {
         width: 10px;
         height: 2px;
     }
-    
+
     .faq-icon::after {
         width: 2px;
         height: 10px;
@@ -465,48 +465,48 @@ body {
     .header-content {
         padding: 0 16px;
     }
-    
+
     .faq-title {
         font-size: 28px;
     }
-    
+
     .faq-subtitle {
         font-size: 16px;
     }
-    
+
     .faq-contact {
         font-size: 14px;
     }
-    
+
     .filter-tab {
         padding: 6px 12px;
         font-size: 13px;
     }
-    
+
     .faq-question {
         padding: 15px 0;
         font-size: 15px;
         gap: 12px;
     }
-    
+
     .question-text {
         font-size: 15px;
     }
-    
+
     .faq-answer p {
         font-size: 13px;
     }
-    
+
     .faq-icon {
         width: 24px;
         height: 24px;
     }
-    
+
     .faq-icon::before {
         width: 8px;
         height: 1px;
     }
-    
+
     .faq-icon::after {
         width: 1px;
         height: 8px;

@@ -1,45 +1,46 @@
-:root{
+:root {
   --hg-radius: 28px;
   --hg-maxw: 1280px;
   --hg-height: 560px;
   --hg-padX: 40px;
   --hg-padY: 48px;
 
-  --hg-text: #ffffff;
-  --hg-btn-bg: #0a0a0a;
-  --hg-btn-text: #ffffff;
-  --hg-input-bg: #ffffff;
-  --hg-input-text:#0a0a0a;
-  --hg-input-border: rgba(255,255,255,0);
-  --hg-focus: rgba(255,255,255,0.55);
+  --hg-text: var(--palette-white);
+  --hg-btn-bg: var(--palette-black);
+  --hg-btn-text: var(--palette-white);
+  --hg-input-bg: var(--palette-white);
+  --hg-input-text: var(--palette-black);
+  --hg-input-border: rgba(255, 255, 255, 0);
+  --hg-focus: rgba(255, 255, 255, 0.55);
 
-  --hg-overlay: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.0) 75%);
-  
+  --hg-overlay: linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.0) 75%);
+
   /* Button variables from unified styles */
-  --blue-200: #B5E1EC;
-  --blue-300: #82CADE;
-  --blue-400: #48ABC8;
-  --blue-500: #2DBFAD;
-  --blue-950: #132A39;
+  --blue-200: var(--palette-gray-6);
+  --blue-300: var(--palette-gray-5);
+  --blue-400: var(--palette-gray-4);
+  --blue-500: var(--palette-black);
+  --blue-950: var(--palette-black);
 }
 
-.hawaa-guide-hero{
+.hawaa-guide-hero {
   position: relative;
   max-width: var(--hg-maxw);
   height: var(--hg-height);
   margin: 24px auto;
   border-radius: var(--hg-radius);
   overflow: hidden;
-  background: #c69f73; /* fallback if image not loaded */
-  box-shadow: 0 10px 35px rgba(0,0,0,0.18);
+  background: var(--palette-gray-2);
+  /* fallback if image not loaded */
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
 }
 
-.hg-media{
+.hg-media {
   position: absolute;
   inset: 0;
 }
 
-.hg-bg{
+.hg-bg {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -47,15 +48,15 @@
   object-fit: cover;
 }
 
-.hawaa-guide-hero::after{
-  content:"";
+.hawaa-guide-hero::after {
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--hg-overlay);
   z-index: 1;
 }
 
-.hg-content{
+.hg-content {
   position: relative;
   z-index: 2;
   color: var(--hg-text);
@@ -67,7 +68,7 @@
   max-width: 560px;
 }
 
-.hg-title{
+.hg-title {
   font-family: "Outfit", system-ui, sans-serif;
   font-weight: 700;
   line-height: 1.06;
@@ -76,37 +77,44 @@
   margin: 0 0 18px 0;
 }
 
-.hg-sub{
+.hg-sub {
   font-family: "Outfit", system-ui, sans-serif;
   margin: 0 0 22px 0;
   font-size: clamp(14px, 1.35vw, 18px);
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* Form */
-.hg-form{
+.hg-form {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 12px;
   max-width: 520px;
   margin: 0 0 10px 0;
-  align-items: center; /* Ensure input and button align properly */
+  align-items: center;
+  /* Ensure input and button align properly */
 }
 
-.hg-input{
-  height: 54px; /* Same height as button */
-  border-radius: 9999px; /* Full radius to match button */
+.hg-input {
+  height: 54px;
+  /* Same height as button */
+  border-radius: 9999px;
+  /* Full radius to match button */
   border: 1px solid var(--hg-input-border);
   padding: 0 16px;
   background: var(--hg-input-bg);
   color: var(--hg-input-text);
   font-size: 16px;
   outline: none;
-  box-sizing: border-box; /* Include padding in height calculation */
+  box-sizing: border-box;
+  /* Include padding in height calculation */
 }
-.hg-input::placeholder{ color: #6b7280; }
 
-.hg-input:focus{
+.hg-input::placeholder {
+  color: var(--palette-gray-3);
+}
+
+.hg-input:focus {
   box-shadow: 0 0 0 3px var(--hg-focus);
   border-color: transparent;
 }
@@ -119,7 +127,8 @@
   align-items: center;
   justify-content: center;
   min-width: 150px;
-  height: 54px; /* Same height as input field */
+  height: 54px;
+  /* Same height as input field */
   padding: 0 2rem;
   border-radius: 9999px;
   font-size: 1rem;
@@ -128,20 +137,24 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  background: var(--blue-950);
-  color: #fff;
+  background: var(--palette-black);
+  color: var(--palette-white);
   border: none;
-  box-sizing: border-box; /* Include padding in height calculation */
+  box-sizing: border-box;
+  /* Include padding in height calculation */
 }
 
 .hg-btn .material-symbols-rounded {
   width: 1.3em;
   height: 1em;
-  margin-right: 8px; /* 8px gap between icon and text */
+  margin-right: 8px;
+  /* 8px gap between icon and text */
   transition: all 0.3s ease;
   display: flex;
-  align-items: center; /* Center icon vertically */
-  justify-content: center; /* Center icon horizontally */
+  align-items: center;
+  /* Center icon vertically */
+  justify-content: center;
+  /* Center icon horizontally */
 }
 
 /* Ripple layers (for primary button) */
@@ -153,7 +166,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--blue-950);
+  background: var(--palette-black);
 }
 
 .hg-btn .button-bg-layers {
@@ -190,7 +203,8 @@
 
 /* Hover Animations */
 .hg-btn:hover {
-  background: var(--blue-500); /* Change background color on hover */
+  background: var(--palette-gray-1);
+  /* Change background color on hover */
 }
 
 .hg-btn:hover .material-symbols-rounded {
@@ -220,41 +234,57 @@
   box-shadow: 0 0 0 3px var(--hg-focus);
 }
 
-.hg-msg{
+.hg-msg {
   grid-column: 1 / -1;
   margin: 2px 0 0 2px;
   font-size: 14px;
   min-height: 18px;
-  color: #e6fff0;
+  color: var(--palette-gray-6);
 }
 
-.hg-terms{
+.hg-terms {
   margin: 8px 2px 0 2px;
   font-size: 12px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   max-width: 520px;
 }
-.hg-terms a{
-  color: #fff;
+
+.hg-terms a {
+  color: var(--palette-white);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.sr-only{
-  position:absolute!important;
-  width:1px;height:1px;
-  padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-@media (max-width: 880px){
-  :root{
+@media (max-width: 880px) {
+  :root {
     --hg-height: 520px;
     --hg-padX: 24px;
     --hg-padY: 28px;
   }
-  .hg-form{ grid-template-columns: 1fr; }
-  .hg-btn{ width: 100%; }
+
+  .hg-form {
+    grid-template-columns: 1fr;
+  }
+
+  .hg-btn {
+    width: 100%;
+  }
 }
-@media (max-width: 480px){
-  :root{ --hg-height: 500px; }
+
+@media (max-width: 480px) {
+  :root {
+    --hg-height: 500px;
+  }
 }

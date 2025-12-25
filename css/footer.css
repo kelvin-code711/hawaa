@@ -1,17 +1,14 @@
 :root {
+  /* Footer Palette overrides if needed, but using global tokens is safer */
   --footer-gap: 24px;
-  --footer-bg: #0b0f12;
-  --footer-text: #e7eef3;
-  --footer-muted: #9fb3bf;
-  --card-bg: #12232d;
+  --footer-bg: var(--palette-black);
+  --footer-text: var(--palette-white);
+  --footer-muted: var(--palette-gray-4);
+  /* #B0B0B0 */
+  --card-bg: var(--palette-gray-1);
+  /* Slightly lighter than black for cards if needed, or keeping black */
   --card-radius: 16px;
   --underline-speed: 0.45s;
-  /* Button styles variables */
-  --blue-200: #B5E1EC;
-  --blue-300: #82CADE;
-  --blue-400: #48ABC8;
-  --blue-500: #2DBFAD;
-  --blue-950: #132A39;
 }
 
 body {
@@ -99,23 +96,28 @@ body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 10px;
-  background: #1c3442;
-  border: 1px solid #1f4153;
+  border-radius: 10px;
+  background: var(--palette-gray-2);
+  /* Store badge bg #4A4A4A */
+  border: 1px solid var(--palette-gray-3);
+  /* Store badge border */
   font-weight: 600;
   font-size: 14px;
   transition: background-color 0.25s ease;
 }
 
 .store-badge:hover {
-  background: #234551;
+  background: var(--palette-gray-1);
 }
 
 .app-card-media {
   margin-top: auto;
   height: 430px;
   display: grid;
-  align-items: start; /* Changed from center to start */
-  padding-top: 0px; /* Optional: if you need more control */
+  align-items: start;
+  /* Changed from center to start */
+  padding-top: 0px;
+  /* Optional: if you need more control */
 }
 
 .app-card-media img {
@@ -151,7 +153,8 @@ body {
   appearance: none;
   background: none;
   border: 0;
-  color: #cfe3ee;
+  color: var(--palette-gray-4);
+  /* Accordion trigger color */
   width: 100%;
   text-align: left;
   padding: 0 0 10px 0;
@@ -160,7 +163,8 @@ body {
   letter-spacing: 0.2px;
   text-transform: uppercase;
   font-weight: 600;
-  cursor: default; /* Desktop: no pointer cursor */
+  cursor: default;
+  /* Desktop: no pointer cursor */
 }
 
 /* Desktop: Hide chevron icons */
@@ -225,8 +229,8 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--blue-950);
-  color: #fff;
+  background: var(--palette-black);
+  color: var(--palette-white);
   transition: all 0.3s ease;
 }
 
@@ -238,7 +242,7 @@ body {
 }
 
 .social-btn:hover {
-  background: var(--blue-500);
+  background: var(--palette-gray-2);
 }
 
 .social-btn:hover svg {
@@ -272,17 +276,17 @@ body {
   .hawaa-footer-content {
     grid-template-columns: 1fr;
   }
-  
+
   .app-download-card {
     width: 100%;
     height: auto;
     min-height: 500px;
   }
-  
+
   .app-card-media {
     height: 420px;
   }
-  
+
   .footer-links-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -293,14 +297,16 @@ body {
   body {
     overflow-x: auto;
   }
-  
+
   .hawaa-footer {
     padding: 16px 16px 0;
-    min-height: 100vh; /* Ensure footer is fully visible */
+    min-height: 100vh;
+    /* Ensure footer is fully visible */
   }
 
   .hawaa-footer-container {
-    min-height: calc(100vh - 32px); /* Account for padding */
+    min-height: calc(100vh - 32px);
+    /* Account for padding */
     display: flex;
     flex-direction: column;
   }
@@ -317,7 +323,7 @@ body {
     width: 100%;
     max-width: 360px;
   }
-  
+
   .footer-links-grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -332,7 +338,7 @@ body {
     min-height: 672px;
     flex-shrink: 0;
   }
-  
+
   .app-card-inner {
     height: 312px;
     padding: 20px;
@@ -341,7 +347,7 @@ body {
     justify-content: center;
     gap: 12px;
   }
-  
+
   .app-card-media {
     height: 360px;
   }
@@ -372,7 +378,7 @@ body {
     max-height: 0;
     transition: max-height 0.35s ease;
   }
-  
+
   .footer-column.open .accordion-panel {
     max-height: 600px;
   }
@@ -380,10 +386,11 @@ body {
   .social-row {
     margin-top: 18px;
   }
-  
+
   .footer-giant-type {
     margin-top: 24px;
-    margin-bottom: 20px; /* Add bottom margin for mobile */
+    margin-bottom: 20px;
+    /* Add bottom margin for mobile */
   }
 }
 
@@ -393,11 +400,11 @@ body {
     width: calc(100vw - 32px);
     min-width: 320px;
   }
-  
+
   .footer-right {
     max-width: calc(100vw - 32px);
   }
-  
+
   .footer-links-grid {
     max-width: calc(100vw - 32px);
   }
@@ -408,19 +415,19 @@ body {
   .footer-column li a {
     transition: none;
   }
-  
+
   .accordion-panel {
     transition: none;
   }
-  
+
   .social-btn {
     transition: none;
   }
-  
+
   .accordion-trigger .chev {
     transition: none;
   }
-  
+
   .social-btn:hover svg {
     transform: none;
   }
