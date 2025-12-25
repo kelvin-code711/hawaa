@@ -213,9 +213,10 @@
     font-size: 14px;
     font-family: 'Outfit', sans-serif;
     font-weight: 400;
-    color: var(--palette-white);
-    opacity: 0.9;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    background: var(--palette-white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 /* No video placeholder */

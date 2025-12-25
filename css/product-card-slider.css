@@ -211,7 +211,7 @@
 
 .hawaa-slider__arrow:hover {
   background: var(--palette-white);
-  border-color: var(--palette-gray-4);
+  border-color: var(--palette-gray-3);
   color: var(--palette-black);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transform: translateY(-50%) scale(1.05);

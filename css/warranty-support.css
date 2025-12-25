@@ -231,7 +231,7 @@ a {
 }
 
 .btn--ghost:hover {
-  border-color: var(--palette-gray-4)
+  border-color: var(--palette-gray-3)
 }
 
 .btn--call {
@@ -326,16 +326,25 @@ select,
 textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--palette-gray-5);
+  background: var(--palette-white);
+  color: var(--palette-black);
   font-family: inherit;
-  background: var(--palette-gray-7)
+  font-size: 16px;
+  transition: border-color .2s ease;
+}
+
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+  color: var(--palette-gray-3);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid var(--palette-gray-4)
+  outline: 2px solid var(--palette-black)
 }
 
 .w-actions {

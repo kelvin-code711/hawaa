@@ -89,15 +89,15 @@
 }
 
 .hawaa-button .button-bg-layer.-purple {
-  background-color: var(--palette-gray-5);
+  background-color: var(--palette-gray-1);
 }
 
 .hawaa-button .button-bg-layer.-turquoise {
-  background-color: var(--palette-gray-4);
+  background-color: var(--palette-gray-2);
 }
 
 .hawaa-button .button-bg-layer.-yellow {
-  background-color: var(--palette-gray-6);
+  background-color: var(--palette-gray-3);
 }
 
 /* ================================
@@ -111,6 +111,14 @@
 
 .hawaa-button--primary .button-bg {
   background: var(--palette-black);
+}
+
+.hawaa-button--primary:hover {
+  background: var(--palette-gray-1);
+}
+
+.hawaa-button--primary:hover .button-bg {
+  background: var(--palette-gray-1);
 }
 
 /* ================================
@@ -127,8 +135,9 @@
 }
 
 .hawaa-button--secondary:hover {
+  background: var(--palette-gray-7);
   border-color: var(--palette-gray-2);
-  color: var(--palette-gray-2);
+  color: var(--palette-black);
 }
 
 /* ================================
@@ -200,7 +209,7 @@
 .hawaa-button--icon-secondary:hover {
   background: var(--palette-gray-7);
   border-color: var(--palette-gray-2);
-  color: var(--palette-gray-2);
+  color: var(--palette-black);
 }
 
 /* ================================

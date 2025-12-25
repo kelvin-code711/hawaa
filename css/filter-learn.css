@@ -331,7 +331,7 @@ body.menu-open {
   font-style: italic;
   color: var(--palette-gray-2);
   font-size: 1rem;
-  border-left: 3px solid var(--palette-gray-4);
+  border-left: 3px solid var(--palette-gray-3);
   padding-left: 1rem;
 }
 

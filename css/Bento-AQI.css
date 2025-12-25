@@ -349,7 +349,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: conic-gradient(var(--clr) calc(var(--pct)*1%), #e9edf1 0);
+  background: conic-gradient(var(--clr) calc(var(--pct)*1%), var(--palette-gray-6) 0);
   position: relative;
 }
 

@@ -413,6 +413,10 @@ aside.cd-drawer.is-open {
   outline: none;
 }
 
+.cd-qty input::placeholder {
+  color: var(--palette-gray-3);
+}
+
 /* Price / remove */
 .cd-pricecol {
   display: grid;
@@ -521,6 +525,8 @@ aside.cd-drawer.is-open {
   padding: 12px 14px;
   font: inherit;
   background: var(--palette-white);
+  color: var(--palette-black);
+  border-color: var(--palette-gray-5);
   transition: border-color 0.15s ease, outline 0.15s ease;
 }
 
@@ -721,7 +727,7 @@ aside.cd-drawer.is-open {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--palette-gray-5);
+  border: 1px solid var(--palette-black);
   background: var(--palette-white);
   color: var(--palette-black);
   border-radius: 12px;
@@ -733,7 +739,8 @@ aside.cd-drawer.is-open {
 
 .cd-secondary-btn:hover {
   background: var(--palette-gray-7);
-  border-color: var(--palette-gray-3);
+  border-color: var(--palette-black);
+  color: var(--palette-black);
 }
 
 .cd-secondary-btn:focus-visible {
@@ -769,7 +776,14 @@ aside.cd-drawer.is-open {
   background: var(--palette-white);
   font: inherit;
   color: var(--cd-text);
+  color: var(--palette-black);
+  /* Enforce black text */
   transition: border-color 0.15s ease, outline 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cd-field input::placeholder,
+.cd-field select::placeholder {
+  color: var(--palette-gray-3);
 }
 
 .cd-field input:focus,
@@ -782,7 +796,7 @@ aside.cd-drawer.is-open {
 .cd-field input.cd-invalid,
 .cd-field select.cd-invalid {
   border-color: var(--palette-gray-2);
-  outline: 2px solid var(--palette-gray-2);
+  outline: 2px solid var(--palette-black);
 }
 
 /* Col spanning */

@@ -123,8 +123,8 @@
     font-style: normal;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 7;
-    line-clamp: 7;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     color: var(--palette-white);
     opacity: 1;
@@ -242,7 +242,7 @@
 
 #dual-slider .rc-arrow:hover {
     background: var(--palette-gray-6);
-    border-color: var(--palette-gray-4);
+    border-color: var(--palette-gray-3);
     color: var(--palette-black);
 }
 
@@ -381,6 +381,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
 }
 
@@ -474,7 +475,7 @@
 
 #dual-slider .bc-arrow:hover {
     background: var(--palette-gray-6);
-    border-color: var(--palette-gray-4);
+    border-color: var(--palette-gray-3);
     color: var(--palette-black);
 }
 
@@ -556,6 +557,7 @@
     #dual-slider .rc-quote {
         font-size: 16px;
         -webkit-line-clamp: 9;
+        line-clamp: 9;
         text-align: left;
         padding: 0 8px;
     }
@@ -570,6 +572,7 @@
         font-size: 16px;
         max-width: 75%;
         -webkit-line-clamp: 4;
+        line-clamp: 4;
     }
 
     #dual-slider .rc-author-container {

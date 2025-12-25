@@ -342,7 +342,7 @@ body {
   gap: 12px;
   padding: 14px 16px;
   background: var(--palette-white);
-  border: 1.5px solid #111827;
+  border: 1.5px solid var(--palette-black);
   border-radius: 12px;
   cursor: pointer;
   position: relative;
