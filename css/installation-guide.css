@@ -46,6 +46,21 @@ html {
   --light-gray: var(--palette-gray-7);
   --border-gray: var(--palette-gray-5);
 
+  /* Interactive Section Backgrounds - Air Purification Psychology */
+  --bg-pure-white: #FFFFFF;
+  --bg-sky-blue: #F0F8FF;
+  /* AliceBlue - fresh air feeling */
+  --bg-cool-gray: #F8FAFC;
+  /* Slate-50 - modern tech precision */
+  --bg-mint-fresh: #F0FDF4;
+  /* Emerald-50 - health/nature harmony */
+  --bg-warm-white: #FAFAF9;
+  /* Stone-50 - care and warmth */
+  --bg-lavender: #F8F9FA;
+  /* Neutral-50 - calm maintenance */
+  --bg-blue-gray: #F1F5F9;
+  /* Slate-100 - professional support */
+
   /* Typography */
   --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   --font-weight-thin: 100;
@@ -531,14 +546,16 @@ body {
    Section Specific
 ──────────────────────────────────────────────────────────────────────────── */
 
-/* Section 1: Filter Installation */
+/* Section 1: Filter Installation - Fresh Air Feeling */
 .filter-installation-section {
-  background: #FFFFFF;
+  background: var(--bg-sky-blue);
+  transition: background-color 0.3s ease;
 }
 
-/* Section 2: Plug & Position */
+/* Section 2: Plug & Position - Modern Tech Precision */
 .plug-position-section {
-  background: #FFFFFF;
+  background: var(--bg-cool-gray);
+  transition: background-color 0.3s ease;
 }
 
 .two-column-layout {
@@ -622,11 +639,12 @@ body {
   border-radius: var(--radius-lg);
 }
 
-/* Section 3: App Pairing */
+/* Section 3: App Pairing - Health & Nature Harmony */
 .app-pairing-section {
-  background: #FFFFFF;
+  background: var(--bg-mint-fresh);
   color: #1E293B;
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .app-section-header .section-title {
@@ -686,10 +704,11 @@ body {
   flex-shrink: 0;
 }
 
-/* Section 4: Replacing the Filter */
+/* Section 4: Replacing the Filter - Care & Warmth */
 .replacing-filter-section {
-  background: #FFFFFF;
+  background: var(--bg-warm-white);
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .replacing-container {
@@ -734,9 +753,10 @@ body {
   display: block;
 }
 
-/* Section 5: Filter Maintenance */
+/* Section 5: Filter Maintenance - Calm Ongoing Care */
 .filter-maintenance-section {
-  background: var(--white);
+  background: var(--bg-lavender);
+  transition: background-color 0.3s ease;
 }
 
 .filter-maintenance-section .content-column .section-title {
@@ -810,11 +830,12 @@ body {
   border-radius: var(--radius-lg);
 }
 
-/* Section 6: Troubleshooting */
+/* Section 6: Troubleshooting - Professional Support */
 .troubleshooting-section {
-  background: var(--white);
+  background: var(--bg-blue-gray);
   color: var(--text-primary);
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .support-links {

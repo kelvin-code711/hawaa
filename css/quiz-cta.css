@@ -94,10 +94,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg,
-      var(--palette-gray-7) 0%,
-      var(--palette-white) 100%);
-  background-color: var(--palette-white);
+  background: #FFF7ED;
+  /* Warm Peach - Friendly engagement action */
+  transition: background-color 0.3s ease;
 }
 
 #quizSection::before {

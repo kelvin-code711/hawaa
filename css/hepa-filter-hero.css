@@ -1,6 +1,7 @@
 /* ───────────  SECTION  ─────────── */
 .hepa-filter-hero {
-  background: var(--palette-gray-7);
+  background: #F0FDF4;
+  /* Mint Fresh - Health & Nature */
   padding: 64px 0 64px;
   text-align: center;
   position: relative;
@@ -8,6 +9,7 @@
   width: 100%;
   font-family: 'Outfit', sans-serif;
   border-radius: 24px;
+  transition: background-color 0.3s ease;
 }
 
 /* Inner container with top/bottom margins */

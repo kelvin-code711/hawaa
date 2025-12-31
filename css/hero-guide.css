@@ -30,9 +30,10 @@
   margin: 24px auto;
   border-radius: var(--hg-radius);
   overflow: hidden;
-  background: var(--palette-gray-2);
-  /* fallback if image not loaded */
+  background: #F0F9FF;
+  /* Sky Blue - Professional information gathering */
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+  transition: background-color 0.3s ease;
 }
 
 .hg-media {
