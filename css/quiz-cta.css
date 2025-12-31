@@ -194,13 +194,13 @@ body {
 }
 
 .button-icon--primary {
-  background: var(--blue-950);
-  color: var(--palette-white);
-  border: none;
+  background: #3B82F6 !important;
+  color: #FFFFFF !important;
+  border: none !important;
 }
 
 .button-icon--primary:hover {
-  background: var(--blue-500);
+  background: #2563EB !important;
 }
 
 /* =========================
@@ -254,8 +254,9 @@ body {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: var(--palette-black);
-  color: var(--palette-white);
+  background: var(--cta-secondary);
+  /* Orange CTA */
+  color: var(--white);
   border: none;
   width: 32px;
   height: 32px;
@@ -362,16 +363,16 @@ body {
   -webkit-appearance: none;
   appearance: none;
   /* iOS fix */
-  background-color: var(--palette-white);
+  background-color: var(--white);
   /* filled */
-  color: var(--palette-black);
+  color: var(--dark-slate);
   outline: none;
   transition: all .25s cubic-bezier(0.19, 1, 0.22, 1);
-  box-shadow: 0 0 0 1.5px var(--palette-gray-5), 0 0 12px -6px var(--palette-black);
+  box-shadow: 0 0 0 1.5px var(--gray-200), 0 0 12px -6px var(--primary-blue);
 }
 
 .input-quiz::placeholder {
-  color: var(--palette-gray-3);
+  color: var(--gray-600);
 }
 
 .quiz-email-group .input::placeholder {
@@ -420,21 +421,24 @@ body {
 }
 
 .quiz-btn-secondary {
-  background: var(--palette-gray-7);
-  color: var(--palette-gray-3)
+  background: #F8FAFC;
+  color: #475569;
+  border: 1px solid #E2E8F0;
 }
 
 .quiz-btn-secondary:hover {
-  background: var(--palette-gray-6)
+  background: #E2E8F0;
+  color: #1E293B;
 }
 
 .quiz-btn-primary {
-  background: var(--quiz-color-7);
-  color: var(--palette-white)
+  background: #3B82F6;
+  color: #FFFFFF;
+  border: none;
 }
 
 .quiz-btn-primary:hover {
-  background: var(--quiz-color-8);
+  background: #2563EB;
   transform: translateY(-1px)
 }
 

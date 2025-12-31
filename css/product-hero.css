@@ -124,7 +124,7 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
   position: relative;
   overflow: hidden;
   text-decoration: none;
@@ -186,15 +186,15 @@
   background-color: var(--blue-200);
 }
 
-/* Primary */
+/* Primary - Solid Blue */
 .product-hero .button--primary {
-  background: var(--blue-950);
-  color: var(--palette-white);
+  background: #3B82F6;
+  color: #FFFFFF;
   border: none;
 }
 
 .product-hero .button--primary .button-bg {
-  background: var(--blue-950);
+  background: #3B82F6;
 }
 
 /* Secondary */

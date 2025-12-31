@@ -57,118 +57,30 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
   position: relative;
   overflow: hidden;
-  background: var(--palette-black);
-  /* primary surface */
-  color: var(--palette-white);
+  background: #3B82F6 !important;
+  /* Tier 1 Primary Blue */
+  color: #FFFFFF !important;
   border: none;
   margin-bottom: 20px;
   text-decoration: none;
 }
 
-/* Button inner content with static and hover text */
-.hf-cta .button-inner {
-  position: relative;
-  z-index: 2;
-  pointer-events: none;
-  display: block;
+.hf-cta:hover {
+  background: #2563EB !important;
+  opacity: 0.95;
 }
 
-.hf-cta .button-inner-static,
-.hf-cta .button-inner-hover {
-  display: block;
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
-}
-
-.hf-cta .button-inner-hover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transform: translateY(70%);
-}
-
-/* Background + ripple layers container */
-.hf-cta .button-bg {
-  overflow: hidden;
-  border-radius: inherit;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background: var(--palette-black);
-  /* keep base fill consistent */
-}
-
-.hf-cta .button-bg-layers {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  top: -60%;
-  aspect-ratio: 1/1;
-  width: max(200%, 10rem);
-}
-
-.hf-cta .button-bg-layer {
-  border-radius: 9999px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: scale(0);
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
-  opacity: 0.35;
-}
-
-.hf-cta .button-bg-layer-1 {
-  background-color: var(--palette-gray-2);
-  /* var(--blue-300) */
-}
-
-.hf-cta .button-bg-layer-2 {
-  background-color: var(--palette-gray-3);
-  /* var(--blue-400) */
-}
-
-.hf-cta .button-bg-layer-3 {
-  background-color: var(--palette-gray-4);
-  /* var(--blue-200) */
-}
-
-/* Hover effects */
-.hf-cta:hover .button-inner-static {
-  opacity: 0;
-  transform: translateY(-70%);
-}
-
-.hf-cta:hover .button-inner-hover {
+.hf-cta:active {
+  background: #1D4ED8 !important;
   opacity: 1;
-  transform: translateY(0);
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.hf-cta:hover .button-bg-layer-1 {
-  transform: scale(1);
-}
-
-.hf-cta:hover .button-bg-layer-2 {
-  transform: scale(1);
-  transition-delay: 0.1s;
-}
-
-.hf-cta:hover .button-bg-layer-3 {
-  transform: scale(1);
-  transition-delay: 0.2s;
 }
 
 /* Focus-visible for accessibility */
 .hf-cta:focus-visible {
-  outline: 2px solid var(--palette-black);
+  outline: 2px solid #3B82F6;
   outline-offset: 2px;
 }
 

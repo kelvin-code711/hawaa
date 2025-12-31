@@ -213,15 +213,16 @@ a {
   padding: 12px 18px;
   border-radius: 12px;
   border: 1px solid transparent;
-  background: var(--accent);
-  color: var(--palette-white);
+  background: #3B82F6;
+  color: #FFFFFF;
   font-weight: 600;
   cursor: pointer;
-  text-decoration: none
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
 .btn:not(.btn--text):hover {
-  background: var(--hover)
+  background: #2563EB;
 }
 
 .btn--ghost {

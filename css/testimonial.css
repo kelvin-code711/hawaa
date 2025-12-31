@@ -216,7 +216,7 @@
     background: var(--palette-white);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 /* No video placeholder */

@@ -143,7 +143,7 @@
   text-transform: uppercase;
   line-height: 1.1;
   margin: 0 0 0.8rem 0;
-  color: var(--palette-white);
+  color: var(--white);
   letter-spacing: -0.02em;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -177,7 +177,7 @@
   border-radius: 50% !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.95);
-  color: var(--palette-black);
+  color: var(--dark-slate);
 
   /* Flexbox for perfect centering */
   display: flex !important;
@@ -210,10 +210,10 @@
 }
 
 .hawaa-slider__arrow:hover {
-  background: var(--palette-white);
-  border-color: var(--palette-gray-3);
-  color: var(--palette-black);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: #FFFFFF;
+  border-color: #3B82F6;
+  color: #3B82F6;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
   transform: translateY(-50%) scale(1.05);
 }
 

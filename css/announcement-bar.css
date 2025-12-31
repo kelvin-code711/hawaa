@@ -5,15 +5,14 @@
 
 /* Theme variables */
 :root {
-  --color-background: var(--palette-white);
-  --border-light: var(--palette-gray-6);
+  --color-background: var(--white);
+  --border-light: var(--gray-100);
   --font-family-primary: 'Outfit', sans-serif;
   --font-weight-medium: 500;
   --font-weight-regular: 400;
-  --text-secondary: var(--palette-gray-2);
-  /* #4A4A4A */
-  --hawaa-blue: var(--palette-black);
-  /* Icon color -> Black */
+  --text-secondary: var(--gray-600);
+  --hawaa-blue: var(--primary-blue);
+  /* Icon color -> Primary Blue */
 }
 
 /* Reset & base */
@@ -25,7 +24,7 @@
 
 body {
   font-family: var(--font-family-primary);
-  color: var(--palette-gray-2);
+  color: var(--gray-600);
 }
 
 /* Announcement strip */

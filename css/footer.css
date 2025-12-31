@@ -96,10 +96,10 @@ body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 10px;
-  background: var(--palette-gray-2);
-  /* Store badge bg #4A4A4A */
-  border: 1px solid var(--palette-gray-2);
-  /* Store badge border #4A4A4A */
+  background: var(--gray-600);
+  /* Store badge bg - slate gray */
+  border: 1px solid var(--gray-600);
+  /* Store badge border */
   /* Store badge border */
   font-weight: 600;
   font-size: 14px;

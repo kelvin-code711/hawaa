@@ -240,10 +240,11 @@
     color: var(--palette-white);
 }
 
+/* Navigation arrows - Utility style */
 #dual-slider .rc-arrow:hover {
-    background: var(--palette-gray-6);
-    border-color: var(--palette-gray-3);
-    color: var(--palette-black);
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #475569;
 }
 
 #dual-slider .rc-arrow--disabled {

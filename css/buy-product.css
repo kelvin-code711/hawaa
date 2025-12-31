@@ -450,127 +450,36 @@ body {
   color: var(--palette-gray-2);
 }
 
-/* CTA */
+/* ===== CTA: Add to Cart - TIER 1 Solid Blue ===== */
 .cta-add {
   margin-top: 18px;
   width: 100%;
-  background: var(--blue-950);
-  color: var(--palette-white);
+  background: #3B82F6;
+  color: #FFFFFF;
   border: none;
-  border-radius: 999px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 1.05rem;
   cursor: pointer;
-  transition: filter .2s ease, transform .02s, box-shadow .2s;
+  transition: background-color 0.2s ease;
   letter-spacing: .2px;
-  box-shadow: 0 6px 20px rgba(17, 24, 39, .12);
-  position: relative;
-  overflow: hidden;
   min-height: 3rem;
-  padding: 0;
+  padding: 16px 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.cta-add .button-bg {
-  overflow: hidden;
-  border-radius: inherit;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.cta-add .button-bg-layers {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  top: -60%;
-  aspect-ratio: 1/1;
-  width: max(200%, 10rem);
-}
-
-.cta-add .button-bg-layer {
-  border-radius: 9999px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: scale(0);
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity .3s linear;
-}
-
-.cta-add .-purple {
-  background-color: var(--blue-300);
-}
-
-.cta-add .-turquoise {
-  background-color: var(--blue-400);
-}
-
-.cta-add .-yellow {
-  background-color: var(--blue-200);
-}
-
-.cta-add .button-inner {
-  position: relative;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.cta-add .button-inner-static,
-.cta-add .button-inner-hover {
-  display: block;
-  position: absolute;
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.cta-add .button-inner-hover {
-  opacity: 0;
-  transform: translateY(70%);
-}
-
-.cta-add:hover .button-inner-static {
-  opacity: 0;
-  transform: translateY(-70%);
-}
-
-.cta-add:hover .button-inner-hover {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.cta-add:hover .button-bg-layer-1 {
-  transform: scale(1);
-}
-
-.cta-add:hover .button-bg-layer-2 {
-  transform: scale(1);
-  transition-delay: .1s;
-}
-
-.cta-add:hover .button-bg-layer-3 {
-  transform: scale(1);
-  transition-delay: .2s;
 }
 
 .cta-add:hover {
-  box-shadow: 0 10px 26px rgba(17, 24, 39, .16);
+  background: #2563EB;
 }
 
 .cta-add:active {
-  transform: translateY(1px);
+  background: #1D4ED8;
 }
 
 .cta-add:focus-visible {
-  outline: 3px solid var(--palette-black);
+  outline: 2px solid #2563EB;
   outline-offset: 2px;
 }
 

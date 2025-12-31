@@ -88,56 +88,53 @@
   transform: scale(0);
 }
 
-.hawaa-button .button-bg-layer.-purple {
-  background-color: var(--palette-gray-1);
-}
-
-.hawaa-button .button-bg-layer.-turquoise {
-  background-color: var(--palette-gray-2);
-}
-
-.hawaa-button .button-bg-layer.-yellow {
-  background-color: var(--palette-gray-3);
-}
+/* Removed complex gradient layers for performance */
 
 /* ================================
    Primary Button
    ================================ */
+/* TIER 1: Revenue Actions - Solid Blue (Tesla/Apple style) */
 .hawaa-button--primary {
-  background: var(--palette-black);
-  color: var(--palette-white);
+  background: #3B82F6;
+  color: #FFFFFF;
   border: none;
-}
-
-.hawaa-button--primary .button-bg {
-  background: var(--palette-black);
+  transition: background-color 0.2s ease;
 }
 
 .hawaa-button--primary:hover {
-  background: var(--palette-gray-1);
+  background: #2563EB;
+  opacity: 0.95;
 }
 
-.hawaa-button--primary:hover .button-bg {
-  background: var(--palette-gray-1);
+.hawaa-button--primary:active {
+  background: #1D4ED8;
+  opacity: 1;
+}
+
+.hawaa-button--primary:active {
+  background: #1D4ED8;
 }
 
 /* ================================
    Secondary Button  
    ================================ */
+/* TIER 2: Engagement Actions - Outlined Blue (Tesla secondary style) */
 .hawaa-button--secondary {
-  background: var(--palette-white);
-  color: var(--palette-black);
-  border: 2px solid var(--palette-black);
-}
-
-.hawaa-button--secondary .button-bg {
-  background: var(--palette-white);
+  background: #FFFFFF;
+  color: #1E293B;
+  border: 2px solid #2563EB;
+  transition: all 0.2s ease;
 }
 
 .hawaa-button--secondary:hover {
-  background: var(--palette-gray-7);
-  border-color: var(--palette-gray-2);
-  color: var(--palette-black);
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #FFFFFF;
+}
+
+.hawaa-button--secondary:active {
+  background: #1D4ED8;
+  border-color: #1D4ED8;
 }
 
 /* ================================
@@ -215,11 +212,12 @@
 /* ================================
    Tertiary Button
    ================================ */
+/* TIER 3: Account/Secondary - Light Blue Tint (Apple style) */
 .hawaa-button--tertiary {
-  border: 2px solid var(--palette-gray-5);
-  /* Ghost/Text button border #D0D0D0 */
-  background: transparent;
-  color: var(--palette-black);
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563EB;
+  border: none;
+  transition: background-color 0.2s ease;
 }
 
 .hawaa-button--tertiary::after {
@@ -241,13 +239,17 @@
 }
 
 .hawaa-button--tertiary:hover {
-  border-color: var(--palette-gray-3);
-  background: var(--palette-gray-6);
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.hawaa-button--tertiary:active {
+  background: rgba(37, 99, 235, 0.2);
 }
 
 /* ================================
    Icon-only Buttons
    ================================ */
+/* Icon Buttons - Solid Blue */
 .hawaa-icon-button {
   all: unset;
   cursor: pointer;
@@ -257,9 +259,9 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--palette-black);
-  color: var(--palette-white);
-  transition: all 0.3s ease;
+  background: #3B82F6;
+  color: #FFFFFF;
+  transition: background-color 0.2s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -272,7 +274,11 @@
 }
 
 .hawaa-icon-button:hover {
-  background: var(--palette-gray-2);
+  background: #2563EB;
+}
+
+.hawaa-icon-button:active {
+  background: #1D4ED8;
 }
 
 .hawaa-icon-button--secondary {

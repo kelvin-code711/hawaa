@@ -380,7 +380,7 @@ body {
   background: var(--white);
 }
 
-/* Section Base */
+/* Section Base - White backgrounds for scroll coverage */
 .stage {
   min-height: 100vh;
   padding: var(--section-padding) var(--spacing-lg);
@@ -389,6 +389,8 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
+  background-color: #FFFFFF;
+  z-index: 1;
 }
 
 .section-content {
@@ -531,12 +533,12 @@ body {
 
 /* Section 1: Filter Installation */
 .filter-installation-section {
-  background: linear-gradient(135deg, var(--light-gray) 0%, var(--palette-gray-6) 100%);
+  background: #FFFFFF;
 }
 
 /* Section 2: Plug & Position */
 .plug-position-section {
-  background: linear-gradient(135deg, var(--palette-gray-7) 0%, var(--palette-gray-6) 100%);
+  background: #FFFFFF;
 }
 
 .two-column-layout {
@@ -622,17 +624,17 @@ body {
 
 /* Section 3: App Pairing */
 .app-pairing-section {
-  background: var(--palette-black);
-  color: var(--white);
+  background: #FFFFFF;
+  color: #1E293B;
   text-align: center;
 }
 
 .app-section-header .section-title {
-  color: var(--white);
+  color: #1E293B;
 }
 
 .app-section-header .section-subtitle {
-  color: var(--accent-color);
+  color: #64748B;
   font-style: italic;
 }
 
@@ -686,7 +688,7 @@ body {
 
 /* Section 4: Replacing the Filter */
 .replacing-filter-section {
-  background: linear-gradient(135deg, var(--palette-gray-7) 0%, var(--palette-gray-6) 100%);
+  background: #FFFFFF;
   text-align: center;
 }
 
