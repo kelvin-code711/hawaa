@@ -461,7 +461,7 @@ body {
   font-weight: 600;
   font-size: 1.05rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
   letter-spacing: .2px;
   min-height: 3rem;
   padding: 16px 32px;
@@ -472,10 +472,12 @@ body {
 
 .cta-add:hover {
   background: #2563EB;
+  opacity: 0.95;
 }
 
 .cta-add:active {
   background: #1D4ED8;
+  opacity: 1;
 }
 
 .cta-add:focus-visible {

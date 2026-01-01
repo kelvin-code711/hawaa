@@ -138,8 +138,8 @@
 .bento-merged {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 24px;
-  padding: 36px 12px;
+  gap: 48px;
+  padding: 64px 32px;
   align-items: center;
 }
 

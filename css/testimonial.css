@@ -2,7 +2,7 @@
 .testimonials-section {
     position: relative;
     font-family: 'Outfit', sans-serif;
-    background-color: var(--palette-white) !important;
+    background-color: transparent !important;
     overflow: hidden;
     width: 100%;
     border-radius: 32px 32px 0 0;
@@ -75,7 +75,7 @@
 @media(min-width: 992px) {
     .testimonials-section {
         padding: 24px 0 !important;
-        background-color: var(--palette-white) !important;
+        background-color: transparent !important;
     }
 
     .testimonials-section-title {
@@ -210,13 +210,14 @@
 
 .testimonial-title {
     margin: 0;
+    padding: 0;
     font-size: 14px;
     font-family: 'Outfit', sans-serif;
     font-weight: 400;
-    background: var(--palette-white);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    background: transparent;
+    border-radius: 0;
 }
 
 /* No video placeholder */
@@ -245,7 +246,7 @@
 /* â"€â"€â"€â"€â"€â"€â"€â"€â"€ MOBILE (â‰¤991 px) â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 @media(max-width: 991px) {
     .testimonials-section {
-        background-color: var(--palette-white) !important;
+        background-color: transparent !important;
         border-radius: 24px 24px 0 0;
         margin: 0px 0 0 0 !important;
         overflow: hidden;

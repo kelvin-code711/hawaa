@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,18 +8,25 @@
 
   <!-- Fonts -->
   <link rel="preload" href="../fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../fonts/Outfit-Medium.woff2"  as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../fonts/Outfit-Bold.woff2"    as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/Outfit-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
 
-  <!-- Material Symbols Rounded (variable font) -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet" />
+  <!-- Material Symbols Rounded -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="../css/checkout.css" />
 
   <meta name="color-scheme" content="light dark">
-  <style>html, body { background: transparent !important; }</style>
+  <style>
+    html,
+    body {
+      background: transparent !important;
+    }
+  </style>
 </head>
+
 <body>
   <aside id="cart-drawer" class="cd-drawer" role="dialog" aria-modal="false" aria-labelledby="cart-title">
     <header class="cd-head">
@@ -86,11 +94,13 @@
               <div class="cd-grid">
                 <label class="cd-field">
                   <span>Email</span>
-                  <input type="email" id="cust-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+                  <input type="email" id="cust-email" name="email" placeholder="you@example.com" required
+                    autocomplete="email" />
                 </label>
                 <label class="cd-field">
                   <span>Phone</span>
-                  <input type="tel" id="cust-phone" name="phone" placeholder="+91 98765 43210" required autocomplete="tel" />
+                  <input type="tel" id="cust-phone" name="phone" placeholder="+91 98765 43210" required
+                    autocomplete="tel" />
                 </label>
               </div>
 
@@ -112,31 +122,38 @@
               <div class="cd-grid">
                 <label class="cd-field">
                   <span>First name</span>
-                  <input type="text" id="ship-first" name="firstName" placeholder="First name" required autocomplete="given-name" />
+                  <input type="text" id="ship-first" name="firstName" placeholder="First name" required
+                    autocomplete="given-name" />
                 </label>
                 <label class="cd-field">
                   <span>Last name</span>
-                  <input type="text" id="ship-last" name="lastName" placeholder="Last name" required autocomplete="family-name" />
+                  <input type="text" id="ship-last" name="lastName" placeholder="Last name" required
+                    autocomplete="family-name" />
                 </label>
                 <label class="cd-field cd-col-2">
                   <span>Address line 1</span>
-                  <input type="text" id="ship-line1" name="address1" placeholder="House no., street" required autocomplete="address-line1" />
+                  <input type="text" id="ship-line1" name="address1" placeholder="House no., street" required
+                    autocomplete="address-line1" />
                 </label>
                 <label class="cd-field cd-col-2">
                   <span>Address line 2 (optional)</span>
-                  <input type="text" id="ship-line2" name="address2" placeholder="Apartment, suite, etc." autocomplete="address-line2" />
+                  <input type="text" id="ship-line2" name="address2" placeholder="Apartment, suite, etc."
+                    autocomplete="address-line2" />
                 </label>
                 <label class="cd-field">
                   <span>City</span>
-                  <input type="text" id="ship-city" name="city" placeholder="City" required autocomplete="address-level2" />
+                  <input type="text" id="ship-city" name="city" placeholder="City" required
+                    autocomplete="address-level2" />
                 </label>
                 <label class="cd-field">
                   <span>State</span>
-                  <input type="text" id="ship-state" name="state" placeholder="State" required autocomplete="address-level1" />
+                  <input type="text" id="ship-state" name="state" placeholder="State" required
+                    autocomplete="address-level1" />
                 </label>
                 <label class="cd-field">
                   <span>Pincode</span>
-                  <input type="text" id="ship-zip" name="postal" placeholder="e.g. 560001" required inputmode="numeric" autocomplete="postal-code" />
+                  <input type="text" id="ship-zip" name="postal" placeholder="e.g. 560001" required inputmode="numeric"
+                    autocomplete="postal-code" />
                 </label>
                 <label class="cd-field">
                   <span>Country</span>
@@ -217,4 +234,5 @@
   <!-- Your checkout script -->
   <script src="../js/checkout.js"></script>
 </body>
+
 </html>

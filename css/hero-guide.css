@@ -135,7 +135,7 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
   position: relative;
   overflow: hidden;
   background: #3B82F6;
@@ -143,6 +143,16 @@
   border: none;
   box-sizing: border-box;
   /* Include padding in height calculation */
+}
+
+.hg-btn:hover {
+  background: #2563EB;
+  opacity: 0.95;
+}
+
+.hg-btn:active {
+  background: #1D4ED8;
+  opacity: 1;
 }
 
 .hg-btn .material-symbols-rounded {

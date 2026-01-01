@@ -190,16 +190,18 @@ body {
   font-size: 15px;
   line-height: 1.5;
   display: inline-block;
+  color: var(--footer-muted);
   background-image: linear-gradient(currentColor, currentColor);
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0 1px;
-  transition: background-size var(--underline-speed) ease;
+  transition: background-size 0.3s ease, color 0.2s ease;
 }
 
 .footer-column li a:hover,
 .footer-column li a:focus-visible {
   background-size: 100% 1px;
+  color: var(--footer-text);
   outline: none;
 }
 

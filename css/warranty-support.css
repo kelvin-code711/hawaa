@@ -218,11 +218,17 @@ a {
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .btn:not(.btn--text):hover {
   background: #2563EB;
+  opacity: 0.95;
+}
+
+.btn:not(.btn--text):active {
+  background: #1D4ED8;
+  opacity: 1;
 }
 
 .btn--ghost {

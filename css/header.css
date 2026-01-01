@@ -133,15 +133,20 @@ a:visited {
   --btn: var(--cta-primary);
   --overlay: rgba(15, 23, 42, .45);
 
-  /* Spacing */
-  --space-1: 6px;
-  --space-2: 10px;
-  --space-3: 14px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-7: 28px;
-  --space-8: 32px;
+  /* Spacing - Apple 8px Grid */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 80px;
+  --space-8: 96px;
+
+  /* Transitions - Apple Style */
+  --transition-fast: 0.15s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Legacy Brand Overrides (remapped to new palette) */
   --blue-200: var(--gray-100);
@@ -276,14 +281,14 @@ a:visited {
 .nav-icon:hover,
 .hamburger-btn:hover,
 .nav-close:hover {
-  background-color: rgba(0, 0, 0, .06);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .nav-icon:active,
 .hamburger-btn:active,
 .nav-close:active {
-  background-color: rgba(0, 0, 0, .10);
-  transform: translateY(0.5px);
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: scale(0.95);
 }
 
 /* Normalize icon size inside buttons */
@@ -704,7 +709,6 @@ body.menu-open {
   font-weight: 600;
   letter-spacing: -0.02em;
   font-family: inherit;
-  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 
@@ -712,102 +716,22 @@ body.menu-open {
   background: #3B82F6;
   color: #FFFFFF;
   border: none;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
   box-sizing: border-box;
   /* <-- critical: prevents overflow */
 }
 
-.primary-btn .button-bg {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  overflow: hidden;
-  /* ensures layers never bleed past the pill */
-  pointer-events: none;
+.primary-btn:hover {
+  background: #2563EB;
+  opacity: 0.95;
 }
 
-.primary-btn .button-bg-layers {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  top: -60%;
-  aspect-ratio: 1/1;
-  width: max(245%, 10rem);
-}
-
-.primary-btn .button-bg-layer {
-  border-radius: 9999px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: scale(0);
-}
-
-/* Removed gradient layers for performance */
-
-.primary-btn .button-inner {
-  position: relative;
-  pointer-events: none;
-  display: block;
-}
-
-.primary-btn .button-inner-hover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transform: translateY(70%);
-}
-
-.primary-btn .button-inner-static {
-  display: block;
-}
-
-/* Primary Button Hover */
-.primary-btn:hover .button-inner-static {
-  opacity: 0;
-  transform: translateY(-70%);
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
-}
-
-.primary-btn:hover .button-inner-hover {
+.primary-btn:active {
+  background: #1D4ED8;
   opacity: 1;
-  transform: translateY(0);
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* Ensure background layer hover effects are grayscale */
-.primary-btn:hover .button-bg-layer-1 {
-  background-color: var(--palette-gray-1);
-}
-
-.primary-btn:hover .button-bg-layer-2 {
-  background-color: var(--palette-gray-2);
-}
-
-.primary-btn:hover .button-bg-layer-3 {
-  background-color: var(--palette-gray-3);
-}
-
-.primary-btn:hover .button-bg-layer {
-  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s linear;
-}
-
-.primary-btn:hover .button-bg-layer-1 {
-  transform: scale(1);
-}
-
-.primary-btn:hover .button-bg-layer-2 {
-  transform: scale(1);
-  transition-delay: 0.1s;
-}
-
-.primary-btn:hover .button-bg-layer-3 {
-  transform: scale(1);
-  transition-delay: 0.2s;
-}
+/* Mobile navigation */
 
 .primary-btn:active {
   transform: translateY(1px);

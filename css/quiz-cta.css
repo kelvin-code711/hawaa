@@ -85,12 +85,12 @@ body {
    Quiz CTA Section
    ========================= */
 #quizSection {
-  margin: 16px 0;
-  border-radius: 16px;
+  margin: 24px 0;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
-  padding: 128px 64px;
-  min-height: 320px;
+  padding: 100px 64px;
+  min-height: 360px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -196,10 +196,17 @@ body {
   background: #3B82F6 !important;
   color: #FFFFFF !important;
   border: none !important;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .button-icon--primary:hover {
   background: #2563EB !important;
+  opacity: 0.95;
+}
+
+.button-icon--primary:active {
+  background: #1D4ED8 !important;
+  opacity: 1;
 }
 
 /* =========================
