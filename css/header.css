@@ -200,7 +200,7 @@ a:visited {
 
 .header-logo img {
   /* UPDATED LOGO SIZE */
-  height: 48px;
+  height: 40px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -970,6 +970,10 @@ body.menu-open {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .header-logo img {
+    height: 32px;
+  }
+
   .auth-drawer {
     max-width: 100%;
   }

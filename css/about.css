@@ -242,8 +242,6 @@ body {
   width: min(1100px, 92vw);
   border-radius: 32px;
   overflow: hidden;
-  transform-origin: center;
-  will-change: transform;
   position: relative;
   z-index: 2000;
 }
@@ -255,6 +253,9 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto;
+  /* Prevent image layout shift */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* ===== Motion safety ===== */
@@ -356,6 +357,25 @@ body {
 
   .card-image-wrapper {
     border-radius: 20px;
+    /* Prevent transforms on mobile for smoother scroll */
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .card-image-wrapper img {
+    /* Hardware acceleration for smooth scrolling */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Stabilize circle elements during scroll */
+  .s1 .circle,
+  .s1 .text-ring,
+  .s1 .circle-center-image {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 }
 

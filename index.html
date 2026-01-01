@@ -96,7 +96,7 @@
   <header class="hawaa-header" id="hawaa-header">
     <div class="header-container">
       <a href="index.html" class="header-logo">
-        <img src="images/logo.svg" alt="Havva" width="120" height="auto" />
+        <img src="images/logo.svg" alt="Havva" />
       </a>
       <div class="header-actions">
         <!-- Login button stays an <a> for styling -->
@@ -983,18 +983,38 @@
   <footer class="hawaa-footer">
     <div class="hawaa-footer-container">
       <div class="hawaa-footer-content">
-        <!-- App card -->
-        <aside class="app-download-card" aria-label="Havva App Card">
-          <div class="app-card-inner">
-            <h2>Get the Havva App</h2>
-            <p>Control, monitor and schedule your purifier.</p>
+        <!-- Company Info Card -->
+        <aside class="company-info-card" aria-label="Company Information">
+          <div class="company-card-inner">
+            <!-- Logo -->
+            <a href="index.html" class="company-logo">
+              <img src="images/logo-light.svg" alt="Havva" />
+            </a>
+
+            <!-- Tagline -->
+            <p class="company-tagline">Breathe better. Live better.</p>
+
+            <!-- Address -->
+            <div class="company-address">
+              <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
+              <address>
+                123 Clean Air Avenue,<br>
+                Bengaluru, Karnataka 560001,<br>
+                India
+              </address>
+            </div>
+
+            <!-- Support Email -->
+            <div class="company-contact">
+              <span class="material-symbols-rounded" aria-hidden="true">mail</span>
+              <a href="mailto:support@havva.in">support@havva.in</a>
+            </div>
+
+            <!-- App Store Badges -->
             <div class="store-buttons">
               <a class="store-badge" href="#" aria-label="Download on the App Store">App Store</a>
               <a class="store-badge" href="#" aria-label="Get it on Google Play">Google Play</a>
             </div>
-          </div>
-          <div class="app-card-media" aria-hidden="true">
-            <img src="images/breathing.png" alt="Havva App Preview" />
           </div>
         </aside>
 
@@ -1125,9 +1145,6 @@
         </div>
       </div>
 
-      <div class="footer-giant-type" aria-hidden="true">
-        <span class="word">Havva</span>
-      </div>
     </div>
   </footer>
 

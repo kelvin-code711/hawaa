@@ -225,7 +225,7 @@ body {
 }
 
 .site-header .logo img {
-  height: 20px;
+  height: 40px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -276,9 +276,10 @@ body {
   visibility: hidden;
   pointer-events: none;
   width: min(640px, calc(100vw - var(--spacing-xl)));
-  background: var(--white);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 40px rgba(30, 41, 59, 0.12), 0 4px 12px rgba(30, 41, 59, 0.08);
   overflow: hidden;
   z-index: 999;
   max-height: calc(100vh - 120px);
@@ -295,6 +296,7 @@ body {
 .hero-nav ul {
   list-style: none;
   padding: var(--spacing-md) 0;
+  background: #FFFFFF;
 }
 
 .hero-nav a {
@@ -306,33 +308,34 @@ body {
   justify-content: center;
   border-left: 4px solid transparent;
   transition: all 0.2s ease;
+  background: #FFFFFF;
 }
 
 .hero-nav a:hover,
 .hero-nav a:focus {
-  background: rgba(45, 143, 173, 0.05);
-  border-left-color: var(--accent-color);
+  background: #F8FAFC;
+  border-left-color: #2563EB;
 }
 
 .hero-nav a.active {
-  background: rgba(45, 143, 173, 0.1);
-  border-left-color: var(--accent-color);
+  background: #F1F5F9;
+  border-left-color: #2563EB;
 }
 
 .hero-nav .step-label {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--accent-color);
+  color: #2563EB;
   margin-bottom: 4px;
 }
 
 .hero-nav .step-title {
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  font-weight: var(--font-weight-normal);
-  line-height: 1.2;
+  font-size: 1.25rem;
+  color: #1E293B;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -928,6 +931,10 @@ body {
     width: calc(100vw - var(--spacing-md));
     padding: 0 var(--spacing-md);
     top: var(--spacing-sm);
+  }
+
+  .site-header .logo img {
+    height: 32px;
   }
 
   .hero-nav a {

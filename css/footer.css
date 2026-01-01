@@ -53,10 +53,9 @@ body {
   align-items: start;
 }
 
-/* App card: content TOP, media BOTTOM */
-.app-download-card {
-  width: 430px;
-  height: 850px;
+/* Company Info Card */
+.company-info-card {
+  width: 360px;
   background: var(--card-bg);
   border-radius: 16px;
   overflow: hidden;
@@ -65,67 +64,99 @@ body {
   flex-direction: column;
 }
 
-.app-card-inner {
-  padding: 24px;
-  display: grid;
-  gap: 12px;
+.company-card-inner {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.app-card-inner h2 {
-  font-size: 28px;
-  line-height: 1.2;
-  margin: 0;
-  font-weight: 700;
+.company-logo {
+  display: inline-block;
+  width: fit-content;
 }
 
-.app-card-inner p {
-  margin: 0;
+.company-logo img {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+
+.company-tagline {
+  font-size: 16px;
   color: var(--footer-muted);
+  margin: 0;
   line-height: 1.5;
 }
 
+.company-address {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--footer-muted);
+}
+
+.company-address .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--footer-muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.company-address address {
+  font-style: normal;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--footer-muted);
+}
+
+.company-contact {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.company-contact .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--footer-muted);
+  flex-shrink: 0;
+}
+
+.company-contact a {
+  font-size: 15px;
+  color: var(--footer-text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.company-contact a:hover {
+  color: #2563EB;
+}
+
+/* Store Buttons */
 .store-buttons {
   display: flex;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .store-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 10px;
   background: var(--gray-600);
-  /* Store badge bg - slate gray */
   border: 1px solid var(--gray-600);
-  /* Store badge border */
-  /* Store badge border */
   font-weight: 600;
   font-size: 14px;
-  transition: background-color 0.25s ease;
+  color: var(--footer-text);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
 .store-badge:hover {
   background: var(--palette-gray-1);
-}
-
-.app-card-media {
-  margin-top: auto;
-  height: 430px;
-  display: grid;
-  align-items: start;
-  /* Changed from center to start */
-  padding-top: 0px;
-  /* Optional: if you need more control */
-}
-
-.app-card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transform: translateY(-100px);
 }
 
 /* Right wrapper */
