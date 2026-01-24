@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Failed - Havva</title>
+    <title>Payment Failed - Hawaa</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -11,7 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Outfit', sans-serif;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -21,17 +22,17 @@
             justify-content: center;
             padding: 20px;
         }
-        
+
         .failed-container {
             background: white;
             border-radius: 20px;
             padding: 40px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             width: 100%;
         }
-        
+
         .failed-icon {
             width: 80px;
             height: 80px;
@@ -43,21 +44,21 @@
             margin: 0 auto 24px;
             animation: shakeIn 0.6s ease-out;
         }
-        
+
         .failed-icon::after {
             content: '✕';
             color: white;
             font-size: 40px;
             font-weight: bold;
         }
-        
+
         h1 {
             color: #ef4444;
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 12px;
         }
-        
+
         .order-id {
             background: #fef2f2;
             padding: 12px 16px;
@@ -65,18 +66,18 @@
             margin: 24px 0;
             border: 1px solid #fecaca;
         }
-        
+
         .order-id strong {
             color: #0f172a;
             font-weight: 600;
         }
-        
+
         p {
             color: #64748b;
             line-height: 1.6;
             margin-bottom: 24px;
         }
-        
+
         .error-reasons {
             background: #f8fafc;
             padding: 20px;
@@ -84,29 +85,29 @@
             margin: 24px 0;
             text-align: left;
         }
-        
+
         .error-reasons h3 {
             color: #0f172a;
             font-size: 16px;
             margin-bottom: 12px;
         }
-        
+
         .error-reasons ul {
             color: #64748b;
             font-size: 14px;
             padding-left: 20px;
         }
-        
+
         .error-reasons li {
             margin-bottom: 8px;
         }
-        
+
         .buttons {
             display: flex;
             gap: 12px;
             flex-direction: column;
         }
-        
+
         .btn {
             padding: 14px 24px;
             border-radius: 12px;
@@ -117,44 +118,47 @@
             cursor: pointer;
             font-family: inherit;
         }
-        
+
         .btn-primary {
             background: #2563eb;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #1d4ed8;
             transform: translateY(-1px);
         }
-        
+
         .btn-secondary {
             background: #f8fafc;
             color: #0f172a;
             border: 1px solid #e2e8f0;
         }
-        
+
         .btn-secondary:hover {
             background: #f1f5f9;
         }
-        
+
         @keyframes shakeIn {
             0% {
                 transform: scale(0.3) rotate(-15deg);
                 opacity: 0;
             }
+
             50% {
                 transform: scale(1.05) rotate(5deg);
             }
+
             70% {
                 transform: scale(0.9) rotate(-2deg);
             }
+
             100% {
                 transform: scale(1) rotate(0deg);
                 opacity: 1;
             }
         }
-        
+
         @media (min-width: 480px) {
             .buttons {
                 flex-direction: row;
@@ -162,16 +166,17 @@
         }
     </style>
 </head>
+
 <body>
     <div class="failed-container">
         <div class="failed-icon"></div>
         <h1>Payment Failed</h1>
         <p>We're sorry, but your payment could not be processed. Please try again or use a different payment method.</p>
-        
+
         <div class="order-id">
             <strong>Transaction ID:</strong> <span id="order-id">Loading...</span>
         </div>
-        
+
         <div class="error-reasons">
             <h3>Common reasons for payment failure:</h3>
             <ul>
@@ -182,7 +187,7 @@
                 <li>Incorrect payment details</li>
             </ul>
         </div>
-        
+
         <div class="buttons">
             <a href="javascript:history.back()" class="btn btn-primary">Try Again</a>
             <a href="/" class="btn btn-secondary">Back to Shop</a>
@@ -193,7 +198,7 @@
         // Get order ID from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get('orderId');
-        
+
         if (orderId) {
             document.getElementById('order-id').textContent = orderId;
         } else {
@@ -201,4 +206,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Havva Champion - Installation Guide</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hawaa Champion - Installation Guide</title>
+
   <!-- Fonts -->
   <link rel="preload" href="../fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../fonts/Outfit-Medium.woff2"  as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/Outfit-Medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../fonts/Outfit-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../fonts/Outfit-Bold.woff2"    as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Material Symbols Rounded (variable font) -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200"
+    rel="stylesheet" />
 
   <link rel="stylesheet" href="../css/installation-guide.css">
 </head>
+
 <body>
   <!-- Header outside hero section for true fixed positioning -->
   <header class="site-header">
     <a href="../index.html" class="logo">
-      <img src="../images/logo.svg" alt="Havva" >
+      <img src="../images/logo.svg" alt="Hawaa">
     </a>
     <button class="menu-toggle" aria-label="Toggle menu">
       <span class="material-symbols-rounded">menu</span>
@@ -29,51 +33,51 @@
 
   <!-- Dropdown nav outside hero section -->
   <nav class="hero-nav" aria-hidden="true">
-  <ul>
-    <li>
-      <a href="#s1">
-        <span class="step-label">Step 1</span>
-        <span class="step-title">Filter Installation</span>
-      </a>
-    </li>
-    <li>
-      <a href="#s2">
-        <span class="step-label">Step 2</span>
-        <span class="step-title">Plug & Position</span>
-      </a>
-    </li>
-    <li>
-      <a href="#s3">
-        <span class="step-label">Step 3</span>
-        <span class="step-title">App Pairing</span>
-      </a>
-    </li>
-    <li>
-      <a href="#s4">
-        <span class="step-label">Step 4</span>
-        <span class="step-title">Filter Maintenance</span>
-      </a>
-    </li>
-    <li>
-      <a href="#s5">
-        <span class="step-label">Step 5</span>
-        <span class="step-title">Replace Filter</span>
-      </a>
-    </li>
-    <li>
-      <a href="#s6">
-        <span class="step-label">Support</span>
-        <span class="step-title">Troubleshooting</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+    <ul>
+      <li>
+        <a href="#s1">
+          <span class="step-label">Step 1</span>
+          <span class="step-title">Filter Installation</span>
+        </a>
+      </li>
+      <li>
+        <a href="#s2">
+          <span class="step-label">Step 2</span>
+          <span class="step-title">Plug & Position</span>
+        </a>
+      </li>
+      <li>
+        <a href="#s3">
+          <span class="step-label">Step 3</span>
+          <span class="step-title">App Pairing</span>
+        </a>
+      </li>
+      <li>
+        <a href="#s4">
+          <span class="step-label">Step 4</span>
+          <span class="step-title">Filter Maintenance</span>
+        </a>
+      </li>
+      <li>
+        <a href="#s5">
+          <span class="step-label">Step 5</span>
+          <span class="step-title">Replace Filter</span>
+        </a>
+      </li>
+      <li>
+        <a href="#s6">
+          <span class="step-label">Support</span>
+          <span class="step-title">Troubleshooting</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
   <!-- Fullscreen hero wrapped so it sticks until fully scrolled -->
   <div class="hero-wrap">
     <section id="hero" class="hero gradient-section">
       <div class="hero-inner content">
-        <h1>Unboxing<br>Your<br>Havva<br>Champion</h1>
+        <h1>Unboxing<br>Your<br>Hawaa<br>Champion</h1>
         <p>Scroll to begin your journey ↓</p>
       </div>
     </section>
@@ -83,32 +87,32 @@
   <main id="content" class="scroll-container">
     <div class="background-spacer" aria-hidden="true"></div>
     <div class="background">
-      
+
       <!-- Section 1: Filter Installation -->
       <section id="s1" class="stage filter-installation-section">
         <div class="section-content">
           <h2 class="section-title">
             Slide. <span class="highlight-twist">Twist</span>. Lock.
           </h2>
-          
+
           <div class="video-container">
             <video id="installation-video" preload="metadata">
               <source src="../images/filter-installation.mp4" type="video/mp4">
               <source src="../videos/filter-installation.webm" type="video/webm">
               Your browser does not support the video tag.
             </video>
-            
+
             <!-- Video Controls -->
             <div class="video-controls">
               <button class="play-pause-btn" id="playPauseBtn" aria-label="Play/Pause video">
                 <span class="material-symbols-rounded play-icon">play_arrow</span>
                 <span class="material-symbols-rounded pause-icon" style="display: none;">pause</span>
               </button>
-              
+
               <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Toggle fullscreen">
                 <span class="material-symbols-rounded">fullscreen</span>
               </button>
-              
+
               <button class="mute-btn" id="muteBtn" aria-label="Toggle mute">
                 <span class="material-symbols-rounded volume-icon">volume_up</span>
                 <span class="material-symbols-rounded mute-icon" style="display: none;">volume_off</span>
@@ -129,7 +133,7 @@
                 when <span class="highlight-twist">placement</span><br>
                 is right.
               </h2>
-              
+
               <div class="placement-content">
                 <div class="placement-item active" data-image="0">
                   <div class="placement-text">Keep 30 cm away from walls on all sides</div>
@@ -149,11 +153,11 @@
                 <div class="placement-image active" data-index="0">
                   <img src="../images/placement-1.png" alt="Keep 30cm away from walls" loading="lazy">
                 </div>
-                
+
                 <div class="placement-image" data-index="1">
                   <img src="../images/placement-2.png" alt="Avoid placing under furniture" loading="lazy">
                 </div>
-                
+
                 <div class="placement-image" data-index="2">
                   <img src="../images/placement-3.png" alt="Room illustration showing correct placement" loading="lazy">
                 </div>
@@ -191,105 +195,107 @@
         </div>
       </section>
 
-     <!-- Section 5: Filter Maintenance -->
-<section id="s5" class="stage filter-maintenance-section">
-  <div class="section-content">
-    <div class="two-column-layout">
-      <!-- Left Image Column -->
-      <div class="images-column">
-        <div class="maintenance-image-container">
-          <img src="../images/maintenance-filter.png" alt="Filter maintenance guide" loading="lazy">
-        </div>
-      </div>
+      <!-- Section 5: Filter Maintenance -->
+      <section id="s5" class="stage filter-maintenance-section">
+        <div class="section-content">
+          <div class="two-column-layout">
+            <!-- Left Image Column -->
+            <div class="images-column">
+              <div class="maintenance-image-container">
+                <img src="../images/maintenance-filter.png" alt="Filter maintenance guide" loading="lazy">
+              </div>
+            </div>
 
-      <!-- Right Content Column -->
-      <div class="content-column">
-        <h2 class="section-title">
-          Stay fresh, <span class="highlight-twist">effortlessly.</span>
-        </h2>
-        
-        <div class="maintenance-content">
-          <div class="maintenance-list">
-            <div class="maintenance-item">
-              <div class="maintenance-bullet">•</div>
-              <div class="maintenance-text">
-                <strong>Pre-filter:</strong> Wash monthly under running water, let it dry completely before reinstalling
-              </div>
-            </div>
-            
-            <div class="maintenance-item">
-              <div class="maintenance-bullet">•</div>
-              <div class="maintenance-text">
-                <strong>HEPA & Carbon:</strong> Do not wash; replace every 9–12 months
-              </div>
-            </div>
-            
-            <div class="maintenance-item">
-              <div class="maintenance-bullet">•</div>
-              <div class="maintenance-text">
-                <strong>Filter replacement indicator</strong> will notify via app and control panel
+            <!-- Right Content Column -->
+            <div class="content-column">
+              <h2 class="section-title">
+                Stay fresh, <span class="highlight-twist">effortlessly.</span>
+              </h2>
+
+              <div class="maintenance-content">
+                <div class="maintenance-list">
+                  <div class="maintenance-item">
+                    <div class="maintenance-bullet">•</div>
+                    <div class="maintenance-text">
+                      <strong>Pre-filter:</strong> Wash monthly under running water, let it dry completely before
+                      reinstalling
+                    </div>
+                  </div>
+
+                  <div class="maintenance-item">
+                    <div class="maintenance-bullet">•</div>
+                    <div class="maintenance-text">
+                      <strong>HEPA & Carbon:</strong> Do not wash; replace every 9–12 months
+                    </div>
+                  </div>
+
+                  <div class="maintenance-item">
+                    <div class="maintenance-bullet">•</div>
+                    <div class="maintenance-text">
+                      <strong>Filter replacement indicator</strong> will notify via app and control panel
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       <!-- Section 5: Replacing the Filter -->
-<section id="s4" class="stage replacing-filter-section">
-  <div class="replacing-header">
-    <h2 class="section-title">Replacing the<span class="highlight-twist"> Filter</span></h2>
-    <p class="section-subtitle">Fresh filters for continuous pure air.</p>
-  </div>
-  
-  <div class="replacing-container">
-    <div class="replacing-image-container">
-      <div class="replacing-image active" data-index="0">
-        <img src="../images/replacement-1.png" alt="Filter replacement step 1" loading="lazy">
-      </div>
-      
-      <div class="replacing-image" data-index="1">
-        <img src="../images/replacement-2.png" alt="Filter replacement step 2" loading="lazy">
-      </div>
-      
-      <div class="replacing-image" data-index="2">
-        <img src="../images/replacement-3.png" alt="Filter replacement step 3" loading="lazy">
-      </div>
-    </div>
-  </div>
-</section>
+      <section id="s4" class="stage replacing-filter-section">
+        <div class="replacing-header">
+          <h2 class="section-title">Replacing the<span class="highlight-twist"> Filter</span></h2>
+          <p class="section-subtitle">Fresh filters for continuous pure air.</p>
+        </div>
+
+        <div class="replacing-container">
+          <div class="replacing-image-container">
+            <div class="replacing-image active" data-index="0">
+              <img src="../images/replacement-1.png" alt="Filter replacement step 1" loading="lazy">
+            </div>
+
+            <div class="replacing-image" data-index="1">
+              <img src="../images/replacement-2.png" alt="Filter replacement step 2" loading="lazy">
+            </div>
+
+            <div class="replacing-image" data-index="2">
+              <img src="../images/replacement-3.png" alt="Filter replacement step 3" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="s6" class="stage troubleshooting-section">
-    <div class="section-content">
-      <h2 class="section-title">
-        Got <span class="highlight-twist">questions</span>?<br>
-        We're just a tap away.
-      </h2>
+        <div class="section-content">
+          <h2 class="section-title">
+            Got <span class="highlight-twist">questions</span>?<br>
+            We're just a tap away.
+          </h2>
 
-      <div class="support-links">
-        <a href="#faq" class="support-link">
-          <span class="support-link-text">FAQ</span>
-          <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
-        </a>
+          <div class="support-links">
+            <a href="#faq" class="support-link">
+              <span class="support-link-text">FAQ</span>
+              <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
+            </a>
 
-        <a href="#warranty" class="support-link">
-          <span class="support-link-text">Warranty</span>
-          <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
-        </a>
+            <a href="#warranty" class="support-link">
+              <span class="support-link-text">Warranty</span>
+              <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
+            </a>
 
-        <a href="#contact" class="support-link">
-          <span class="support-link-text">Contact Support</span>
-          <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
-        </a>
-      </div>
-    </div>
-  </section>
+            <a href="#contact" class="support-link">
+              <span class="support-link-text">Contact Support</span>
+              <span class="material-symbols-rounded support-link-arrow">chevron_right</span>
+            </a>
+          </div>
+        </div>
+      </section>
 
     </div>
   </main>
 
   <script src="../js/installation-guide.js"></script>
 </body>
+
 </html>

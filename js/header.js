@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   console.log('Header Auth: Initializing...');
 
   // Elements
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Optional (you'll add these inputs later; safe if not present yet)
   const signupEmail = document.getElementById('signupEmail');
-  const signupCity  = document.getElementById('signupCity');
+  const signupCity = document.getElementById('signupCity');
 
   const otpPhoneDisplay = document.getElementById('otpPhoneDisplay');
   const otpDigits = document.querySelectorAll('.otp-digit');
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Header Scroll Effect
   // -------------------------------
   let lastScroll = 0;
-  window.addEventListener('scroll', function() {
+  window.addEventListener('scroll', function () {
     const currentScroll = window.pageYOffset;
     if (currentScroll <= 0) {
       header?.classList.remove('scrolled');
@@ -389,19 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Disable verify button during verification
       if (verifyOtpBtn) {
         verifyOtpBtn.disabled = true;
-        verifyOtpBtn.innerHTML = `
-          <span class="button-bg">
-            <span class="button-bg-layers">
-              <span class="button-bg-layer button-bg-layer-1"></span>
-              <span class="button-bg-layer button-bg-layer-2"></span>
-              <span class="button-bg-layer button-bg-layer-3"></span>
-            </span>
-          </span>
-          <span class="button-inner">
-            <span class="button-inner-static">Verifying...</span>
-            <span class="button-inner-hover">Verifying...</span>
-          </span>
-        `;
+        verifyOtpBtn.textContent = 'Verifying...';
       }
 
       const result = await confirmationResult.confirm(otpCode);
@@ -414,10 +402,10 @@ document.addEventListener('DOMContentLoaded', function() {
           const usersRef = db.collection('users').doc(uid);
 
           const safe = (el) => (el && el.value ? el.value.trim() : '');
-          const name  = signupName?.value?.trim() || '';
+          const name = signupName?.value?.trim() || '';
           const phone = `+91${currentPhone}`;
           const email = safe(signupEmail);
-          const city  = safe(signupCity);
+          const city = safe(signupCity);
 
           if (currentMode === 'signup') {
             await usersRef.set({
@@ -488,19 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Re-enable verify button
       if (verifyOtpBtn) {
         verifyOtpBtn.disabled = false;
-        verifyOtpBtn.innerHTML = `
-          <span class="button-bg">
-            <span class="button-bg-layers">
-              <span class="button-bg-layer button-bg-layer-1"></span>
-              <span class="button-bg-layer button-bg-layer-2"></span>
-              <span class="button-bg-layer button-bg-layer-3"></span>
-            </span>
-          </span>
-          <span class="button-inner">
-            <span class="button-inner-static">Verify</span>
-            <span class="button-inner-hover">Verify</span>
-          </span>
-        `;
+        verifyOtpBtn.textContent = 'Verify';
       }
     }
   }
@@ -579,9 +555,9 @@ document.addEventListener('DOMContentLoaded', function() {
     otpDigits.forEach((input, index) => {
       // Set numeric inputmode for mobile keyboard
       input.setAttribute('inputmode', 'numeric');
-      
+
       // Input event
-      input.addEventListener('input', function() {
+      input.addEventListener('input', function () {
         // Only allow digits
         let value = this.value.replace(/\D/g, '');
         this.value = value.slice(0, 1);
@@ -599,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       // Keydown event for navigation
-      input.addEventListener('keydown', function(e) {
+      input.addEventListener('keydown', function (e) {
         if (e.key === 'Backspace') {
           if (!this.value && index > 0) {
             otpDigits[index - 1].focus();
@@ -620,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       // Paste event
-      input.addEventListener('paste', function(e) {
+      input.addEventListener('paste', function (e) {
         e.preventDefault();
         const paste = (e.clipboardData || window.clipboardData).getData('text');
         const digits = paste.replace(/\D/g, '');
@@ -637,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       // Focus event
-      input.addEventListener('focus', function() {
+      input.addEventListener('focus', function () {
         this.classList.remove('error');
         this.select();
       });
@@ -701,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Observe auth state (works even after page reload)
   try {
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function (user) {
       console.log('Auth state changed. Signed in?', !!user);
       renderAuthUI(user);
     });
@@ -713,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Events
   // -------------------------------
   if (headerLoginBtn) {
-    headerLoginBtn.addEventListener('click', function(e) {
+    headerLoginBtn.addEventListener('click', function (e) {
       e.preventDefault();
       showScreen('login');
       openAuthDrawer();
@@ -724,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (authOverlay) authOverlay.addEventListener('click', closeAuthDrawer);
 
   if (switchToSignup) {
-    switchToSignup.addEventListener('click', function(e) {
+    switchToSignup.addEventListener('click', function (e) {
       e.preventDefault();
       showScreen('signup');
       clearErrors();
@@ -732,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (switchToLogin) {
-    switchToLogin.addEventListener('click', function(e) {
+    switchToLogin.addEventListener('click', function (e) {
       e.preventDefault();
       showScreen('login');
       clearErrors();
@@ -740,7 +716,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (loginForm) {
-    loginForm.addEventListener('submit', async function(e) {
+    loginForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const phone = loginPhone.value.replace(/\D/g, '');
@@ -753,41 +729,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
       loginPhone.classList.remove('error');
       sendLoginOtpBtn.disabled = true;
-      sendLoginOtpBtn.innerHTML = `
-        <span class="button-bg">
-          <span class="button-bg-layers">
-            <span class="button-bg-layer button-bg-layer-1"></span>
-            <span class="button-bg-layer button-bg-layer-2"></span>
-            <span class="button-bg-layer button-bg-layer-3"></span>
-          </span>
-        </span>
-        <span class="button-inner">
-          <span class="button-inner-static">Sending...</span>
-          <span class="button-inner-hover">Sending...</span>
-        </span>
-      `;
+      sendLoginOtpBtn.textContent = 'Sending...';
 
       await sendOtp(phone);
 
       sendLoginOtpBtn.disabled = false;
-      sendLoginOtpBtn.innerHTML = `
-        <span class="button-bg">
-          <span class="button-bg-layers">
-            <span class="button-bg-layer button-bg-layer-1"></span>
-            <span class="button-bg-layer button-bg-layer-2"></span>
-            <span class="button-bg-layer button-bg-layer-3"></span>
-          </span>
-        </span>
-        <span class="button-inner">
-          <span class="button-inner-static">Send OTP</span>
-          <span class="button-inner-hover">Send OTP</span>
-        </span>
-      `;
+      sendLoginOtpBtn.textContent = 'Send OTP';
     });
   }
 
   if (signupForm) {
-    signupForm.addEventListener('submit', async function(e) {
+    signupForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const name = signupName.value.trim();
@@ -818,48 +770,24 @@ document.addEventListener('DOMContentLoaded', function() {
       if (hasError) return;
 
       sendSignupOtpBtn.disabled = true;
-      sendSignupOtpBtn.innerHTML = `
-        <span class="button-bg">
-          <span class="button-bg-layers">
-            <span class="button-bg-layer button-bg-layer-1"></span>
-            <span class="button-bg-layer button-bg-layer-2"></span>
-            <span class="button-bg-layer button-bg-layer-3"></span>
-          </span>
-        </span>
-        <span class="button-inner">
-          <span class="button-inner-static">Sending...</span>
-          <span class="button-inner-hover">Sending...</span>
-        </span>
-      `;
+      sendSignupOtpBtn.textContent = 'Sending...';
 
       await sendOtp(phone);
 
       sendSignupOtpBtn.disabled = false;
-      sendSignupOtpBtn.innerHTML = `
-        <span class="button-bg">
-          <span class="button-bg-layers">
-            <span class="button-bg-layer button-bg-layer-1"></span>
-            <span class="button-bg-layer button-bg-layer-2"></span>
-            <span class="button-bg-layer button-bg-layer-3"></span>
-          </span>
-        </span>
-        <span class="button-inner">
-          <span class="button-inner-static">Send OTP</span>
-          <span class="button-inner-hover">Send OTP</span>
-        </span>
-      `;
+      sendSignupOtpBtn.textContent = 'Send OTP';
     });
   }
 
   if (otpForm) {
-    otpForm.addEventListener('submit', function(e) {
+    otpForm.addEventListener('submit', function (e) {
       e.preventDefault();
       verifyOtp();
     });
   }
 
   if (changePhoneBtn) {
-    changePhoneBtn.addEventListener('click', function() {
+    changePhoneBtn.addEventListener('click', function () {
       showScreen(currentMode);
       clearErrors();
       if (resendTimerInterval) {
@@ -870,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (resendOtpBtn) {
-    resendOtpBtn.addEventListener('click', async function() {
+    resendOtpBtn.addEventListener('click', async function () {
       if (this.disabled || !currentPhone) return;
 
       console.log('Resending OTP...');
@@ -889,7 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (continueBtn) {
-    continueBtn.addEventListener('click', function() {
+    continueBtn.addEventListener('click', function () {
       closeAuthDrawer();
       // Optional: redirect after success
       // window.location.href = '/';
@@ -899,11 +827,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Phone input UX polish with mobile keyboard support
   [loginPhone, signupPhone].forEach(input => {
     if (!input) return;
-    
+
     // Set numeric inputmode for mobile keyboard
     input.setAttribute('inputmode', 'numeric');
-    
-    input.addEventListener('input', function() {
+
+    input.addEventListener('input', function () {
       let value = this.value.replace(/\D/g, '');
       this.value = value.slice(0, 10);
       this.classList.remove('error');
@@ -912,19 +840,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (err) err.remove();
       }
     });
-    input.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function (e) {
       const allow = [46, 8, 9, 27, 13];
       if (allow.includes(e.keyCode) ||
-          (e.ctrlKey && [65,67,86,88].includes(e.keyCode)) ||
-          (e.keyCode >= 35 && e.keyCode <= 40)) return;
+        (e.ctrlKey && [65, 67, 86, 88].includes(e.keyCode)) ||
+        (e.keyCode >= 35 && e.keyCode <= 40)) return;
       if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) &&
-          (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
+        (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
     });
   });
 
   // Name input - normal keyboard
   if (signupName) {
-    signupName.addEventListener('input', function() {
+    signupName.addEventListener('input', function () {
       this.classList.remove('error');
       if (this.value.trim().length >= 2) {
         const err = this.parentNode.querySelector('.error-message');
@@ -939,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ESC to close drawer or menu
-  document.addEventListener('keydown', function(e) {
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (authDrawer && authDrawer.classList.contains('active')) {
         closeAuthDrawer();
