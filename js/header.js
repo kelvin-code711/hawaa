@@ -413,15 +413,25 @@ document.addEventListener('DOMContentLoaded', function () {
               phone,
               email,
               city,
+
+              status: "active",          // ✅ ADD THIS
+              isLoggedIn: true,          // ✅ optional (if you want)
+
               createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(), // ✅ optional
               updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
           } else {
             await usersRef.set({
+              status: "active",          // ✅ ADD THIS
+              isLoggedIn: true,          // ✅ optional
+
               lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
               updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
           }
+
+          console.log("✅ wrote to doc:", uid);
           console.log('User profile stored/updated in Firestore');
         } else {
           console.warn('Skipping profile write: Firestore not initialized');
