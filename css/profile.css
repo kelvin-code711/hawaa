@@ -27,7 +27,6 @@ body {
   background: var(--bg);
   color: var(--ink-700);
   line-height: 1.6;
-  overflow: hidden;
 }
 
 button,
@@ -559,10 +558,16 @@ select[readonly]:focus {
 }
 
 @media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+
   .container {
     flex-direction: column;
     height: auto;
-    overflow-y: auto;
+    min-height: 100vh;
   }
 
   /* Sidebar: hide the horizontal tab row for better mobile UX */
