@@ -17,9 +17,9 @@ const firebaseConfig = {
 
 // Init
 const app = initializeApp(firebaseConfig);
-try { getAnalytics(app); } catch(_) {}
+try { getAnalytics(app); } catch (_) { }
 const auth = getAuth(app);
-const db   = getFirestore(app);
+const db = getFirestore(app);
 
 // Elements
 const nameInput = document.getElementById("name");
@@ -36,16 +36,16 @@ const saveBtn = document.querySelector(".save-btn");
 
 // Header
 const headerName = document.querySelector(".profile-info h2");
-const headerSub  = document.querySelector(".profile-info p");
-const avatarEl   = document.querySelector(".avatar-initial");
+const headerSub = document.querySelector(".profile-info p");
+const avatarEl = document.querySelector(".avatar-initial");
 
 // Mobile tabs
 const mTabPersonal = document.getElementById("m-tab-personal");
-const mTabOrders   = document.getElementById("m-tab-orders");
+const mTabOrders = document.getElementById("m-tab-orders");
 
 // Sidebar tabs
 const personalTab = document.getElementById("personal-tab");
-const ordersTab   = document.getElementById("orders-tab");
+const ordersTab = document.getElementById("orders-tab");
 
 // Track originals for "Update" button
 let originalValues = {};
@@ -63,20 +63,20 @@ function checkFormChanges() {
   });
   if (saveBtn) saveBtn.disabled = !changed;
 }
-function switchTab(targetId){
+function switchTab(targetId) {
   const personal = document.getElementById("personal-info");
-  const orders   = document.getElementById("orders");
+  const orders = document.getElementById("orders");
 
   if (targetId === "personal-info") {
     personal.classList.add("active"); orders.classList.remove("active");
     personalTab?.classList.add("active"); ordersTab?.classList.remove("active");
     mTabPersonal?.classList.add("active"); mTabOrders?.classList.remove("active");
-    mTabPersonal?.setAttribute("aria-selected","true"); mTabOrders?.setAttribute("aria-selected","false");
+    mTabPersonal?.setAttribute("aria-selected", "true"); mTabOrders?.setAttribute("aria-selected", "false");
   } else {
     personal.classList.remove("active"); orders.classList.add("active");
     ordersTab?.classList.add("active"); personalTab?.classList.remove("active");
     mTabOrders?.classList.add("active"); mTabPersonal?.classList.remove("active");
-    mTabOrders?.setAttribute("aria-selected","true"); mTabPersonal?.setAttribute("aria-selected","false");
+    mTabOrders?.setAttribute("aria-selected", "true"); mTabPersonal?.setAttribute("aria-selected", "false");
   }
 }
 
@@ -100,14 +100,27 @@ onAuthStateChanged(auth, async (user) => {
     if (nameInput && d.name) nameInput.value = d.name;
     if (dobInput && d.dob) dobInput.value = d.dob;
     if (genderInput && d.gender) genderInput.value = d.gender;
-    if (nationalityInput && d.nationality) nationalityInput.value = d.nationality;
+    if (nationalityInput && d.nationality) {
+      nationalityInput.value = d.nationality;
+      nationalityInput.setAttribute('readonly', 'true');
+    }
     if (addressInput && d.address) addressInput.value = d.address;
     if (cityInput && d.city) cityInput.value = d.city;
     if (phoneInput && !phoneInput.value && d.phone) phoneInput.value = d.phone;
     if (emailInput && !emailInput.value && d.email) emailInput.value = d.email;
 
+    // Make phone readonly if user already has phone data
+    if (phoneInput && (user.phoneNumber || d.phone)) {
+      phoneInput.setAttribute('readonly', 'true');
+    }
+
     if (headerName && d.name) headerName.textContent = d.name;
     if (headerSub && (d.email || user.email || user.phoneNumber)) headerSub.textContent = d.email || user.email || user.phoneNumber || "";
+  } else {
+    // New user - phone should still be readonly if they signed up with phone
+    if (phoneInput && user.phoneNumber) {
+      phoneInput.setAttribute('readonly', 'true');
+    }
   }
 
   originalValues = {
@@ -133,10 +146,10 @@ onAuthStateChanged(auth, async (user) => {
     } else {
       const items = [];
       osnap.forEach(d => items.push({ id: d.id, ...d.data() }));
-      items.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
+      items.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
       items.forEach(order => {
         const dateStr = order.timestamp
-          ? new Date(order.timestamp.seconds*1000).toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})
+          ? new Date(order.timestamp.seconds * 1000).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
           : "Date not available";
         const li = document.createElement("li");
         li.className = "order-item";
@@ -199,7 +212,7 @@ profileForm.addEventListener("submit", async (e) => {
 // Logout
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => { window.location.href = "login.html"; })
-               .catch(err => console.error("Logout error:", err));
+    .catch(err => console.error("Logout error:", err));
 });
 
 // Desktop sidebar tab clicks
