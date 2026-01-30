@@ -40,7 +40,6 @@
   </style>
 
   <!-- Section Styles -->
-  <link rel="stylesheet" href="css/announcement-bar.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/hero-index.css">
   <link rel="stylesheet" href="css/Bento-AQI.css">
@@ -58,56 +57,23 @@
 
 <body>
 
-  <!-- Announcement Bar -->
-  <section class="why-strip" style="--gap: 24px; --scroll-time: 20s">
-    <span class="why-strip__heading">Why Hawaa?</span>
-    <div class="why-strip__track-wrapper">
-      <div class="why-strip__track" id="why-hawaa-track">
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">99.9%
-            purification</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Real-time AQI
-            tracking</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Smart energy
-            saving</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Whisper-quiet
-            24 dB</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">App & voice
-            control</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Free filter
-            recycling</span></span>
-        <!-- duplicates for seamless loop -->
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">99.9%
-            purification</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Real-time AQI
-            tracking</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Smart energy
-            saving</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Whisper-quiet
-            24 dB</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">App & voice
-            control</span></span>
-        <span class="why-strip__item"><span class="why-strip__icon">🌿</span><span class="why-strip__text">Free filter
-            recycling</span></span>
-      </div>
-    </div>
-  </section>
-
   <!-- Header -->
   <header class="hawaa-header" id="hawaa-header">
     <div class="header-container">
-      <a href="index.html" class="header-logo">
-        <img src="images/logo.svg" alt="Hawaa" />
+      <div class="header-left">
+        <!-- Hamburger Menu -->
+        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
+          <span class="material-symbols-rounded icon-28">menu</span>
+        </button>
+      </div>
+      <a href="index.html" class="header-logo header-logo--text" aria-label="Hawaa home">
+        Hawaa
       </a>
       <div class="header-actions">
         <!-- Login button stays an <a> for styling -->
         <a href="#" class="header-login-btn" id="headerLoginBtn">
           <span class="login-text">Login</span>
         </a>
-
-        <!-- Hamburger Menu -->
-        <button class="hamburger-btn" aria-label="Open menu" id="menu-toggle">
-          <span class="material-symbols-rounded icon-28">menu</span>
-        </button>
       </div>
     </div>
   </header>
@@ -278,21 +244,19 @@
   </div>
 
 
-  <!-- Hero Top Bar -->
-  <div class="hero-topbar">
-    <h1 class="ht-title">Hawaa</h1>
-    <p class="ht-subtitle">Breathe the difference.</p>
-  </div>
-
   <!-- Hero Index Section -->
   <section class="hero-index" id="heroIndex">
     <video id="heroVideo" class="hero-media" autoplay muted playsinline webkit-playsinline loop preload="auto"
-      poster="images/image-blog.jpg">
-      <source src="images/3D-Product-Animation.mp4" type="video/mp4">
+      poster="images/hawaa-edge.webp">
+      <source src="images/hawaa-edge.webm" type="video/webm">
       Your browser does not support the video tag.
     </video>
 
-    <img src="images/image-blog.jpg" alt="Hero placeholder" class="hero-fallback">
+    <img src="images/hawaa-edge.webp" alt="Hawaa Edge hero" class="hero-fallback">
+    <div class="hero-overlay">
+      <h1 class="hero-title"><span class="hero-title__cap">H</span>awaa <span class="hero-title__cap">E</span>dge</h1>
+      <a href="buy-product.html" class="hero-cta">Buy now</a>
+    </div>
   </section>
 
   <!-- Bento AQI — Single Box (Centered UI; Image on the right) -->
@@ -387,6 +351,7 @@
         <p class="tagline">Next-gen filtration engineered for cleaner indoor air.</p>
 
         <!-- Buttons (Unified: Primary + Secondary) -->
+        <div class="cta-eyebrow">Hawaa Edge</div>
         <div class="btn-group">
           <!-- Buy now (Primary) -->
           <a href="buy-product.html" class="btn button button--primary">
@@ -1102,8 +1067,6 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/announcement-bar.js"></script>
-
   <!-- Firebase SDK (compat) — keep ABOVE header.js; single initialization only -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
