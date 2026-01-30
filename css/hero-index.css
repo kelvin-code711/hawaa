@@ -49,12 +49,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 14px;
   text-align: center;
   color: #FFFFFF;
   font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   padding: 24px;
+  padding-bottom: 120px;
   pointer-events: none;
 }
 
