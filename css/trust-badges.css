@@ -1,0 +1,216 @@
+.trust-badges-section {
+  background: #FFFFFF;
+  padding: 40px 20px 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.trust-badges-head {
+  max-width: 760px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+
+.trust-badges-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin: 0 0 10px;
+}
+
+.trust-badges-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px;
+}
+
+.trust-badges-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.trust-badge-item {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  min-width: 0;
+  padding: 0;
+}
+
+/* Item 1 - Made in India */
+.badge-icon {
+  width: 48px;
+  height: 32px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Item 2 - Rating */
+.rating-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.rating-number {
+  font-size: 42px;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1;
+}
+
+.star-icon {
+  font-size: 42px;
+  color: #FFD700;
+  line-height: 1;
+}
+
+/* Item 3 - Warranty */
+.warranty-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.warranty-number {
+  font-size: 42px;
+  font-weight: 600;
+  color: #4F46E5;
+  line-height: 1;
+}
+
+.warranty-unit {
+  font-size: 24px;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1;
+}
+
+/* Label text */
+.badge-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  letter-spacing: 0.3px;
+  min-height: 18px;
+}
+
+.badge-icon-box {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trust-badges-section {
+    padding: 32px 16px 24px;
+  }
+
+  .trust-badges-container {
+    gap: 20px;
+  }
+
+  .trust-badge-item {
+    flex: 1 1 200px;
+  }
+
+  .indian-flag {
+    width: 40px;
+    height: 27px;
+  }
+
+  .ashoka-chakra {
+    width: 12px;
+    height: 12px;
+  }
+
+  .rating-number,
+  .warranty-number {
+    font-size: 36px;
+  }
+
+  .warranty-unit {
+    font-size: 20px;
+  }
+
+  .badge-label {
+    font-size: 13px;
+  }
+
+  .badge-icon {
+    width: 40px;
+    height: 27px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trust-badges-section {
+    padding: 28px 12px 20px;
+  }
+
+  .trust-badges-container {
+    gap: 8px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .trust-badge-item {
+    flex: 1 1 0;
+    max-width: 33.33%;
+  }
+
+  .indian-flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 10px;
+  }
+
+  .ashoka-chakra {
+    width: 11px;
+    height: 11px;
+    border-width: 1.3px;
+  }
+
+  .rating-display,
+  .warranty-display {
+    margin-bottom: 10px;
+  }
+
+  .rating-number,
+  .warranty-number {
+    font-size: 32px;
+  }
+
+  .star-icon {
+    font-size: 32px;
+  }
+
+  .warranty-unit {
+    font-size: 18px;
+  }
+
+  .badge-label {
+    font-size: 12px;
+  }
+
+  .badge-icon {
+    width: 36px;
+    height: 24px;
+  }
+}

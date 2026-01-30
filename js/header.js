@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Auth elements
   const headerLoginBtn = document.getElementById('headerLoginBtn');
+  const headerSignupBtn = document.getElementById('headerSignupBtn');
   const authOverlay = document.getElementById('authOverlay');
   const authDrawer = document.getElementById('authDrawer');
   const closeAuthBtn = document.getElementById('closeAuthBtn');
@@ -75,6 +76,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function toggleMobileMenu() {
     document.body.classList.toggle('menu-open');
     if (mobileNav) mobileNav.classList.toggle('active');
+  }
+
+  function closeMobileMenu() {
+    document.body.classList.remove('menu-open');
+    if (mobileNav) mobileNav.classList.remove('active');
   }
 
   if (menuToggle && navClose && navOverlay && mobileNav) {
@@ -680,6 +686,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (headerLoginBtn) {
       headerLoginBtn.style.display = user ? 'none' : 'inline-flex';
     }
+    if (headerSignupBtn) {
+      headerSignupBtn.style.display = user ? 'none' : 'inline-flex';
+    }
     // Add/remove mobile nav logout
     if (user) addNavLogoutItem();
     else removeNavLogoutItem();
@@ -701,7 +710,17 @@ document.addEventListener('DOMContentLoaded', function () {
   if (headerLoginBtn) {
     headerLoginBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      closeMobileMenu();
       showScreen('login');
+      openAuthDrawer();
+    });
+  }
+
+  if (headerSignupBtn) {
+    headerSignupBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      closeMobileMenu();
+      showScreen('signup');
       openAuthDrawer();
     });
   }
