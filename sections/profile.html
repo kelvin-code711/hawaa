@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -9,8 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet"/>
   <link rel="stylesheet" href="../css/profile.css"/>
+  <link rel="stylesheet" href="../css/coming-soon.css">
 </head>
 <body>
+<div class="coming-soon-overlay" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+  <div class="coming-soon-card" role="document">
+    <p class="coming-soon-eyebrow">Hawaa</p>
+    <h1 class="coming-soon-title" id="comingSoonTitle">Coming soon</h1>
+    <p class="coming-soon-copy">We are putting the finishing touches on our site. Please check back soon.</p>
+  </div>
+</div>
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -41,7 +49,7 @@
           <span class="material-symbols-rounded" aria-hidden="true">home</span>
           Home
         </a>
-        <span class="crumb-sep">›</span>
+        <span class="crumb-sep">â€º</span>
         <span class="crumb-current">Profile & Settings</span>
       </nav>
 
@@ -148,3 +156,5 @@
   <script type="module" src="../js/profile.js"></script>
 </body>
 </html>
+
+

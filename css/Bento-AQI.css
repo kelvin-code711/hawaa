@@ -13,6 +13,13 @@
   /* #F5F5F5 */
   --visual-max-w: none;
   --content-w: 560px;
+  --aqi-pastel-neutral: rgba(242, 243, 245, 0.72);
+  --aqi-pastel-good: rgba(231, 243, 236, 0.72);
+  --aqi-pastel-moderate: rgba(242, 244, 232, 0.72);
+  --aqi-pastel-usg: rgba(244, 239, 230, 0.72);
+  --aqi-pastel-unhealthy: rgba(245, 234, 232, 0.72);
+  --aqi-pastel-very: rgba(242, 231, 238, 0.72);
+  --aqi-pastel-hazard: rgba(239, 229, 229, 0.72);
 
   /* AQI palette - Grayscale mappings */
   --good: var(--palette-gray-6);
@@ -132,15 +139,18 @@
 
 #bento-aqi {
   font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  background: var(--tint);
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  transition: background-color .35s ease;
 }
 
 .bento-merged {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 48px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 40px;
   padding: 64px 32px;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* Left column */
@@ -151,11 +161,17 @@
 
 .left-inner {
   width: min(100%, var(--content-w));
-  margin-inline: auto;
+  margin-inline: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  text-align: center;
+  text-align: left;
+}
+
+.bento-merged__right {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .bento-head h1 {
@@ -169,6 +185,52 @@
   font-size: 14px;
   margin: 6px 0 0;
   color: var(--muted);
+}
+
+.aqi-hook {
+  margin: 4px auto 2px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.aqi-hook.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
+}
+
+.aqi-hook:not(.is-hidden) {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
+}
+
+.aqi-hook__label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.aqi-hook__text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+
+.aqi-hook--top {
+  display: none;
+}
+
+.aqi-hook--box {
+  display: inline-flex;
 }
 
 /* Search stack */
@@ -305,7 +367,8 @@
 /* ---------- States / Result ---------- */
 .aqi-states {
   position: relative;
-  min-height: 380px;
+  min-height: 280px;
+  width: 100%;
 }
 
 .aqi-states>.aqi-empty,
@@ -330,10 +393,10 @@
 }
 
 .aqi-result {
-  grid-auto-rows: auto;
-  align-content: start;
-  justify-items: center;
-  gap: 14px;
+  display: grid;
+  place-items: center;
+  padding: 6px 0;
+  position: relative;
 }
 
 .empty-hint,
@@ -342,72 +405,117 @@
   color: var(--muted);
 }
 
-/* Ring */
-.ring {
-  --pct: 0;
-  --clr: var(--good);
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: conic-gradient(var(--clr) calc(var(--pct)*1%), var(--palette-gray-6) 0);
-  position: relative;
+/* AQI meter (right column) */
+.aqi-meter {
+  width: min(100%, 360px);
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  text-align: center;
 }
 
-.ring::after {
-  content: "";
-  position: absolute;
-  inset: 12px;
-  border-radius: 50%;
-  background: var(--tint);
-}
-
-.is-good .ring {
-  --clr: var(--good);
-}
-
-.is-moderate .ring {
-  --clr: var(--moderate);
-}
-
-.is-usg .ring {
-  --clr: var(--usg);
-}
-
-.is-unhealthy .ring {
-  --clr: var(--unhealthy);
-}
-
-.is-very .ring {
-  --clr: var(--very);
-}
-
-.is-hazard .ring {
-  --clr: var(--hazard);
-}
-
-.result-score {
-  display: flex;
-  align-items: baseline;
+.aqi-meter__location {
+  display: grid;
   gap: 6px;
 }
 
-.result-score .num {
-  font-size: 32px;
+.aqi-meter__city {
+  margin: 0;
+  font-size: 20px;
   font-weight: 700;
   color: var(--ink-1);
 }
 
-.result-score .label {
-  font-size: 12px;
+.aqi-meter__country {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--muted);
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 13px;
 }
 
-.result-status {
-  font-size: 13px;
+.aqi-meter__flag {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.aqi-meter__gauge {
+  position: relative;
+  width: 280px;
+  height: 160px;
+}
+
+.aqi-meter__arc {
+  width: 100%;
+  height: 100%;
+}
+
+.aqi-meter__arc .arc {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.arc--good { stroke: #18c27c; }
+.arc--acceptable { stroke: #f4c542; }
+.arc--moderate { stroke: #f4c542; }
+.arc--usg { stroke: #f08b2f; }
+.arc--unhealthy { stroke: #f04646; }
+.arc--very { stroke: #9b59ff; }
+.arc--hazard { stroke: #3a3a3a; }
+
+.aqi-meter__needle {
+  fill: #ffffff;
+  stroke: #ffffff;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.2));
+}
+
+.aqi-meter__center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 22px;
+  gap: 8px;
+  text-align: center;
+}
+
+.aqi-meter__num {
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--ink-1);
+}
+
+.aqi-meter__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--muted);
 }
+
+.aqi-meter__status {
+  display: flex;
+  justify-content: center;
+}
+
+.aqi-meter__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-1);
+  background: rgba(24, 194, 124, 0.18);
+}
+
+.aqi-meter--good .aqi-meter__pill { background: rgba(24, 194, 124, 0.18); }
+.aqi-meter--acceptable .aqi-meter__pill { background: rgba(244, 197, 66, 0.18); }
+.aqi-meter--usg .aqi-meter__pill { background: rgba(240, 139, 47, 0.2); }
+.aqi-meter--unhealthy .aqi-meter__pill { background: rgba(240, 70, 70, 0.2); }
+.aqi-meter--very .aqi-meter__pill { background: rgba(155, 89, 255, 0.18); }
+.aqi-meter--hazard .aqi-meter__pill { background: rgba(0, 0, 0, 0.16); }
 
 /* PM tiles */
 .pm-stats {
@@ -460,21 +568,134 @@
 .bento-merged__right {
   min-height: 220px;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
   background: transparent;
   border-radius: 16px;
   overflow: hidden;
 }
 
-.bento-merged__right img {
+.aqi-visual-box {
   width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  object-position: var(--image-x, 50%) 50%;
-  max-width: var(--visual-max-w);
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  height: 100%;
 }
+
+.aqi-visual-box__vectors {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity .25s ease;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(120, 170, 200, 0.28) 0 80px, transparent 82px),
+    radial-gradient(circle at 80% 35%, rgba(150, 190, 170, 0.26) 0 70px, transparent 72px),
+    linear-gradient(135deg, rgba(140, 170, 220, 0.18) 0 20%, transparent 20% 100%),
+    linear-gradient(25deg, rgba(180, 150, 170, 0.16) 0 18%, transparent 18% 100%);
+  filter: blur(2px);
+}
+
+.aqi-visual-box.hook-hidden .aqi-visual-box__vectors {
+  opacity: 1;
+}
+
+.aqi-visual-box::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  background: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.7), transparent 60%);
+  filter: blur(30px);
+  opacity: 0.8;
+}
+
+.aqi-visual-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05));
+}
+
+.aqi-legend {
+  position: absolute;
+  inset: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: var(--ink-1);
+}
+
+.aqi-legend__title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--palette-black);
+}
+
+.aqi-legend__steps {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 6px 4px;
+}
+
+.aqi-legend__step {
+  height: 18px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.aqi-legend__step--good {
+  background: #2ecc71;
+}
+
+.aqi-legend__step--acceptable {
+  background: #f1c40f;
+}
+
+.aqi-legend__step--usg {
+  background: #e67e22;
+}
+
+.aqi-legend__step--unhealthy {
+  background: #e74c3c;
+}
+
+.aqi-legend__step--very {
+  background: #8e44ad;
+}
+
+.aqi-legend__step--hazard {
+  background: #111111;
+}
+
+.aqi-visual-box__hook {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  margin: 0;
+}
+
+#bento-aqi.is-good .aqi-visual-box { background: var(--aqi-pastel-good); }
+#bento-aqi.is-moderate .aqi-visual-box { background: var(--aqi-pastel-moderate); }
+#bento-aqi.is-usg .aqi-visual-box { background: var(--aqi-pastel-usg); }
+#bento-aqi.is-unhealthy .aqi-visual-box { background: var(--aqi-pastel-unhealthy); }
+#bento-aqi.is-very .aqi-visual-box { background: var(--aqi-pastel-very); }
+#bento-aqi.is-hazard .aqi-visual-box { background: var(--aqi-pastel-hazard); }
 
 /* Focus bump */
 .input-bump {
@@ -486,9 +707,42 @@
 @media (max-width:980px) {
   .bento-merged {
     grid-template-columns: 1fr;
+    position: relative;
+    padding-bottom: 24px;
+    gap: 24px;
   }
 
-  .bento-merged__right {
+  #bento-aqi {
+    background: #ffffff;
+  }
+
+  #bento-aqi.is-good { background: #ffffff; }
+  #bento-aqi.is-moderate { background: #ffffff; }
+  #bento-aqi.is-usg { background: #ffffff; }
+  #bento-aqi.is-unhealthy { background: #ffffff; }
+  #bento-aqi.is-very { background: #ffffff; }
+  #bento-aqi.is-hazard { background: #ffffff; }
+
+  .bento-merged__left {
+    position: relative;
+    z-index: 1;
+  }
+
+  .left-inner {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .aqi-visual-box {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .aqi-hook--top {
+    display: inline-flex;
+  }
+
+  .aqi-hook--box {
     display: none;
   }
 
@@ -524,6 +778,13 @@
 
   .aqi-states>.aqi-result.is-visible {
     display: grid;
+  }
+
+  .pm-tile {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.10);
   }
 }
 

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 
 <head>
@@ -25,9 +25,17 @@
       background: transparent !important;
     }
   </style>
+  <link rel="stylesheet" href="../css/coming-soon.css">
 </head>
 
 <body>
+<div class="coming-soon-overlay" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+  <div class="coming-soon-card" role="document">
+    <p class="coming-soon-eyebrow">Hawaa</p>
+    <h1 class="coming-soon-title" id="comingSoonTitle">Coming soon</h1>
+    <p class="coming-soon-copy">We are putting the finishing touches on our site. Please check back soon.</p>
+  </div>
+</div>
   <aside id="cart-drawer" class="cd-drawer" role="dialog" aria-modal="false" aria-labelledby="cart-title">
     <header class="cd-head">
       <!-- Title for CART step -->
@@ -73,10 +81,10 @@
         </form>
 
         <section class="cd-summary">
-          <div class="cd-row"><span>Subtotal</span><strong id="sum-subtotal">₹0</strong></div>
-          <div class="cd-row"><span>Discount</span><strong id="sum-discount">— ₹0</strong></div>
-          <div class="cd-row"><span>Shipping</span><strong id="sum-shipping">₹80</strong></div>
-          <div class="cd-row cd-total"><span>Total</span><strong id="sum-total">₹0</strong></div>
+          <div class="cd-row"><span>Subtotal</span><strong id="sum-subtotal">â‚¹0</strong></div>
+          <div class="cd-row"><span>Discount</span><strong id="sum-discount">â€” â‚¹0</strong></div>
+          <div class="cd-row"><span>Shipping</span><strong id="sum-shipping">â‚¹80</strong></div>
+          <div class="cd-row cd-total"><span>Total</span><strong id="sum-total">â‚¹0</strong></div>
           <p class="cd-note">Taxes calculated at checkout.</p>
         </section>
       </div>
@@ -188,7 +196,7 @@
           <div class="cd-payment-details">
             <div class="cd-payment-row">
               <span>Amount:</span>
-              <strong id="payment-amount">₹0</strong>
+              <strong id="payment-amount">â‚¹0</strong>
             </div>
             <div class="cd-payment-row">
               <span>Order ID:</span>
@@ -203,7 +211,7 @@
     <footer class="cd-foot">
       <div class="cd-foot-total" aria-live="polite">
         <span class="cd-foot-label">Total</span>
-        <strong class="cd-foot-amount" id="foot-total">₹0</strong>
+        <strong class="cd-foot-amount" id="foot-total">â‚¹0</strong>
       </div>
       <button class="cd-primary-btn" id="next-btn" type="button" data-state="cart">
         <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
@@ -236,3 +244,5 @@
 </body>
 
 </html>
+
+

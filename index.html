@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hawaa – Home</title>
+  <title>Hawaa â€“ Home</title>
 
   <!-- Fonts -->
   <link rel="preload" href="fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -54,9 +54,17 @@
   <link rel="stylesheet" href="css/hero-guide.css">
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/scroll-animations.css">
+  <link rel="stylesheet" href="css/coming-soon.css">
 </head>
 
 <body>
+<div class="coming-soon-overlay" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+  <div class="coming-soon-card" role="document">
+    <p class="coming-soon-eyebrow">Hawaa</p>
+    <h1 class="coming-soon-title" id="comingSoonTitle">Coming soon</h1>
+    <p class="coming-soon-copy">We are putting the finishing touches on our site. Please check back soon.</p>
+  </div>
+</div>
 
   <!-- Header -->
   <header class="hawaa-header" id="hawaa-header">
@@ -80,7 +88,7 @@
       <div class="nav-header">
         <h2 class="nav-title">Menu</h2>
         <div class="nav-icons">
-          <!-- ✅ Profile icon as link -->
+          <!-- âœ… Profile icon as link -->
           <a href="sections/profile.html" class="nav-icon" aria-label="Account">
             <span class="material-symbols-rounded">account_circle</span>
           </a>
@@ -237,7 +245,7 @@
       <!-- Success Screen -->
       <div id="successScreen" class="auth-screen" style="display: none;">
         <div class="success-content">
-          <div class="success-icon">✓</div>
+          <div class="success-icon">âœ“</div>
           <h3 id="successTitle">Login Successful!</h3>
           <p id="successMessage">You have been successfully logged in.</p>
           <button class="primary-btn" id="continueBtn">Continue</button>
@@ -259,6 +267,7 @@
     <div class="hero-overlay">
       <h1 class="hero-title"><span class="hero-title__cap">H</span>awaa <span class="hero-title__cap">E</span>dge</h1>
       <a href="buy-product.html" class="hero-cta">Buy now</a>
+      <a href="sections/product-learn.html" class="hero-cta">Explore Edge</a>
     </div>
   </section>
 
@@ -300,11 +309,15 @@
     </div>
   </section>
 
-  <!-- Bento AQI — Single Box (Centered UI; Image on the right) -->
+  <!-- Bento AQI â€” Single Box (Centered UI; Image on the right) -->
   <section id="bento-aqi" data-reveal>
     <div class="bento-merged">
       <div class="bento-merged__left">
         <div class="left-inner">
+          <div class="aqi-hook aqi-hook--top" id="aqiHookTop" aria-live="polite">
+            <div class="aqi-hook__label">High AQI today</div>
+            <div class="aqi-hook__text">Loading latest India AQIÃ¢â‚¬Â¦</div>
+          </div>
           <header class="bento-head">
             <h1>Check the air quality in your city</h1>
             <p>Enter a city or station; pick from the list</p>
@@ -313,7 +326,7 @@
           <!-- Input with arrow button INSIDE -->
           <div class="search-row">
             <div class="search-input">
-              <input id="cityInput" type="text" placeholder="Start typing a city or station…" autocomplete="off" />
+              <input id="cityInput" type="text" placeholder="Start typing a city or stationâ€¦" autocomplete="off" />
               <!-- Arrow button inside input -->
               <button class="search-btn" type="button" aria-label="Search city AQI">
                 <span class="material-symbols-rounded icon-20">arrow_forward</span>
@@ -331,40 +344,51 @@
             </div>
           </div>
 
-          <!-- States / Result (center-aligned) -->
-          <div class="aqi-states">
-            <div class="aqi-empty">
-              <p class="empty-hint">Enter a city to see the AQI.</p>
-            </div>
-            <div class="aqi-loading" style="display:none;">
-              <p class="loading-copy">Fetching latest air data…</p>
-            </div>
-
-            <div class="aqi-result" style="display:none;">
-              <div class="ring" aria-label="AQI gauge"></div>
-              <div class="result-score"><span class="num">—</span><span class="label">AQI</span></div>
-              <div class="result-status">—</div>
-              <div class="pm-stats">
-                <div class="pm-tile" data-type="pm25">
-                  <div class="pm-label">PM 2.5</div>
-                  <div class="pm-value" data-js="pm25-value">—</div>
-                  <div class="pm-unit" data-js="pm25-unit">µg/m³</div>
-                </div>
-                <div class="pm-tile" data-type="pm10">
-                  <div class="pm-label">PM 10</div>
-                  <div class="pm-value" data-js="pm10-value">—</div>
-                  <div class="pm-unit" data-js="pm10-unit">µg/m³</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div><!-- /.left-inner -->
       </div>
 
-      <!-- Right visual (image only) -->
-      <!-- Tip: control size via --visual-max-w; position via --image-x -->
-      <div class="bento-merged__right" style="--image-x: 50%; --visual-max-w: none;">
-        <img id="aqi-visual" src="images/breathing.png" alt="Air quality visual" loading="lazy">
+      <div class="bento-merged__right">
+        <!-- States / Result (right column) -->
+        <div class="aqi-states">
+          <div class="aqi-empty">
+            <p class="empty-hint">Enter a city to see the AQI.</p>
+          </div>
+          <div class="aqi-loading" style="display:none;">
+            <p class="loading-copy">Fetching latest air dataâ€¦</p>
+          </div>
+
+          <div class="aqi-result" style="display:none;">
+            <div class="aqi-meter aqi-meter--good" role="group" aria-label="AQI meter">
+              <div class="aqi-meter__location">
+                <p class="aqi-meter__city">â€”</p>
+                <div class="aqi-meter__country">
+                  <span class="aqi-meter__flag" aria-hidden="true">ðŸ‡ºðŸ‡¸</span>
+                  <span class="aqi-meter__country-name">United States</span>
+                </div>
+              </div>
+
+              <div class="aqi-meter__gauge" aria-hidden="true">
+                <svg class="aqi-meter__arc" viewBox="0 0 200 120" role="presentation">
+                  <path class="arc arc--good" d="M 20 100 A 80 80 0 0 1 28.5 64.1" />
+                  <path class="arc arc--acceptable" d="M 31.2 59.2 A 80 80 0 0 1 56.8 32.7" />
+                  <path class="arc arc--usg" d="M 61.6 29.8 A 80 80 0 0 1 97.2 20" />
+                  <path class="arc arc--unhealthy" d="M 102.8 20 A 80 80 0 0 1 138.4 29.8" />
+                  <path class="arc arc--very" d="M 143.2 32.7 A 80 80 0 0 1 168.8 59.2" />
+                  <path class="arc arc--hazard" d="M 171.5 64.1 A 80 80 0 0 1 180 100" />
+                  <circle class="aqi-meter__needle" cx="100" cy="20" r="6" />
+                </svg>
+                <div class="aqi-meter__center">
+                  <span class="aqi-meter__num">â€”</span>
+                  <span class="aqi-meter__label">AQI</span>
+                </div>
+              </div>
+
+              <div class="aqi-meter__status">
+                <span class="aqi-meter__pill">â€”</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -427,33 +451,33 @@
           <img src="images/slide1.jpg" alt="Pure Air Anywhere" class="hawaa-slider__image" width="1800" height="1000" />
           <div class="hawaa-slider__content">
             <h2 class="hawaa-slider__title">PURE AIR ANYWHERE</h2>
-            <span class="hawaa-slider__subtitle">Air Purifier • Breathe better. Live better.</span>
+            <span class="hawaa-slider__subtitle">Air Purifier â€¢ Breathe better. Live better.</span>
           </div>
         </div>
         <div class="hawaa-slider__slide" data-index="1">
           <img src="images/slide2.jpg" alt="Smart Protection" class="hawaa-slider__image" width="1800" height="1000" />
           <div class="hawaa-slider__content">
             <h2 class="hawaa-slider__title">SMART PROTECTION</h2>
-            <span class="hawaa-slider__subtitle">HEPA Filter • Removes 99.97% of particles.</span>
+            <span class="hawaa-slider__subtitle">HEPA Filter â€¢ Removes 99.97% of particles.</span>
           </div>
         </div>
         <div class="hawaa-slider__slide" data-index="2">
           <img src="images/slide3.jpg" alt="Silent Operation" class="hawaa-slider__image" width="1800" height="1000" />
           <div class="hawaa-slider__content">
             <h2 class="hawaa-slider__title">SILENT OPERATION</h2>
-            <span class="hawaa-slider__subtitle">Quiet Mode • Sleep soundly with 24dB operation.</span>
+            <span class="hawaa-slider__subtitle">Quiet Mode â€¢ Sleep soundly with 24dB operation.</span>
           </div>
         </div>
         <div class="hawaa-slider__slide" data-index="3">
           <img src="images/slide4.jpg" alt="App Control" class="hawaa-slider__image" width="1800" height="1000" />
           <div class="hawaa-slider__content">
             <h2 class="hawaa-slider__title">APP CONTROL</h2>
-            <span class="hawaa-slider__subtitle">Smart Features • Monitor air quality anywhere.</span>
+            <span class="hawaa-slider__subtitle">Smart Features â€¢ Monitor air quality anywhere.</span>
           </div>
         </div>
       </div>
 
-      <!-- Arrow buttons — now icon-only -->
+      <!-- Arrow buttons â€” now icon-only -->
       <button class="hawaa-slider__arrow hawaa-slider__arrow--prev icon-only" aria-label="Previous slide">
         <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
       </button>
@@ -537,9 +561,9 @@
         <div class="quiz-question" data-question="2">
           <h3>Are your floors and furniture covered with carpets, rugs or fabric upholstery?</h3>
           <div class="quiz-options">
-            <div class="quiz-option" data-value="yes">Yes – most floors & lots of fabric furniture</div>
-            <div class="quiz-option" data-value="some">Some – a few rugs/upholstery</div>
-            <div class="quiz-option" data-value="no">No – mostly hard floors</div>
+            <div class="quiz-option" data-value="yes">Yes â€“ most floors & lots of fabric furniture</div>
+            <div class="quiz-option" data-value="some">Some â€“ a few rugs/upholstery</div>
+            <div class="quiz-option" data-value="no">No â€“ mostly hard floors</div>
           </div>
         </div>
 
@@ -556,9 +580,9 @@
         <div class="quiz-question" data-question="4">
           <h3>How often do you use strong-odored or chemical products?</h3>
           <div class="quiz-options">
-            <div class="quiz-option" data-value="frequently">Frequently – daily sprays/cleaners</div>
-            <div class="quiz-option" data-value="occasionally">Occasionally – weekly or for projects</div>
-            <div class="quiz-option" data-value="rarely">Rarely – natural/no-odor products</div>
+            <div class="quiz-option" data-value="frequently">Frequently â€“ daily sprays/cleaners</div>
+            <div class="quiz-option" data-value="occasionally">Occasionally â€“ weekly or for projects</div>
+            <div class="quiz-option" data-value="rarely">Rarely â€“ natural/no-odor products</div>
           </div>
         </div>
 
@@ -566,9 +590,9 @@
         <div class="quiz-question" data-question="5">
           <h3>How would you rate your home's ventilation?</h3>
           <div class="quiz-options">
-            <div class="quiz-option" data-value="good">Good – open windows/exhaust daily</div>
-            <div class="quiz-option" data-value="fair">Fair – a few times a week</div>
-            <div class="quiz-option" data-value="poor">Poor – windows usually closed</div>
+            <div class="quiz-option" data-value="good">Good â€“ open windows/exhaust daily</div>
+            <div class="quiz-option" data-value="fair">Fair â€“ a few times a week</div>
+            <div class="quiz-option" data-value="poor">Poor â€“ windows usually closed</div>
           </div>
         </div>
 
@@ -710,7 +734,7 @@
               <div class="rc-slide">
                 <div class="rc-quote-container">
                   <p class="rc-quote">
-                    "As someone with asthma, clean air isn't a luxury—it's essential. This purifier runs so quietly I
+                    "As someone with asthma, clean air isn't a luxuryâ€”it's essential. This purifier runs so quietly I
                     forget it's on, but my breathing has improved dramatically. The app notifications are incredibly
                     helpful too."
                   </p>
@@ -880,7 +904,7 @@
         </summary>
         <div class="faq-answer">
           <p>Our air purifiers are designed with sleep and comfort in mind. On the lowest setting, our units operate at
-            just 24 decibels – quieter than a whisper. Even at the highest setting, the noise level remains below 50
+            just 24 decibels â€“ quieter than a whisper. Even at the highest setting, the noise level remains below 50
             decibels, which is comparable to gentle rainfall.</p>
           <p>The sleep mode automatically dims the display lights and reduces fan speed during nighttime hours, ensuring
             your sleep remains undisturbed while still providing clean air throughout the night.</p>
@@ -1108,7 +1132,7 @@
   </div>
 
   <!-- Scripts -->
-  <!-- Firebase SDK (compat) — keep ABOVE header.js; single initialization only -->
+  <!-- Firebase SDK (compat) â€” keep ABOVE header.js; single initialization only -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
@@ -1165,3 +1189,7 @@
 </body>
 
 </html>
+
+
+
+

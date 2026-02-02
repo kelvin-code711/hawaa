@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -46,7 +46,7 @@
         }
 
         .success-icon::after {
-            content: '✓';
+            content: 'âœ“';
             color: white;
             font-size: 40px;
             font-weight: bold;
@@ -141,9 +141,17 @@
             }
         }
     </style>
+  <link rel="stylesheet" href="../css/coming-soon.css">
 </head>
 
 <body>
+<div class="coming-soon-overlay" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+  <div class="coming-soon-card" role="document">
+    <p class="coming-soon-eyebrow">Hawaa</p>
+    <h1 class="coming-soon-title" id="comingSoonTitle">Coming soon</h1>
+    <p class="coming-soon-copy">We are putting the finishing touches on our site. Please check back soon.</p>
+  </div>
+</div>
     <div class="success-container">
         <div class="success-icon"></div>
         <h1>Payment Successful!</h1>
@@ -179,3 +187,4 @@
 </body>
 
 </html>
+

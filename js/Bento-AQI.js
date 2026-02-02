@@ -9,6 +9,9 @@
   const MAX_AQI = 500;
   const WHO_24H = { pm25: 15, pm10: 45 };
   const AQICN_TOKEN = (window.AQICN_TOKEN || 'd51edd8bd0f9f59e1ba1cf2df56eacc3377bd23d');
+  const HOOK_REFRESH_MS = 6 * 60 * 60 * 1000; // 4x per day
+  const INDIA_BOUNDS = { minLat: 6.5, minLon: 68.1, maxLat: 35.7, maxLon: 97.4 };
+  const IN_COUNTRY = new Set(['india', 'in']);
 
   const qs  = (s, r=document) => r.querySelector(s);
   const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
@@ -49,10 +52,13 @@
   const pm10UnitEl = qs('[data-js="pm10-unit"]');
 
   // ring + score
-  const ringEl   = qs('.ring');
-  const scoreNum = qs('.result-score .num');
-  const scoreLbl = qs('.result-score .label');
-  const statusTxt= qs('.result-status');
+  const scoreNum = qs('.aqi-meter__num');
+  const statusTxt= qs('.aqi-meter__pill');
+  const cityTxt = qs('.aqi-meter__city');
+  const needleEl = qs('.aqi-meter__needle');
+  const hookTexts = [...document.querySelectorAll('.aqi-hook__text')];
+  const hookWraps = [...document.querySelectorAll('.aqi-hook')];
+  const visualBox = qs('.aqi-visual-box');
 
   const container = qs('#bento-aqi');
 
@@ -63,6 +69,61 @@
     'Chennai':{ aqi:72, pm25:28, pm10:64 }, 'Hyderabad':{ aqi:110, pm25:52, pm10:98 },
     'Pune':{ aqi:92, pm25:40, pm10:80 }, 'Kolkata':{ aqi:158, pm25:82, pm10:140 }
   };
+  const HOOK_FALLBACKS = [
+    { city: 'Kanpur', aqi: 240, pm25: 120 },
+    { city: 'Delhi', aqi: 210, pm25: 110 },
+    { city: 'Patna', aqi: 190, pm25: 95 },
+    { city: 'Lucknow', aqi: 180, pm25: 90 },
+    { city: 'Ghaziabad', aqi: 200, pm25: 105 }
+  ];
+
+  function normalizeCountry(c){
+    return String(c || '').trim().toLowerCase();
+  }
+  function formatCountry(c){
+    const n = normalizeCountry(c);
+    if (!n) return '';
+    if (IN_COUNTRY.has(n)) return 'India';
+    return c;
+  }
+  function isIndianStation(it){
+    if (!it) return false;
+    const c = normalizeCountry(it.country);
+    if (IN_COUNTRY.has(c)) return true;
+    if (Array.isArray(it.geo) && it.geo.length === 2){
+      const [lat, lon] = it.geo.map(Number);
+      if (Number.isFinite(lat) && Number.isFinite(lon)){
+        if (lat >= INDIA_BOUNDS.minLat && lat <= INDIA_BOUNDS.maxLat &&
+            lon >= INDIA_BOUNDS.minLon && lon <= INDIA_BOUNDS.maxLon){
+          return true;
+        }
+      }
+    }
+    const name = String(it.name || '');
+    return /(?:^|,|\s)\s*india\b/i.test(name) || /\bIndia\b/i.test(name);
+  }
+  function isIndianCityName(name){
+    const n = String(name || '');
+    if (!n) return false;
+    if (/\bIndia\b/i.test(n)) return true;
+    const base = cleanCityName(n).toLowerCase();
+    return Object.prototype.hasOwnProperty.call(DEMO, properCase(base)) ||
+      HOOK_FALLBACKS.some(x => x.city.toLowerCase() === base);
+  }
+  function cleanCityName(name){
+    return String(name || '')
+      .replace(/\s*\(.*?\)\s*/g, ' ')
+      .replace(/\s*[,|-]\s*india\b/ig, '')
+      .replace(/\s+india\b/ig, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+  function cigarettesFromPM25(pm25){
+    if (!Number.isFinite(pm25)) return NaN;
+    const per = pm25 / 22; // ~22 µg/m3 PM2.5 per cigarette/day
+    if (per < 0.5) return 0;
+    return Math.max(1, Math.round(per));
+  }
 
   /* ---------- WAQI helpers ---------- */
   async function fetchByCity(city){
@@ -105,7 +166,7 @@
     let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
   }
 
-  async function searchStations(q){
+  async function searchStations(q, onlyIndia=false){
     if (taAbort) taAbort.abort();
     taAbort = new AbortController();
     const url = `https://api.waqi.info/search/?token=${AQICN_TOKEN}&keyword=${encodeURIComponent(q)}`;
@@ -113,7 +174,7 @@
     const j = await r.json();
     if (j.status !== 'ok') return [];
     const rows = Array.isArray(j.data) ? j.data : [];
-    return rows.map(x => ({
+    const list = rows.map(x => ({
       uid: x.uid,
       aqi: safeNum(x.aqi),
       name: x.station?.name || '',
@@ -121,6 +182,7 @@
       time: x.time || '',
       geo: Array.isArray(x.station?.geo) ? x.station.geo : null
     }));
+    return onlyIndia ? list.filter(isIndianStation) : list;
   }
 
   const onType = debounce(async () => {
@@ -128,7 +190,7 @@
     taActiveIndex = -1;
     if (!q || q.length < 2){ hideTA(); return; }
 
-    const list = await searchStations(q);
+    const list = await searchStations(q, true);
     taItems = list;
     renderTA(list, q);
   }, 220);
@@ -139,7 +201,7 @@
 
     dropdown.innerHTML = list.slice(0, 50).map((it, i) => {
       const nm = escapeHTML(it.name);
-      const meta = [it.country].filter(Boolean).join(' · ');
+      const meta = [formatCountry(it.country) || 'India'].filter(Boolean).join(' · ');
       const aqiBadge = Number.isFinite(it.aqi) ? `<span class="typeahead__aqi">AQI ${it.aqi}</span>` : '';
       return `
         <div class="typeahead__item" role="option" data-idx="${i}" data-uid="${it.uid}" aria-selected="${i===taActiveIndex?'true':'false'}">
@@ -191,6 +253,7 @@
     hideTA();
     if (!it) return;
     cityInput.value = it.name;
+    setHookVisible(false);
     setLoading('Fetching station data…');
     try{
       const d = await fetchByUid(it.uid);
@@ -201,12 +264,100 @@
   }
 
   // helpers for highlighting
-  function escapeHTML(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+  function escapeHTML(s){
+    return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
   function highlight(text, q){
     const i = text.toLowerCase().indexOf(q.toLowerCase());
     if (i<0) return text;
     const j = i + q.length;
     return text.slice(0,i) + '<strong>' + text.slice(i,j) + '</strong>' + text.slice(j);
+  }
+
+  function pickBestIndiaMatch(list, q){
+    if (!Array.isArray(list) || !list.length) return null;
+    const ql = String(q || '').toLowerCase();
+    let best = list[0];
+    let bestScore = -1;
+    for (const it of list){
+      const name = String(it.name || '').toLowerCase();
+      let score = 0;
+      if (ql && name.startsWith(ql)) score += 6;
+      if (ql && name.includes(ql)) score += 3;
+      if (Number.isFinite(it.aqi)) score += Math.min(it.aqi, 500) / 100;
+      if (score > bestScore){
+        bestScore = score;
+        best = it;
+      }
+    }
+    return best;
+  }
+
+  /* ---------- Hook: High AQI in India ---------- */
+  async function fetchIndiaTopStation(){
+    const { minLat, minLon, maxLat, maxLon } = INDIA_BOUNDS;
+    const url = `https://api.waqi.info/map/bounds/?latlng=${minLat},${minLon},${maxLat},${maxLon}&token=${AQICN_TOKEN}`;
+    const r = await fetch(url, { cache:'no-store' });
+    const j = await r.json();
+    if (j.status !== 'ok') throw new Error(j.data || 'AQICN bounds fetch failed');
+    const rows = Array.isArray(j.data) ? j.data : [];
+    const top = rows
+      .map(x => ({
+        uid: x.uid,
+        aqi: safeNum(x.aqi),
+        name: x.station?.name || x.station || ''
+      }))
+      .filter(x => Number.isFinite(x.aqi))
+      .sort((a,b) => b.aqi - a.aqi)[0];
+    if (!top) return null;
+    try{
+      const d = await fetchByUid(top.uid);
+      return { ...d, aqi: Number.isFinite(d.aqi) ? d.aqi : top.aqi, name: top.name };
+    } catch {
+      return { aqi: top.aqi, city: top.name };
+    }
+  }
+
+  function setHookLoading(){
+    hookTexts.forEach(el => { if (el) el.textContent = 'Loading latest India AQI...'; });
+  }
+
+  function renderHook(city, pm25, aqi){
+    if (!hookTexts.length) return;
+    const clean = cleanCityName(city) || 'this city';
+    const cig = cigarettesFromPM25(pm25);
+    if (Number.isFinite(cig) && cig > 0){
+      hookTexts.forEach(el => { if (el) el.textContent = `People of ${clean} are smoking ~${cig} cigarettes a day`; });
+      return;
+    }
+    if (Number.isFinite(aqi)){
+      hookTexts.forEach(el => { if (el) el.textContent = `${clean} is at AQI ${aqi} right now`; });
+      return;
+    }
+    hookTexts.forEach(el => { if (el) el.textContent = `Air in ${clean} is unhealthy today`; });
+  }
+
+  function rotateHookFallback(){
+    const idx = Math.floor(Date.now() / HOOK_REFRESH_MS) % HOOK_FALLBACKS.length;
+    const pick = HOOK_FALLBACKS[idx];
+    renderHook(pick.city, pick.pm25, pick.aqi);
+  }
+
+  function setHookVisible(show){
+    hookWraps.forEach(el => el.classList.toggle('is-hidden', !show));
+    visualBox?.classList.toggle('hook-hidden', !show);
+  }
+
+  async function refreshHook(){
+    if (!hookTexts.length) return;
+    setHookLoading();
+    try{
+      const top = await fetchIndiaTopStation();
+      if (!top) throw new Error('No top station');
+      renderHook(top.city || top.name, top.pm25, top.aqi);
+    } catch {
+      rotateHookFallback();
+    }
   }
 
   /* ---------- Wire up ---------- */
@@ -228,17 +379,31 @@
     cityInput?.addEventListener('focus', onType);
     cityInput?.addEventListener('blur', () => setTimeout(hideTA, 120));
     locateBtn?.addEventListener('click', onLocateMe);
+    setHookVisible(true);
+    refreshHook();
+    setInterval(refreshHook, HOOK_REFRESH_MS);
   });
 
   // Search by typed city
   window.getAqi = async () => {
     const typed = (cityInput?.value || '').trim();
     if (!typed){ bump(cityInput); return; }
+    setHookVisible(false);
 
     setLoading('Fetching latest air data…');
     resetAqiVisuals();
     try{
-      const d = await fetchByCity(typed);
+      let d = null;
+      try{
+        const list = await searchStations(typed, true);
+        const best = pickBestIndiaMatch(list, typed);
+        if (best?.uid) d = await fetchByUid(best.uid);
+      } catch {}
+      if (!d) d = await fetchByCity(typed);
+      if (!isIndianCityName(d.city || typed)){
+        setEmpty('Only Indian cities are available right now.');
+        return;
+      }
       render(d.aqi, d.pm25, d.pm10, d.city || properCase(typed));
     } catch (e){
       console.warn('[AQI fetch failed, demo]', e);
@@ -252,6 +417,7 @@
   };
 
   function onLocateMe(){
+    setHookVisible(false);
     setLoading('Getting location & fetching air data…');
     resetAqiVisuals();
     if (!navigator.geolocation){ setEmpty('Location unavailable. Try searching a city.'); return; }
@@ -259,18 +425,21 @@
       try {
         const { latitude, longitude } = pos.coords;
         const d = await fetchByGeo(latitude, longitude);
+        if (!isIndianCityName(d.city)){
+          setEmpty('Only Indian cities are available right now.');
+          return;
+        }
         render(d.aqi, d.pm25, d.pm10, d.city);
       } catch { setEmpty('No station/data found for your location. Try a nearby city.'); }
     }, ()=> setEmpty('Location permission denied. Try searching a city.'), { enableHighAccuracy:true, timeout:8000, maximumAge:0 });
   }
 
   /* ---------- Render ---------- */
-  let aqiAnimId = null; // requestAnimationFrame id for ring/number sync
-
   function resetAqiVisuals(){
-    if (aqiAnimId) cancelAnimationFrame(aqiAnimId);
-    if (ringEl) ringEl.style.setProperty('--pct', '0');
-    if (scoreNum) scoreNum.textContent = '0';
+    if (scoreNum) scoreNum.textContent = '—';
+    if (statusTxt) statusTxt.textContent = '—';
+    if (cityTxt) cityTxt.textContent = '—';
+    if (needleEl) needleEl.setAttribute('transform', 'rotate(180 100 100)');
   }
 
   function render(aqi, pm25, pm10, label){
@@ -278,49 +447,23 @@
     setPM(pm25El, pm25, 'pm25'); pm25UnitEl && (pm25UnitEl.textContent='µg/m³');
     setPM(pm10El, pm10, 'pm10'); pm10UnitEl && (pm10UnitEl.textContent='µg/m³');
 
-    // Labels (number value will animate separately)
-    scoreLbl && (scoreLbl.textContent = 'AQI');
-    statusTxt && (statusTxt.textContent = statusText(aqi, label));
+    // Labels
+    statusTxt && (statusTxt.textContent = categoryText(aqi));
+    cityTxt && (cityTxt.textContent = label || 'Your City');
     setCategory(container, aqi);
 
     // Show result
     showResult();
 
-    // Animate ring + number together from 0 → target
-    animateAQI(Number.isFinite(aqi) ? clamp(aqi, 0, MAX_AQI) : 0);
-  }
+    if (scoreNum) {
+      scoreNum.textContent = Number.isFinite(aqi) ? String(clamp(aqi, 0, MAX_AQI)) : '—';
+    }
 
-  function animateAQI(target){
-    if (!ringEl || !scoreNum){ return; }
-    const duration = 900; // ms
-    const start = performance.now();
-    const endPct = Math.round((target / MAX_AQI) * 100);
-
-    if (aqiAnimId) cancelAnimationFrame(aqiAnimId);
-
-    const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
-
-    const tick = (now) => {
-      const t = Math.min(1, (now - start) / duration);
-      const e = ease(t);
-
-      const currAqi = Math.round(target * e);
-      const currPct = Math.round(endPct * e);
-
-      ringEl.style.setProperty('--pct', String(currPct));
-      scoreNum.textContent = String(currAqi);
-
-      if (t < 1){
-        aqiAnimId = requestAnimationFrame(tick);
-      } else {
-        aqiAnimId = null;
-        ringEl.style.setProperty('--pct', String(endPct));
-        scoreNum.textContent = String(target);
-      }
-    };
-    ringEl.style.setProperty('--pct', '0');
-    scoreNum.textContent = '0';
-    aqiAnimId = requestAnimationFrame(tick);
+    if (needleEl && Number.isFinite(aqi)){
+      const pct = clamp(aqi, 0, MAX_AQI) / MAX_AQI;
+      const angle = 180 - (180 * pct);
+      needleEl.setAttribute('transform', `rotate(${angle} 100 100)`);
+    }
   }
 
   function setPM(el, v, kind){
@@ -342,23 +485,41 @@
     }
   }
 
-  function statusText(aqi, city){
-    const cat = !Number.isFinite(aqi) ? '—' :
-      aqi<=50 ? 'Good' : aqi<=100 ? 'Moderate' : aqi<=150 ? 'Unhealthy for Sensitive Groups' :
-      aqi<=200 ? 'Unhealthy' : aqi<=300 ? 'Very Unhealthy' : 'Hazardous';
-    return Number.isFinite(aqi) ? `${cat}${city?` • ${city}`:''}` : `No data${city?` • ${city}`:''}`;
+  function categoryText(aqi){
+    if (!Number.isFinite(aqi)) return '—';
+    if (aqi <= 25) return 'Good';
+    if (aqi <= 50) return 'Acceptable';
+    if (aqi <= 75) return 'Unhealthy for Sensitive Groups';
+    if (aqi <= 100) return 'Unhealthy';
+    if (aqi <= 150) return 'Very Unhealthy';
+    return 'Hazardous';
   }
+
+  function statusText(aqi){
+    const cat = categoryText(aqi);
+    return cat === '—' ? 'No data' : `${cat.toUpperCase()}!`;
+  }
+
 
   function setCategory(el, aqi){
     if (!el) return;
     el.classList.remove('is-good','is-moderate','is-usg','is-unhealthy','is-very','is-hazard');
     if (!Number.isFinite(aqi)) return;
-    if (aqi<=50) el.classList.add('is-good');
-    else if (aqi<=100) el.classList.add('is-moderate');
-    else if (aqi<=150) el.classList.add('is-usg');
-    else if (aqi<=200) el.classList.add('is-unhealthy');
-    else if (aqi<=300) el.classList.add('is-very');
+    if (aqi<=25) el.classList.add('is-good');
+    else if (aqi<=50) el.classList.add('is-moderate');
+    else if (aqi<=75) el.classList.add('is-usg');
+    else if (aqi<=100) el.classList.add('is-unhealthy');
+    else if (aqi<=150) el.classList.add('is-very');
     else el.classList.add('is-hazard');
+    const meter = qs('.aqi-meter');
+    if (!meter) return;
+    meter.classList.remove('aqi-meter--good','aqi-meter--acceptable','aqi-meter--usg','aqi-meter--unhealthy','aqi-meter--very','aqi-meter--hazard');
+    if (aqi<=25) meter.classList.add('aqi-meter--good');
+    else if (aqi<=50) meter.classList.add('aqi-meter--acceptable');
+    else if (aqi<=75) meter.classList.add('aqi-meter--usg');
+    else if (aqi<=100) meter.classList.add('aqi-meter--unhealthy');
+    else if (aqi<=150) meter.classList.add('aqi-meter--very');
+    else meter.classList.add('aqi-meter--hazard');
   }
 
   /* ---------- Smooth state helpers ---------- */
