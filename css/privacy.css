@@ -28,6 +28,13 @@ body.privacy-page {
   margin-bottom: var(--space-2);
 }
 
+.policy-issuer {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 760px;
+  margin-bottom: var(--space-2);
+}
+
 .policy-title {
   font-size: clamp(2.1rem, 3.4vw, 3.2rem);
   margin-bottom: var(--space-2);

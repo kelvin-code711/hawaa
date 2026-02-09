@@ -89,6 +89,13 @@ body {
   line-height: 1.5;
 }
 
+.company-legal {
+  font-size: 14px;
+  color: var(--footer-muted);
+  margin: -8px 0 0;
+  line-height: 1.6;
+}
+
 .company-address {
   display: flex;
   gap: 12px;
